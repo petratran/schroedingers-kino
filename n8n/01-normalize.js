@@ -41,6 +41,12 @@ const REIHEN = [
   // am 21.09.2026 bei den Innenstadtkinos abgelesen.
   'weird wednesday special', 'w. wednesday special', 'weird wednesday',
   'w. wednesday', 'ww',
+  // Am 21.09.2026 von Petra aus dem Programm der Innenstadtkinos bestaetigt:
+  // Reihenname vorn, Filmtitel dahinter, ohne Trennzeichen.
+  'cinelounge', 'himmelsstreifen', 'kinotour & preview', 'kinotour',
+  // Am 21.09.2026 von Petra aus dem laufenden Programm bestaetigt: Reihe
+  // vorn, Filmtitel dahinter — bei den Innenstadtkinos ohne Trennzeichen.
+  'cinelounge', 'himmelsstreifen', 'kinotour & preview', 'kinotour',
   'arthaus sneak', 'sneak preview', 'horror classics',
   'kitkatclub', 'met opera', 'the metropolitan opera', 'minikino',
   'disney channel mitmachkino', 'ladies night', 'schulkino', 'open air',
@@ -74,6 +80,24 @@ function stripReihe(title) {
   }
 
   return { title: t, reihe: null };
+}
+
+/**
+ * Veranstalter am Titelende: "ARCADIA Kalimera e.V." — der Film heisst
+ * *Arcadia*, Kalimera e.V. zeigt ihn. Ein eingetragener Verein ist nie Teil
+ * eines Filmtitels, deshalb ist das die seltene Stelle, an der eine
+ * allgemeine Regel gefahrlos ist. Der Rest muss trotzdem uebrig bleiben:
+ * Ein Aushang, der nur aus dem Vereinsnamen besteht, bleibt unveraendert.
+ */
+const VEREIN = /\s+([^\s].{0,40}?)\s+e\.?\s?V\.?\s*$/i;
+
+function stripVeranstalter(title) {
+  const t = String(title).trim();
+  const m = t.match(VEREIN);
+  if (!m) return { title: t, veranstalter: null };
+  const rest = t.slice(0, m.index).trim();
+  if (rest.length < 2) return { title: t, veranstalter: null };
+  return { title: rest, veranstalter: m[0].trim() };
 }
 
 /** Umlaute ausschreiben (fruehstueck), danach Diakritika entfernen. */
@@ -167,21 +191,98 @@ function splitJahr(title) {
   };
 }
 
+/**
+ * Jubilaeumsklammern: "Shrek - Der tollkuehne Held (25 Jahre)".
+ * Dasselbe Argument wie bei der Jahreszahl — eine Angabe zum Anlass der
+ * Vorstellung, kein Teil des Namens. Ohne sie lief derselbe Film unter zwei
+ * Eintraegen: kino-zeit schreibt den Zusatz, die Innenstadtkinos nicht, und
+ * die eine Schreibweise blieb unaufgeloest.
+ * Bewusst eine enge Liste: eine allgemeine Regel "letzte Klammer weg" wuerde
+ * "Pieces of a Woman (2020)"-Faelle zwar auch treffen, aber ebenso Titel,
+ * deren Klammer zum Namen gehoert ("Borat Subsequent Moviefilm (...)").
+ */
+const KLAMMER_ANLASS = /^(?:\d{1,3}\s*(?:\.|th|st|nd|rd)?\s*)?(?:jahre?|years?|jubilaeum|jubil\u00e4um|jubil\u00e4umsfassung|jubilaeumsfassung|anniversary)$/i;
+
+/** Entfernt Jahres- und Jubilaeumsklammern am Titelende, auch mehrere. */
+function splitKlammern(title) {
+  let t = String(title).trim();
+  let jahr = null;
+  const klammern = [];
+  for (let i = 0; i < 3; i++) {
+    const m = t.match(/\s*\(([^()]{1,40})\)\s*$/);
+    if (!m) break;
+    const inhalt = m[1].trim();
+    if (/^(19|20)\d{2}$/.test(inhalt)) {
+      if (jahr === null) jahr = Number(inhalt);
+    } else if (KLAMMER_ANLASS.test(inhalt)) {
+      klammern.push(inhalt);
+    } else {
+      break;                       // gehoert zum Titel — stehen lassen
+    }
+    t = t.slice(0, m.index).trim();
+  }
+  return { title: t, jahr, klammern };
+}
+
+/**
+ * Suchtitel fuer TMDb — bewusst NICHT der normalisierte Titel.
+ *
+ * `norm` ist fuer den Vergleich gebaut: Umlaute ausgeschrieben, Artikel und
+ * Satzzeichen entfernt, alles klein. Das ist richtig, solange beide Seiten
+ * gleich behandelt werden. Als Suchanfrage ist es falsch — die TMDb-Suche
+ * bekommt dann "shrek tollkuehne held" statt "Shrek - Der tollkuehne Held"
+ * und findet nichts.
+ *
+ * Entfernt werden hier nur zwei eindeutige Dinge: Klammern, die ausschliesslich
+ * Fassungsangaben enthalten ("(OmU)", "[3D]"), und ein Fassungswort am Ende
+ * ("... Extended"). Alles andere bleibt in Originalschreibweise stehen —
+ * besonders "of", das in `stripVersions` fuer "Originalfassung" steht und in
+ * einer Suchanfrage "Lord of the Rings" zerlegen wuerde.
+ */
+const SUCH_TOKENS = [
+  'omu', 'omeu', 'ov', '3d', '2d', 'imax', 'dolby atmos', 'dolby', 'atmos',
+  '4k', '70mm', '35mm', 'final cut', 'directors cut', 'extended cut',
+  'extended', 'digital restauriert', 'restauriert', 'remastered',
+  'wiederauffuehrung', 'preview', 'sneak', 'open air', 'matinee'
+];
+
+function suchTitel(title) {
+  let s = String(title);
+
+  // (a) Klammern, die nur eine Fassungsangabe enthalten
+  s = s.replace(/[([]([^()[\]]{1,30})[)\]]/g, (ganz, inhalt) => {
+    const flach = squash(toAscii(inhalt));
+    return flach && SUCH_TOKENS.includes(flach) ? ' ' : ganz;
+  });
+
+  // (b) ein Fassungswort am Ende
+  for (const t of [...SUCH_TOKENS].sort((a, b) => b.length - a.length)) {
+    const re = new RegExp('[\\s,:/\u2013\u2014-]+' + t.replace(/ /g, '\\s+') + '\\s*$', 'i');
+    if (re.test(s)) { s = s.replace(re, ''); break; }
+  }
+
+  return s.replace(/\s+/g, ' ').replace(/[\s,:/\u2013\u2014-]+$/, '').trim();
+}
+
 function normalizeTitle(raw) {
   const ohneReihe = stripReihe(String(raw || ''));
-  const ohneJahr = splitJahr(ohneReihe.title);
+  const ohneVerein = stripVeranstalter(ohneReihe.title);
+  const ohneJahr = splitKlammern(ohneVerein.title);
   const { clean, stripped } = stripVersions(ohneJahr.title);
   const plain = squash(toPlain(ohneJahr.title));
   return {
     norm: clean,                       // fruehstueck-Variante, Zusaetze entfernt
     normAscii: squash(toAscii(ohneJahr.title)),
     normPlain: plain,                  // fruhstuck-Variante
-    queryTitle: clean,                 // das geht so an die TMDb-Suche
+    queryTitle: clean,                 // Vergleichstitel (historischer Name)
+    searchTitle: suchTitel(ohneJahr.title) || ohneJahr.title,  // das geht an die TMDb-Suche
     jahr: ohneJahr.jahr,               // Jahresangabe aus dem Aushangtitel
     sequel: sequelIndex(clean),
     sequelBase: sequelBase(clean),
     reihe: ohneReihe.reihe,
-    stripped: ohneReihe.reihe ? stripped.concat('reihe:' + ohneReihe.reihe) : stripped
+    stripped: (ohneReihe.reihe ? stripped.concat('reihe:' + ohneReihe.reihe) : stripped)
+      .concat(ohneJahr.klammern.map((k) => 'anlass:' + k))
+      .concat(ohneVerein.veranstalter ? ['veranstalter:' + ohneVerein.veranstalter] : [])
   };
 }
 
@@ -193,5 +294,5 @@ if (typeof $input !== 'undefined') {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { normalizeTitle, splitJahr, sequelIndex, sequelBase, squash, toAscii, toPlain, stripVersions, stripReihe, REIHEN };
+  module.exports = { normalizeTitle, splitJahr, splitKlammern, suchTitel, stripVeranstalter, sequelIndex, sequelBase, squash, toAscii, toPlain, stripVersions, stripReihe, REIHEN };
 }

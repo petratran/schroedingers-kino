@@ -211,7 +211,10 @@ const out = {
     stufe: 'C',
     verfahren: 'TMDb-IDs aus title_alias; Titel werden nur zur Kandidatensuche benutzt, nie zum Vergleich',
     schwellen: { treffer: 0.95, unscharf: 0.85 },
-    grenze: 'TMDb sucht gegen Original- und englischen Titel; ein rein deutscher Verleihtitel findet seinen Film nicht — etwa "Nur getraeumt" gegen "Juste une illusion".'
+    // Korrigiert am 21.09.2026: Der deutsche Verleihtitel IST bei TMDb suchbar
+    // — die Anfrage war es nicht (siehe README, "Korrektur: nicht die
+    // Schnittstelle, der Suchtitel"). Was bleibt, ist die Quellenlage.
+    grenze: 'Offen bleiben nur Aushangtitel, die keinen Film bezeichnen (Sneak, Sondervorstellung) oder bei denen die Quelle Reihenname und Filmtitel ohne Trennzeichen in ein Feld schreibt.'
   },
   groups,
   cinemas,

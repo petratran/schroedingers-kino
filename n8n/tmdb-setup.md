@@ -46,10 +46,16 @@ nicht.
 
 ```
 GET https://api.themoviedb.org/3/search/movie
-    ?query={{ encodeURIComponent($json.queryTitle) }}
+    ?query={{ encodeURIComponent($json.searchTitle) }}
     &language=de-DE
     &include_adult=false
 ```
+
+**`searchTitle`, nicht `queryTitle`.** Der Vergleichstitel (`norm` /
+`queryTitle`) hat ausgeschriebene Umlaute und keine Artikel — als
+Suchanfrage findet er nichts. Belegt am 21.09.2026: `shrek tollkuehne held`
+liefert 0 Treffer, `Shrek - Der tollkühne Held` liefert die 808. Siehe
+README, Abschnitt „Korrektur: nicht die Schnittstelle, der Suchtitel".
 
 `language=de-DE` sorgt dafür, dass `title` der deutsche Verleihtitel ist und
 `original_title` der Originaltitel — genau das Paar, an dem sich *Vaterland*
@@ -57,6 +63,16 @@ gegen *Fatherland* entscheidet.
 
 Bewusst **ohne** `year` und ohne `region`: beides würde Klassikerreihen und
 Wiederaufführungen aussortieren.
+
+
+> **Falle: Parameter nicht zweimal setzen.** Der HTTP-Request-Node kann die
+> Abfrageparameter auf zwei Wegen mitschicken — als Teil der URL *oder* ueber
+> den Schalter *Send Query Parameters*. Beides zusammen sendet `query` und
+> `language` doppelt, TMDb liest das als Liste statt als Text und antwortet
+> mit `400` / `status_code: 5` („Invalid parameters"). In diesem Projekt
+> stehen die Parameter im Abschnitt *Query Parameters*; im URL-Feld steht
+> nur `https://api.themoviedb.org/3/search/movie`. Dann uebernimmt n8n auch
+> die Kodierung, und `encodeURIComponent` ist nicht noetig.
 
 Danach ein *Set*-Node, der `{{ $json.results }}` nach `tmdb_results` legt —
 dort erwartet es `02-score-decide.js`.

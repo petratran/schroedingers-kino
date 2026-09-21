@@ -88,7 +88,47 @@ function scoreCandidate(item, cand) {
   return { score: Math.round(best * 1000) / 1000, matchedOn: bestTitle };
 }
 
+/**
+ * Reihennamen, gespiegelt aus 01-normalize.js. Ein Aushangtitel, der NUR aus
+ * einem Reihennamen besteht, bezeichnet keinen Film — dahinter steht ein
+ * Abend, dessen Programm das Kino nicht verraet.
+ */
+const REIHEN_NORM = [
+  'weird wednesday special', 'weird wednesday', 'arthaus sneak', 'sneak preview',
+  'horror classics', 'cinelounge', 'himmelsstreifen', 'kinotour und preview',
+  'kinotour', 'kitkatclub', 'met opera', 'metropolitan opera', 'minikino',
+  'disney channel mitmachkino', 'ladies night', 'schulkino', 'open air',
+  'filmclub', 'klassiker am sonntag', 'preview', 'sneak', 'sondervorstellung',
+  'vorpremiere', 'ueberraschungsfilm'
+];
+
+/**
+ * Bleibt nach dem Normalisieren nichts uebrig oder genau ein Reihenname, ist
+ * die Frage an TMDb sinnlos — und die Frage an das Modell gefaehrlich.
+ *
+ * Belegt am 21.09.2026: "Horror Classics" ist ein Programmformat, kein Film.
+ * Die Suche lieferte den Kandidaten `1383612` „The Best of All Time Horror
+ * Classics", und der Schiedsrichter nahm ihn mit 0,66 und der Begruendung
+ * „entspricht dem zentralen Titelbestandteil des Kandidaten". Die Begruendung
+ * ist richtig: Der Titel stimmt ueberein. Falsch ist die Frage, die wir
+ * gestellt haben — das Modell prueft, welcher Kandidat zum Titel passt, nicht
+ * ob der Titel ueberhaupt einen Film bezeichnet. Diese zweite Frage muss vor
+ * dem Modell entschieden werden, nicht von ihm.
+ */
+function keinFilmtitel(item) {
+  const n = String(item.norm || '').trim();
+  if (!n) return 'Aushangtitel enthaelt nach Abzug der Fassungsangaben keinen Titel';
+  if (REIHEN_NORM.includes(n)) return `"${item.raw_title}" ist ein Reihenname, kein Filmtitel`;
+  return null;
+}
+
 function decide(item) {
+  const leer = keinFilmtitel(item);
+  if (leer) {
+    return { decision: 'unresolved', tmdb_id: null, confidence: 0,
+             resolved_by: 'offen', reason: leer, candidates: [], related: [] };
+  }
+
   const results = item.tmdb_results || [];
   const scored = [], related = [];
 
@@ -167,5 +207,5 @@ if (typeof $input !== 'undefined') {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { decide, similarity, scoreCandidate, monateSeitStart, T };
+  module.exports = { decide, keinFilmtitel, similarity, scoreCandidate, monateSeitStart, T };
 }

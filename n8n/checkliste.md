@@ -124,6 +124,110 @@ Anfrage je Sekunde. Probe: *Taxi Driver* muss TMDb **103** bekommen.
 
 ---
 
+## 3b · Watchlist ohne Upload (automatischer Zweig)
+
+Der Form-Trigger aus Schritt 3 bleibt — als zweiter Einstieg, falls
+Letterboxd umbaut. Daneben kann die Liste aber auch selbst geholt werden.
+
+**Was die Seite hergibt.** `letterboxd.com/<name>/watchlist/` ist
+serverseitig gerendert; jeder Film steht als Datenattribut im HTML, auch
+wenn das Poster erst spaeter nachgeladen wird:
+
+```html
+<div class="react-component" data-item-name="Fatherland (2026)"
+     data-item-slug="fatherland-2026" data-item-link="/film/fatherland-2026/"
+     data-postered-identifier="{&quot;lid&quot;:&quot;TbK4&quot;,&quot;uid&quot;:&quot;film:1315318&quot;,&quot;type&quot;:&quot;film&quot;}">
+```
+
+Die `lid` darin ist genau der Kurzschluessel, den der CSV-Export als
+`https://boxd.it/TbK4` fuehrt. Damit ist der Abgleich mit dem Bestand exakt
+und braucht keinen Titelvergleich. 28 Filme pro Seite, geblaettert wird ueber
+`/watchlist/page/2/`.
+
+### Die Nodes
+
+| # | Node | Typ | Das Wichtigste |
+| --- | --- | --- | --- |
+| 1 | `Woechentlich Mo 05:30` | Schedule Trigger | Weeks · Monday · 5:30 |
+| 2 | `Watchlist Seite 1` | HTTP Request | Response Format **Text**, Feld `data` |
+| 3 | `Seitenplan` | Code | s. u., erzeugt Seite 2..n |
+| 4 | `Weitere Seiten` | HTTP Request | URL aus `{{ $json.url }}` (*Expression!*) |
+| 5 | `Bestand holen` | HTTP Request | Supabase `watchlist`, **Always Output Data** |
+| 6 | `Watchlist lesen` | Code | Inhalt von `11-letterboxd-watchlist.js` |
+| 7 | `Was tun?` | Switch | `neu` / `entfernt` |
+| 8 | *(Zweig neu)* | — | die bestehende Kette aus Schritt 3 |
+| 9 | `Entfernte loeschen` | HTTP Request | DELETE, s. u. |
+
+**Node 2 und 4 — die Abrufe**
+
+```
+GET https://letterboxd.com/<dein-name>/watchlist/        (Node 2)
+GET {{ $json.url }}                                      (Node 4, Expression)
+Header: User-Agent: Mozilla/5.0 (SchroedingersKino/1.0; privates Projekt)
+Options -> Response -> Response Format: Text, Output Field Name: data
+```
+
+**Node 3 — `Seitenplan`** (Run Once for All Items)
+
+```js
+const html = $json.data;
+const treffer = html.match(/\/watchlist\/page\/(\d+)\//g) || [];
+const seiten = treffer.length
+  ? Math.max(1, ...treffer.map(t => Number(t.match(/(\d+)/)[1])))
+  : 1;
+const basis = 'https://letterboxd.com/<dein-name>/watchlist';
+const plan = [];
+for (let i = 2; i <= seiten; i++) plan.push({ json: { url: `${basis}/page/${i}/` } });
+return plan;          // eine Seite: leere Liste, Node 4 laeuft nicht
+```
+
+**Node 5 — `Bestand holen`**
+
+```
+GET https://<projekt>.supabase.co/rest/v1/watchlist
+    ?select=tmdb_id,letterboxd_uri,title_raw&limit=1000
+Settings -> Always Output Data: AN
+```
+
+**Node 9 — `Entfernte loeschen`**
+
+```
+DELETE https://<projekt>.supabase.co/rest/v1/watchlist?tmdb_id=eq.{{ $json.tmdb_id }}
+```
+
+### Warum das mehr ist als eine Bequemlichkeit
+
+Ein Upload kann nur **hinzufuegen**. Nimmst du einen Film von der Watchlist,
+bleibt er in der Datenbank stehen und das Dashboard zeigt ihn weiter als
+Treffer — ein Fehler, der nie auffaellt, weil er nie eine Fehlermeldung
+erzeugt. Der Abruf kennt den vollstaendigen Soll-Zustand und sieht deshalb
+auch, was fehlt.
+
+Genau deshalb hat `abgleich()` zwei Sicherungen, und sie sind der wichtigste
+Teil der Datei: Loeschen ist die einzige Operation dieser Pipeline, die Daten
+vernichtet.
+
+1. **Keine Filme gelesen -> Abbruch.** Eine umgebaute Seite sieht aus wie
+   eine geleerte Watchlist. Der Unterschied ist, dass eine geleerte Watchlist
+   ein Ereignis ist und ein Umbau ein Fehler.
+2. **Mehr als die Haelfte weg -> Abbruch.** Einzelne Streichungen sind
+   Alltag, die halbe Liste auf einmal ist es nicht.
+
+Beide melden sich ueber den Fehler-Melder. Ein Lauf, der nichts tut und sich
+beschwert, ist besser als einer, der stillschweigend Daten loescht.
+
+### Die Abwaegung, die dazugehoert
+
+Letterboxds Nutzungsbedingungen sehen automatisiertes Auslesen nicht vor —
+auch wenn es die eigenen, oeffentlichen Daten sind und der Export denselben
+Inhalt liefert. Deshalb: ein Lauf pro Woche, erkennbarer User-Agent, und die
+Filmseiten werden nur fuer **neue** Filme geholt (typisch null bis zwei statt
+74). Eine offizielle API gibt es; der Schluessel wird auf Antrag vergeben
+(`letterboxd.com/api-beta/`) und waere der sauberere Weg. Diese Entscheidung
+gehoert in die Arbeit geschrieben, nicht stillschweigend getroffen.
+
+---
+
 ## 4 · Workflow 2 · Kinoprogramm (45 Minuten)
 
 Schedule Trigger täglich 06:00 → Code-Node **`Abrufplan`** (`wf2-abrufplan.js`,
@@ -238,12 +342,133 @@ erfolgreichen Build — vorher sieht jede Seite des Projekts aus wie ein 404.
 Erreicht am 21.09.2026:
 https://petratran.github.io/schroedingers-kino/dashboard/
 
-## 6b · Wochentliche Handarbeit: MUBI GO
+## 6b · Workflow 4: MUBI GO (automatisch)
 
-Der Film der Woche ist der einzige Teil der Pipeline, der von Hand gepflegt
-wird — MUBI veröffentlicht ihn nur in der App. Einmal pro Woche eine Zeile
-anlegen; `valid_from` ist der Primärschlüssel, die View nimmt automatisch die
-jüngste.
+Der Film der Woche war lange der einzige Teil der Pipeline, der von Hand
+gepflegt wurde. Seit dem 21.09.2026 holt ihn ein eigener Workflow.
+
+**Woher der Titel kommt.** `mubi.com/de/de/go` ist fast vollständig
+JavaScript — im ausgelieferten HTML steht der Film nur in den Meta-Angaben:
+
+```html
+<meta name="description" content="Film des Tages | Gentle Monster">
+```
+
+Das ist dünn, aber es ist die Stelle, die MUBI selbst für Suchmaschinen und
+Link-Vorschauen pflegt. Fällt sie weg, wirft der Code-Node — und der
+Fehler-Melder schlägt an. Das ist der Punkt: Ein stiller Rückfall auf den
+Film der Vorwoche wäre der gefährlichere Fehler.
+
+**Woher die TMDb-Kennung kommt — und warum nicht von TMDb.** MUBI GO ist ein
+Kinoticket, der Film läuft also per Definition im Kino. Deshalb sucht der
+Node die Kennung im eigenen Titel-Cache (`title_alias`) statt bei TMDb: Dort
+stehen genau die Filme, um die es geht, die Kennungen sind bereits geprüft,
+und die Fremdschlüsselbedingung auf `film` ist automatisch erfüllt. Läuft der
+Film in keinem der 16 Häuser, nützt die Kennung ohnehin nichts — `v_programm`
+verbindet `mubi_go` über `tmdb_id` mit den Vorstellungen.
+
+### Die sechs Nodes
+
+| # | Node | Typ | Das Wichtigste |
+| --- | --- | --- | --- |
+| 1 | `Taeglich 05:45` | Schedule Trigger | Days · Hour 5 · Minute 45 — vor Workflow 2 |
+| 2 | `MUBI-Seite holen` | HTTP Request | s. u. |
+| 3 | `Titel-Cache holen` | HTTP Request | Supabase, `title_alias` |
+| 4 | `MUBI-Stand holen` | HTTP Request | Supabase, `mubi_go`, **Always Output Data** |
+| 5 | `MUBI GO lesen` | Code | Inhalt von `10-mubi-go.js` |
+| 6 | `Wechsel?` | If | Boolean: `{{ $json.schreiben }}` ist *true* |
+| 7 | `MUBI-Zeile schreiben` | HTTP Request | am **true**-Ausgang von Node 6 |
+
+Verkettet in genau dieser Reihenfolge, eine Linie. Die Node-**Namen** müssen
+stimmen: Der Code-Node holt sich seine drei Eingaben über
+`$('MUBI-Seite holen')`, `$('Titel-Cache holen')` und `$('MUBI-Stand holen')`.
+
+**Node 2 — `MUBI-Seite holen`**
+
+```
+Method: GET
+URL:    https://mubi.com/de/de/go
+Header: User-Agent: Mozilla/5.0 (kompatibel; SchroedingersKino/1.0)
+Options -> Response -> Response Format: Text
+Options -> Response -> Output Field Name: data
+Settings -> Retry On Fail: an
+```
+
+**Node 3 — `Titel-Cache holen`**
+
+```
+GET https://<projekt>.supabase.co/rest/v1/title_alias
+    ?select=raw_title,tmdb_id&tmdb_id=not.is.null&limit=1000
+Authentication: Predefined Credential Type -> Supabase API
+```
+
+**Node 4 — `MUBI-Stand holen`**
+
+```
+GET https://<projekt>.supabase.co/rest/v1/mubi_go
+    ?select=valid_from,raw_title,tmdb_id&order=valid_from.desc&limit=1
+Settings -> Always Output Data: AN
+```
+
+Ohne *Always Output Data* liefert eine leere Tabelle null Items, und die Kette
+bricht genau beim ersten Lauf ab — derselbe Stolperstein wie bei Node 3 in
+Workflow 5.
+
+**Node 6 — `Wechsel?`** (If)
+
+```
+Conditions -> Boolean -> is true
+Left Value (Expression):  {{ $json.schreiben }}
+```
+
+**Node 7 — `MUBI-Zeile schreiben`** (am *true*-Ausgang)
+
+```
+POST https://<projekt>.supabase.co/rest/v1/mubi_go?on_conflict=valid_from
+Send Headers: Prefer = resolution=merge-duplicates,return=minimal
+Send Body -> Using JSON:  {{ JSON.stringify($json.zeile) }}
+```
+
+`$json.zeile`, nicht `$json` — im Item stehen daneben noch `schreiben`,
+`titel` und `grund`, und Supabase lehnt unbekannte Spalten ab.
+
+### Was der Lauf tut, wenn nichts passiert ist
+
+Er sagt es. Der Code-Node vergleicht den gelesenen Titel mit der jüngsten Zeile
+in `mubi_go` und liefert in beiden Fällen ein Item:
+
+```json
+{ "schreiben": false, "titel": "Gentle Monster",
+  "grund": "unveraendert: \"Gentle Monster\" seit 2026-09-21", "zeile": null }
+```
+
+Geschrieben wird nur am *true*-Ausgang. `valid_from` bleibt dadurch das, was es
+sein soll: der Tag, ab dem der Film gilt, nicht der Tag des letzten Laufs. Ein
+täglicher Lauf, der jeden Tag eine Zeile schreibt, würde die Angabe
+bedeutungslos machen.
+
+**Warum nicht einfach kein Item?** Genau so war die erste Fassung gebaut, und
+sie war unbrauchbar: Ein Lauf ohne Ausgabe sieht aus wie ein Lauf, der nicht
+funktioniert hat. Die Begründung stand nur in der Browser-Konsole, wo niemand
+nachschaut. Ein Lauf, der nichts tut, muss trotzdem sagen können, was er
+gesehen hat — sonst prüft man bei jedem Mal von Hand nach, und dann ist nichts
+gewonnen.
+
+Deshalb ist der Trigger auch täglich und nicht wöchentlich: Wann MUBI wechselt,
+steht nirgends verbindlich. Ein täglicher Lauf merkt den Wechsel am Tag, an dem
+er passiert, und kostet an allen anderen Tagen einen Seitenabruf.
+
+### Wenn der Node wirft
+
+Zwei Fälle, beide gewollt:
+
+1. **„MUBI-Seite ohne Meta-Beschreibung"** — MUBI hat die Seite umgebaut.
+   `10-mubi-go.js` muss nachgezogen werden.
+2. **„… steht in keinem der erfassten Kinoprogramme"** — der Film läuft hier
+   nicht, oder die Schreibweise weicht ab. Im ersten Fall ist nichts zu tun,
+   im zweiten hilft die Handarbeit unten.
+
+### Rückfallebene: die Zeile von Hand
 
 ```sql
 insert into mubi_go (valid_from, raw_title, tmdb_id)
@@ -257,18 +482,13 @@ on conflict (valid_from) do update
    set raw_title = excluded.raw_title, tmdb_id = excluded.tmdb_id;
 ```
 
-Läuft der Film in keinem der erfassten Kinos, kennt `title_alias` ihn nicht —
-dann TMDb-ID nachschlagen und zuerst `insert into film (tmdb_id) values (<ID>)
-on conflict do nothing;`.
+Kennt `title_alias` den Film nicht, zuerst
+`insert into film (tmdb_id) values (<ID>) on conflict do nothing;`.
 
-**Die `tmdb_id` ist der Punkt.** `v_programm` erkennt MUBI GO ausschliesslich
+**Die `tmdb_id` ist der Punkt.** `v_programm` erkennt MUBI GO ausschließlich
 über sie; ein Eintrag ohne ID lässt die Kennzeichnung im Dashboard stumm
-verschwinden. Der Titelvergleich in `08-today-json.js` faengt das ab, ist aber
-Rueckfallebene und kein Ersatz.
-
-Vergisst man die Zeile ganz, zeigt das Dashboard weiter den Film der Vorwoche —
-falsch, aber unauffällig. Das ist der Fehler, den man erst bemerkt, wenn jemand
-umsonst ins Kino fährt.
+verschwinden. Der Titelvergleich in `08-today-json.js` fängt das ab, ist aber
+Rückfallebene und kein Ersatz.
 
 ---
 

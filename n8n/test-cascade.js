@@ -120,6 +120,73 @@ CASES.push(
     expect: { decision: 'tmdb', tmdb_id: 949 } }
 );
 
+// --- Jubilaeumsklammer --------------------------------------------------
+// Am 21.09.2026 in der Dublettenpruefung aufgefallen: derselbe Shrek lief
+// zweimal auf der Seite, weil kino-zeit "(25 Jahre)" an den Titel haengt und
+// die Innenstadtkinos nicht. Die Klammer-Schreibweise blieb unaufgeloest.
+CASES.push(
+  { name: 'Jubilaeumsklammer ist eine Angabe zum Anlass, kein Titelteil',
+    raw: 'Shrek - Der tollk\u00fchne Held (25 Jahre)',
+    date: '2026-10-08',
+    tmdb: [f(808, 'Shrek - Der tollk\u00fchne Held', 'Shrek', '2001-06-28')],
+    expect: { decision: 'tmdb', tmdb_id: 808 } },
+
+  { name: 'Klammer, die zum Titel geh\u00f6rt, bleibt stehen',
+    raw: 'Borat Subsequent Moviefilm (Delivery of Prodigious Bribe)',
+    tmdb: [f(613504, 'Borat Subsequent Moviefilm (Delivery of Prodigious Bribe)', null, '2020-10-23')],
+    expect: { decision: 'tmdb', tmdb_id: 613504 } }
+);
+
+// --- Titel, die keinen Film bezeichnen ---------------------------------
+// Am 21.09.2026 im Betrieb aufgefallen. Beide Faelle liefern echte
+// TMDb-Kandidaten mit passendem Titel — und trotzdem ist jede Auswahl falsch.
+CASES.push(
+  { name: 'Reihenname allein bezeichnet keinen Film',
+    raw: 'Horror Classics',
+    tmdb: [f(1383612, 'The Best of All Time Horror Classics', null, '2021-10-01')],
+    expect: { decision: 'unresolved' } },
+
+  { name: 'Ueberraschungsvorstellung wird gar nicht erst gefragt',
+    raw: 'Sneak',
+    tmdb: [f(1514081, 'The Sneak', null, '1919-07-20'),
+           f(936569, 'Hide & Sneak', null, '')],
+    expect: { decision: 'unresolved' } },
+
+  { name: 'Reihenname MIT Film dahinter bleibt aufloesbar',
+    raw: 'Weird Wednesday DRIVE (2011)', date: '2026-11-04',
+    tmdb: [f(64690, 'Drive', null, '2011-09-16')],
+    expect: { decision: 'tmdb', tmdb_id: 64690 } },
+
+  // Drei weitere Reihen der Innenstadtkinos, am 21.09.2026 von Hand
+  // bestaetigt: Reihenname vorn, Filmtitel dahinter.
+  { name: 'CineLounge: Reihe vorn, Film dahinter',
+    raw: 'CineLounge BITTERES FEST',
+    tmdb: [f(1088548, 'Bitteres Fest', 'Amarga Navidad', '2026-11-20')],
+    expect: { decision: 'tmdb', tmdb_id: 1088548 } },
+
+  { name: 'HIMMELSSTREIFEN: dasselbe Muster, andere Reihe',
+    raw: 'HIMMELSSTREIFEN Innere Emigranten',
+    tmdb: [f(999001, 'Innere Emigranten', null, '2026-05-01')],
+    expect: { decision: 'tmdb', tmdb_id: 999001 } },
+
+  { name: 'KINOTOUR & PREVIEW: Reihe mit Doppelpunkt und Und-Zeichen',
+    raw: 'KINOTOUR & PREVIEW: EINE KRANKHEIT WIE EIN GEDICHT',
+    tmdb: [f(1619484, 'Eine Krankheit wie ein Gedicht', null, '2026-09-10')],
+    expect: { decision: 'tmdb', tmdb_id: 1619484 } },
+
+  // Der Gegenfall: hier steht der Veranstalter HINTEN. "Kalimera e.V." zeigt
+  // den Film, der Film heisst Arcadia.
+  { name: 'Veranstalter am Titelende faellt weg, Film bleibt',
+    raw: 'ARCADIA Kalimera e.V.',
+    tmdb: [f(999002, 'Arcadia', 'Arcadia', '2026-05-01')],
+    expect: { decision: 'tmdb', tmdb_id: 999002 } },
+
+  { name: 'Ein Aushang, der nur aus dem Verein besteht, bleibt stehen',
+    raw: 'Kalimera e.V.',
+    tmdb: [],
+    expect: { decision: 'unresolved' } }
+);
+
 let ok = 0, fail = 0;
 for (const c of CASES) {
   const item = { raw_title: c.raw, date: c.date || null, ...normalizeTitle(c.raw), tmdb_results: c.tmdb };

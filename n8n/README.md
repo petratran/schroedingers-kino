@@ -39,6 +39,10 @@ GET https://api.themoviedb.org/3/search/movie
     &include_adult=false
 ```
 
+Die drei Parameter stehen im Node unter *Query Parameters*, nicht in der URL
+— siehe die Falle in `tmdb-setup.md`: beides zusammen sendet sie doppelt und
+TMDb antwortet mit `400` / `status_code: 5`.
+
 Header `Authorization: Bearer <TMDb v4 Token>` aus dem n8n Credential Store.
 Danach ein *Set*-Node, der `{{ $json.results }}` auf das Feld `tmdb_results`
 legt — Node 4 erwartet es dort.
@@ -236,6 +240,10 @@ Sonderfall, sondern der Beleg dafür, dass der Abgleich über IDs laufen muss.
 
 ### `language=de-DE` sucht nicht auf Deutsch
 
+> **Teilweise widerlegt am 21.09.2026.** Die Messung unten stimmt, die
+> Erklaerung fuer die zehn Ungeloesten nur zur Haelfte. Siehe die Korrektur
+> im naechsten Abschnitt.
+
 Der erste vollstaendige Lauf ueber echte Kinodaten (21.09.2026, 82 offene
 Titel) hat eine zweite Annahme widerlegt. Die Verteilung war:
 
@@ -299,6 +307,203 @@ maschinellen Gegenprobe ueber `/movie/{id}/alternative_titles`: Steht der
 deutsche Aushangtitel dort als Nebentitel, ist die Zuordnung bewiesen statt
 geraten.
 
+### Korrektur: nicht die Schnittstelle, der Suchtitel (21.09.2026)
+
+Nach dem Anschluss der dritten Quelle stand *Shrek – Der tollkuehne Held*
+zweimal auf dem Dashboard — einmal von den Innenstadtkinos mit `tmdb_id 808`,
+einmal von kino-zeit ohne Kennung. Die Ursachensuche hat den Abschnitt oben
+zur Haelfte umgeworfen.
+
+**Erstens** war die aufgeloeste Zeile nie eine erfolgreiche Suche. Der
+Innenstadtkinos-Adapter liest die Kennung aus dem `sameAs`-Feld der Seite und
+schreibt sie mit `resolved_by: 'tmdb'` weg. Beide Zeilen sahen in der Tabelle
+gleich aus, aber nur eine war ueberhaupt bei TMDb. Eine Kennung aus der Quelle
+und eine Kennung aus der Suche sollten kuenftig unterscheidbar sein —
+derselbe Wert in `resolved_by` verdeckt zwei sehr verschiedene Beweislagen.
+
+**Zweitens**, und das ist der eigentliche Befund: Die Suche bekam
+`queryTitle` — den **Vergleichstitel**. Der ist fuer den Abgleich gebaut:
+Umlaute ausgeschrieben, Artikel entfernt, Satzzeichen weg, alles klein. Als
+Suchanfrage ist er unlesbar. Die Gegenprobe, beide Abfragen am selben Tag:
+
+| Anfrage | Ergebnis |
+| --- | --- |
+| `query=shrek tollkuehne held` | `total_results: 0` |
+| `query=Shrek - Der tollkühne Held` | `808` *Shrek – Der tollkuehne Held*, `809` *Shrek 2* |
+
+Alle 17 offenen Titel des Laufs kamen mit `results: []` zurueck — und alle
+sieben darunter, die einen echten Film bezeichnen, enthalten einen Umlaut.
+Keiner der zehn, die keinen Film bezeichnen, enthaelt einen. Die
+`ue`/`oe`-Schreibweise war der gemeinsame Nenner.
+
+**Damit ist die Aussage „`language=de-DE` bestimmt nur die Sprache der
+Antwort, nicht die der Suche" vollstaendig widerlegt.** Mit der
+Originalschreibweise liefert dieselbe Schnittstelle am selben Tag fuer alle
+sieben Titel einen Treffer — darunter genau die beiden, auf die der alte
+Befund gebaut war:
+
+| Aushangtitel | gefunden | TMDb-`title` | `original_title` |
+| --- | --- | --- | --- |
+| Nur getraeumt | `1404684` | Nur getraeumt | Juste une illusion |
+| Shaun das Schaf - Spuk im Kuerbisfeld | `1477104` | Shaun das Schaf - Spuk im Kuerbisfeld | Shaun the Sheep: The Beast of Mossy Bottom |
+| Your Name. - Gestern, heute und fuer immer | `372058` | Your Name. - Gestern, heute und fuer immer | Kimi no na wa. |
+| Das getraeumte Abenteuer | `1013822` | Das getraeumte Abenteuer | (deutsch) |
+| Luegen ueber meine Mutter | `1452237` | Luegen ueber meine Mutter | (deutsch) |
+| Toedliche Weihnachten – The Long Kiss Goodnight | `11412` | Toedliche Weihnachten | The Long Kiss Goodnight |
+| Shrek - Der tollkuehne Held (25 Jahre) | `808` | Shrek - Der tollkuehne Held | Shrek |
+
+TMDb durchsucht die deutschen Verleihtitel also sehr wohl. *Nur getraeumt*
+war nie unauffindbar — es wurde nur nie danach gefragt. Die geplante
+Titel-Bruecke ueber Wikidata und die Kurztitel-Zweitsuche sind damit vorerst
+gegenstandslos: Beide waren Loesungen fuer ein Problem, das es nicht gab.
+
+**Die Trennung, die daraus folgt:** `normalizeTitle()` liefert jetzt zwei
+Titel. `norm`/`queryTitle` bleibt der Vergleichstitel, neu ist `searchTitle` —
+Reihenname und Anlassklammer entfernt, Fassungsangaben in Klammern entfernt,
+sonst Originalschreibweise. Node 3 fragt damit ab, Node 4 vergleicht
+unveraendert gegen `norm`.
+
+```
+"Shrek - Der tollkühne Held (25 Jahre)"  ->  "Shrek - Der tollkühne Held"
+"Pressure (OmU)"                         ->  "Pressure"
+"Avengers: Endgame Extended"             ->  "Avengers: Endgame"
+"The Lord of the Rings"                  ->  "The Lord of the Rings"
+```
+
+Das letzte Beispiel erklaert die eigene Tokenliste `SUCH_TOKENS`: `of` steht
+in `VERSION_TOKENS` fuer „Originalfassung". Im Vergleich ist das harmlos, weil
+beide Seiten gleich behandelt werden — in einer Suchanfrage zerlegt es
+englische Titel.
+
+### Die Frage vor der Frage: bezeichnet der Titel ueberhaupt einen Film?
+
+Derselbe Lauf hat zwei Faelle nebeneinandergestellt, die wie zwei
+Verhaltensweisen des Modells aussehen und in Wahrheit dieselbe sind.
+
+*Sneak* (Ueberraschungsvorstellung, der Film wird nicht genannt) ging mit 78
+Kandidaten an den Schiedsrichter und kam mit `confidence 0.000`,
+`status = offen` zurueck — die erste Enthaltung im Betrieb.
+
+*Horror Classics* (ein Programmformat, kein Film) ging mit einem Kandidaten
+hin und kam mit `1383612` „The Best of All Time Horror Classics" und 0,66
+zurueck. Die Begruendung des Modells:
+
+> „Der Aushangtitel entspricht dem zentralen Titelbestandteil des Kandidaten;
+> der andere Kandidat ist ein japanischer Anthologiefilm ohne erkennbare
+> Titeluebereinstimmung."
+
+Diese Begruendung ist **richtig**. Der Titel stimmt tatsaechlich ueberein.
+Falsch ist die Frage, die wir gestellt haben. Der Prompt fragt: *Welcher
+dieser Kandidaten passt zum Titel?* — nicht: *Bezeichnet dieser Titel
+ueberhaupt einen Film?* Die Enthaltung bei *Sneak* war also kein Urteil
+ueber den Charakter des Titels, sondern die Folge davon, dass kein Kandidat
+dem String aehnlich sah. Haette TMDb dort einen Film namens „Sneak"
+geliefert, waere er genommen worden.
+
+Ein Modell beantwortet die gestellte Frage, nicht die gemeinte. Die zweite
+Frage gehoert deshalb **vor** den Schiedsrichter, in Code, der immer gleich
+antwortet: `keinFilmtitel()` in `02-score-decide.js` bricht ab, wenn nach dem
+Normalisieren nichts uebrig bleibt (*Sneak*, *SNEAK 1340*) oder genau ein
+bekannter Reihenname (*Horror Classics*, *Sondervorstellung*). Beide Faelle
+stehen als Test in `test-cascade.js`, zusammen mit der Gegenprobe, dass ein
+Reihenname *mit* Film dahinter weiterhin aufgeloest wird (23/23).
+
+Die Vertrauensgrenze hat den Fehler uebrigens nicht verhindert, nur
+abgemildert: 0,66 landet auf `unscharf` statt `sicher`. Der Titel stand
+trotzdem auf der Seite. Eine Schwelle sortiert schwache Urteile aus — kein
+falsch gestelltes Problem.
+
+**Die Lehre fuer die Arbeit:** Ein Normalisierer, der fuer den Vergleich
+gebaut ist, darf nicht ungeprueft als Suchanfrage weiterverwendet werden. Der
+Fehler war nicht sichtbar, weil er nur Titel mit Umlauten traf — und die
+waren in der ersten Messung in der Minderheit. Dass er ueberhaupt auffiel,
+liegt an der dritten Quelle: Erst als zwei Quellen denselben Film lieferten,
+wurde der Unterschied zwischen „nicht gefunden" und „gar nicht erst gesucht"
+sichtbar.
+
+### Stand nach der Korrektur (21.09.2026)
+
+| | erste Messung | nach der Korrektur |
+| --- | --- | --- |
+| Titel gesamt | 82 | 142 |
+| per Kaskade aufgeloest | 63 | 118 |
+| per Schiedsrichter aufgeloest | 8 | 13 |
+| unscharf | 1 | 0 |
+| offen | 10 | 11 |
+| **Quote** | **87 %** | **92 %** |
+
+Die Zahlen sind nicht direkt vergleichbar — zwischen beiden Messungen kamen
+zwei Quellen dazu, und der Bestand wuchs von 82 auf 142 Titel. Aussagekraeftig
+ist das Verhaeltnis: Der Anteil der Faelle, die das Modell braucht, ist mit
+rund 9 % stabil geblieben, obwohl sich die Datenmenge fast verdoppelt hat und
+die neue Quelle die unsauberste Titelschreibweise der drei liefert.
+`unscharf` und die eine ausgebliebene LLM-Antwort sind verschwunden, weil die
+betreffenden Titel gar nicht mehr beim Modell landen.
+
+Die elf Offenen sind kein Rest, der noch abgearbeitet werden muesste:
+
+- **vier** bezeichnen keinen Film (`Sneak`, `SNEAK 1340`, `Sondervorstellung`,
+  `Met Opera: Cosi fan tutte`) — hier ist „offen" das richtige Ergebnis,
+  und `keinFilmtitel()` sorgt dafuer, dass sie erst gar nicht gefragt werden.
+- **sechs** stammen von den Innenstadtkinos, die Reihenname und Filmtitel ohne
+  Trennzeichen in ein Feld schreiben (`HIMMELSSTREIFEN Innere Emigranten`,
+  `CineLounge BITTERES FEST`, `ARCADIA Kalimera e.V.` …).
+- **einer** ist ein Grenzfall zwischen beidem.
+
+**Nachtrag am selben Abend.** Die zweite Gruppe ist keine Luecke des
+Verfahrens, sondern eine fehlende Liste: Fuer `CineLounge`, `HIMMELSSTREIFEN`
+und `KINOTOUR & PREVIEW` ist von Hand bestaetigt, dass der Reihenname vorn und
+der Film dahinter steht — damit greift dieselbe Regel wie bei
+`Weird Wednesday`, und die drei stehen jetzt in `REIHEN`. Fuenf Aushangtitel
+loesen sich dadurch auf und fallen mit Eintraegen zusammen, die ohnehin schon
+auf der Seite standen (*Bitteres Fest*, *Liebe braucht keine Ferien*,
+*Steckerlfischfiasko*, *Eine Krankheit wie ein Gedicht*).
+
+`ARCADIA Kalimera e.V.` bleibt bewusst offen: Ob *Arcadia* die Reihe und
+*Kalimera e.V.* der Veranstalter ist oder umgekehrt, geht aus dem Feld nicht
+hervor. Eine Liste, die nur eingetragene Namen abschneidet, ist der Preis
+dafuer, dass sie keine halben Filmtitel frisst — ein ungeprueftes Muster wird
+nicht aufgenommen, auch wenn es plausibel aussieht.
+
+Eine hoehere Quote waere ab hier nur noch durch Raten zu haben.
+
+**Nachtrag, spaeter am Abend.** Nicht durch Raten — aber durch Nachfragen.
+Petra hat die sechs Innenstadtkinos-Titel von Hand aufgeloest, und es waren
+keine sechs Einzelfaelle, sondern zwei Muster:
+
+| Aushangtitel | Reihe / Veranstalter | Film |
+| --- | --- | --- |
+| CineLounge BITTERES FEST | CineLounge | Bitteres Fest |
+| CINELOUNGE Steckerlfischfiasko | CineLounge | Steckerlfischfiasko |
+| CineLounge LIEBE BRAUCHT KEINE FERIEN | CineLounge | Liebe braucht keine Ferien |
+| HIMMELSSTREIFEN Innere Emigranten | Himmelsstreifen | Innere Emigranten |
+| KINOTOUR & PREVIEW: EINE KRANKHEIT … | Kinotour & Preview | Eine Krankheit wie ein Gedicht |
+| ARCADIA Kalimera e.V. | Kalimera e.V. (Veranstalter) | Arcadia |
+
+Die ersten fuenf sind das Muster von „Weird Wednesday": Reihe vorn, Film
+dahinter. Sie kosten drei Eintraege in `REIHEN`. Der sechste steht andersherum
+— der Veranstalter haengt hinten dran — und dafuer gibt es eine Regel, die
+ohne Liste auskommt: Ein eingetragener Verein ist nie Teil eines Filmtitels.
+`stripVeranstalter()` schneidet ein abschliessendes „… e.V." ab, laesst den
+Titel aber unveraendert, wenn danach nichts uebrig bliebe.
+
+**Der Punkt fuer die Arbeit:** Welcher Teil des Feldes die Reihe ist und
+welcher der Film, steht nirgends in den Daten. Weder Zeichensetzung noch
+Gross-/Kleinschreibung verraten es — „CINELOUNGE Steckerlfischfiasko" und
+„ARCADIA Kalimera e.V." sehen identisch aus und sind genau spiegelverkehrt
+aufgebaut. Das ist Ortskenntnis, kein Rechenproblem. Ein Modell haette hier
+geraten und waere, wie bei *Horror Classics*, mit einer gut begruendeten
+falschen Antwort zurueckgekommen. Die gepflegte Liste ist nicht die
+unelegante Loesung, sondern die einzige ehrliche: Sie macht sichtbar, was
+jemand wissen musste.
+
+**Ergebnis des Nachtrags:** Von elf offenen Titeln bleiben fuenf — *Sneak*,
+*SNEAK 1340*, *Sondervorstellung*, *Horror Classics* und die Met-Opern-
+Uebertragung. Alle fuenf bezeichnen keinen Film. **137 von 142 aufgeloest,
+96 %**, und der Rest ist kein Rest mehr, sondern die Antwort auf eine Frage,
+die das Kino nicht beantwortet: Welcher Film laeuft in der Ueberraschungs-
+vorstellung? — Das weiss vor Beginn niemand, und das ist der Punkt daran.
+
 ### Gleichstand entscheidet der Kinostart, nicht das Modell
 
 Fünf titelgleiche Kandidaten hätte die Kaskade an den LLM-Node geschickt.
@@ -324,6 +529,42 @@ Klassikerreihen — bleibt alles wie bisher und der LLM-Node entscheidet.
 
 Ergebnis: ein LLM-Aufruf weniger, eine reproduzierbare Entscheidung mehr.
 Die echte TMDb-Antwort liegt als `fixtures/tmdb-vaterland.json` im Test.
+
+### Die Dublette, die erst drei Quellen sichtbar machen (21.09.2026)
+
+Mit der dritten Quelle stand derselbe Film zweimal auf der Seite: *Shrek – Der
+tollkühne Held* von den Innenstadtkinos und *Shrek – Der tollkühne Held
+(25 Jahre)* von kino-zeit. Die Prüfung zeigt, dass nicht die doppelte Zeile
+das Problem ist, sondern die halbe Auflösung:
+
+| `raw_title` | Quelle | `tmdb_id` | Status |
+|---|---|---|---|
+| Shrek - Der tollkühne Held | innenstadtkinos | 808 | sicher |
+| Shrek - Der tollkühne Held (25 Jahre) | kino-zeit | – | offen |
+| The Uprising | kino-zeit | 977942 | sicher |
+| The Uprising - Für die Freiheit | innenstadtkinos | 977942 | sicher |
+
+*The Uprising* steht zweimal in `showing` und trotzdem einmal auf dem
+Dashboard: beide Schreibweisen zeigen auf dieselbe `tmdb_id`, und der Builder
+gruppiert über `tmdb:<id>`. Unterschiedliche Aushangtitel sind also kein
+Fehler, solange beide aufgelöst sind — die Vereinheitlichung passiert über die
+Kennung, nicht über den Text. Genau deshalb fällt *Shrek* auseinander: ein
+Eintrag hat die Kennung, der andere nicht, und ohne Kennung ist der Rohtitel
+der Gruppierungsschlüssel.
+
+Ursache ist der Zusatz „(25 Jahre)". Er ist dasselbe wie die Jahreszahl bei
+„TAXI DRIVER (1976)": eine Angabe zum Anlass der Vorstellung, kein Teil des
+Namens. `splitKlammern()` in `01-normalize.js` entfernt ihn jetzt zusammen mit
+der Jahresklammer — eng gefasst über eine Liste (`25 Jahre`, `25 Years`,
+`25th Anniversary`, `Jubiläum`), nicht über die allgemeine Regel „letzte
+Klammer weg": Bei *Borat Subsequent Moviefilm (Delivery of Prodigious Bribe)*
+gehört die Klammer zum Titel. Beide Fälle stehen als Test in
+`test-cascade.js` (20/20).
+
+Der Befund gehört zur Quellenlage: Eine Dublettenprüfung über
+`(cinema_id, starts_at)` findet sie **nicht**, weil das Datenmodell keine Säle
+kennt — zwei Filme um 20:00 Uhr im selben Haus sind der Normalfall, nicht die
+Ausnahme. Sichtbar wird die Dublette erst über den aufgelösten Film.
 
 ---
 
