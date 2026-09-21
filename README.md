@@ -124,10 +124,55 @@ ihre Zeitchips gestrichelt. Holt die Quelle einen Termin nach, fällt der
 Nachtrag automatisch weg — gleiche Kino-ID, gleiches Datum, gleiche Zeit,
 gleicher Titel gilt als Dublette.
 
-Der Adapter ist machbar: `innenstadtkinos.de/robots.txt` erlaubt allen Bots
-alles und die Seite veröffentlicht unter `/program/sitemap.xml` rund 72
-Programmseiten mit `lastmod`. Der Abruf gehört in n8n, nicht in diese Umgebung —
-sie kommt an die Domain nicht heran.
+### Der Adapter läuft (21.09.2026)
+
+`n8n/09-innenstadtkinos.js`, dritter Abschnitt von Workflow 2. Die Sitemap
+unter `/program/sitemap.xml` liefert 58 deutsche Programmseiten, jede ein Film
+mit allen seinen Terminen über Gloria, EM und Cinema hinweg. Erster Lauf:
+**253 Vorstellungen**.
+
+Die Seiten tragen JSON-LD; die 900 KB React-Markup daneben muss niemand
+anfassen. Zwei Dinge musste der Parser trotzdem lernen:
+
+**Der Saal steht nicht im JSON-LD.** `location` zeigt auf „Innenstadtkinos" als
+Ganzes. Welches Haus gemeint ist, verrät erst der Ticketlink:
+`kinoheld.de/Kino-Stuttgart/EM-Kino%20Stuttgart?...`. Die Zuordnung läuft
+deshalb über das Pfadsegment hinter `/Kino-.../`.
+
+**Sonderveranstaltungen sind kein `Movie`.** Das reguläre Programm kommt als
+`Movie` mit `ScreeningEvent`-Liste — und im `sameAs` des Films steht die
+TMDb-Adresse. Diese Titel sind damit an der Quelle aufgelöst und gehen gar
+nicht erst durch die Kaskade aus Workflow 3; sie stehen sofort als `sicher` in
+`title_alias` mit `resolved_by = tmdb`. Dieselbe Idee wie die TMDb-Kennung auf
+der Letterboxd-Seite in Workflow 1: Wer die ID hat, vergleicht keine Titel.
+
+Die Reihe „Weird Wednesday" dagegen ist aus Sicht des Kinosystems kein Film,
+sondern ein blankes `Event`: kein `Movie`-Block, kein `sameAs`, keine Kennung,
+der Titel nur als `"Weird Wednesday DRIVE (2011) - "` im Event selbst.
+Ausgerechnet die Termine, die sonst nirgends auftauchen, sind auch hier am
+schlechtesten ausgezeichnet — und landen als einzige dieser Quelle wieder im
+Titelvergleich. Dass `weird wednesday` längst in der `REIHEN`-Liste von
+`01-normalize.js` steht, zahlt sich dabei aus.
+
+**Was der erste Lauf gefunden hat**, über die zwei von Hand belegten Fälle
+hinaus:
+
+| Termin | Film | Kino |
+| --- | --- | --- |
+| 07.10.2026 | Weird Wednesday THE KILLER (1989) | EM |
+| 21.10.2026 | Weird Wednesday TAXI DRIVER (1976) | EM |
+| 04.11.2026 | Weird Wednesday DRIVE (2011) | EM |
+| 20.01.2027 | Weird Wednesday SIN CITY (2005) | EM |
+
+Zwei davon waren vorher unbekannt. *Sin City* liegt vier Monate voraus — über
+ein rollendes Abruffenster wäre er nie gefunden worden, egal wie breit.
+
+Für diese Quelle gilt deshalb **kein 21-Tage-Fenster**: Die weit vorn
+liegenden Sondertermine sind ihr ganzer Zweck. Der Datumsfilter im Dashboard
+fasst alles jenseits der laufenden Woche ohnehin unter „ab …" zusammen.
+
+`data/nachtraege.json` ist damit überholt, bleibt aber als Beleg dafür stehen,
+wie die Lücke vor dem Adapter überbrückt wurde.
 
 ## Region statt Stadt
 

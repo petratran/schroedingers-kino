@@ -87,6 +87,39 @@ const CASES = [
     expect: { decision: 'tmdb', tmdb_id: 1064213 } },
 ];
 
+// --- Innenstadtkinos: Reihe ohne Doppelpunkt, Jahr im Titel ------------
+// Am 21.09.2026 aus der neuen Quelle abgelesen. Beide Eigenheiten zusammen
+// liessen die Kaskade vorher ins Leere laufen: "weird wednesday taxi driver
+// 1976" findet bei TMDb nichts, und selbst mit dem richtigen Kandidaten in
+// der Liste sank die Aehnlichkeit auf 0,42.
+CASES.push(
+  { name: 'Reihe ohne Doppelpunkt, Jahr entscheidet den Gleichstand',
+    raw: 'Weird Wednesday TAXI DRIVER (1976)',
+    date: '2026-10-21',
+    tmdb: [f(103, 'Taxi Driver', null, '1976-02-08'),
+           f(875, 'Taxi Driver', null, '1954-11-01')],
+    expect: { decision: 'tmdb', tmdb_id: 103 } },
+
+  { name: 'Jahresangabe trennt Film von Neuverfilmung',
+    raw: 'Weird Wednesday DRIVE (2011)',
+    date: '2026-11-04',
+    tmdb: [f(64690, 'Drive', null, '2011-09-16'),
+           f(9999, 'Drive', null, '1997-05-01')],
+    expect: { decision: 'tmdb', tmdb_id: 64690 } },
+
+  { name: 'Reihenabkuerzung frisst keinen Filmtitel (WW84)',
+    raw: 'WW84',
+    tmdb: [f(464052, 'Wonder Woman 1984', 'WW84', '2020-12-16')],
+    expect: { decision: 'tmdb', tmdb_id: 464052 } },
+
+  { name: 'Alte Jahresangabe bleibt eine Angabe, kein Titelteil',
+    raw: 'Heat (1995)',
+    date: '2026-10-01',
+    tmdb: [f(949, 'Heat', null, '1995-12-15'),
+           f(8888, 'Heat', null, '1986-10-03')],
+    expect: { decision: 'tmdb', tmdb_id: 949 } }
+);
+
 let ok = 0, fail = 0;
 for (const c of CASES) {
   const item = { raw_title: c.raw, date: c.date || null, ...normalizeTitle(c.raw), tmdb_results: c.tmdb };

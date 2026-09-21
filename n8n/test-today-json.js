@@ -82,13 +82,14 @@ const pruefe = (name, ist, soll) => {
 };
 
 pruefe('Filme gruppiert',            out.films.length, 3);
-pruefe('Vaterland hat 2 Termine',    out.films.find((f) => f.key === '62765').showings.length, 2);
+pruefe('Vaterland hat 2 Termine',    out.films.find((f) => f.key === 'tmdb:1437696').showings.length, 2);
 pruefe('Treffer steht vorn',         out.films[0].title, 'Vaterland');
 pruefe('MUBI-Film auf Rang 2',       out.films[1].mubi_go, true);
 pruefe('match.status Treffer',       out.films[0].match.status, 'treffer');
 pruefe('watchlist-Block gefuellt',   out.films[0].match.watchlist.uri, 'https://boxd.it/abc');
 pruefe('kein Treffer ohne Watchlist', out.films[2].match.status, 'kein_treffer');
-pruefe('film_nodes nur bei Zahl-Key', out.films.find((f) => f.key.startsWith('titel:')).film_nodes, []);
+pruefe('film_nodes sammelt node-IDs', out.films.find((f) => f.key === 'tmdb:1437696').film_nodes, ['62765']);
+pruefe('Titel-Key ohne node-ID',  out.films.find((f) => f.key.startsWith('titel:')).film_nodes, []);
 pruefe('Termine sortiert',           out.films[0].showings.map((s) => s.date + ' ' + s.time),
                                      ['2026-09-21 20:15', '2026-09-22 18:00']);
 pruefe('Daten gesammelt',            out.dates, ['2026-09-21', '2026-09-22', '2026-09-23', '2026-09-24']);

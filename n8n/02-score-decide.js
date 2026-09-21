@@ -132,6 +132,21 @@ function decide(item) {
     }
   }
 
+  // Repertoire: Ein Film von 1976 faellt nie in das Fenster des regulaeren
+  // Einsatzes, die Regel darueber kann ihn also nicht entscheiden. Traegt der
+  // Aushangtitel eine Jahresangabe und passt sie auf genau einen Kandidaten,
+  // ist das ebenso eindeutig wie ein aktueller Kinostart — und braucht das
+  // Modell genauso wenig.
+  if (item.jahr && top && top.score >= T.ASK) {
+    const passend = scored.filter((c) => Number(c.year) === Number(item.jahr));
+    if (passend.length === 1) {
+      return { decision: 'tmdb', tmdb_id: passend[0].tmdb_id, confidence: 0.97,
+               resolved_by: 'tmdb',
+               reason: `Jahresangabe im Aushangtitel (${item.jahr}) trifft genau einen Kandidaten`,
+               candidates: [], related };
+    }
+  }
+
   if (top && top.score >= T.ASK) {
     return { decision: 'needs_llm', tmdb_id: null, confidence: top.score,
              resolved_by: null,

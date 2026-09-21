@@ -39,6 +39,17 @@ const watchlist = hole('Watchlist holen');
 // das ist keine MUBI-Zeile, auch wenn es eine ist.
 const mubiZeile = hole('MUBI holen').find((r) => r && r.raw_title) || null;
 
+// MUBI GO erkennt v_programm ueber die tmdb_id der mubi_go-Zeile. Steht die
+// dort nicht (weil den Titel noch niemand aufgeloest hat), bleibt die Fahne
+// fuer jeden Film aus. Deshalb zusaetzlich der Titelvergleich, so wie es die
+// lokale Fassung in build-today.js gemacht hat.
+const flach = (x) => String(x || '').toLowerCase()
+  .replace(/\u00e4/g, 'ae').replace(/\u00f6/g, 'oe').replace(/\u00fc/g, 'ue').replace(/\u00df/g, 'ss')
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9]+/g, '');
+const mubiTitel = mubiZeile ? flach(mubiZeile.raw_title) : null;
+const istMubi = (r) => !!r.mubi_go || (!!mubiTitel && flach(r.raw_title) === mubiTitel);
+
 if (!programm.length) {
   throw new Error('v_programm liefert 0 Zeilen — heute wird nichts geschrieben.');
 }
@@ -66,7 +77,13 @@ for (const r of programm) {
   alleDaten.add(datum);
   kinosMitProgramm.add(r.cinema_id);
 
-  const key = String(r.source_key);
+  // Gruppiert wird nach TMDb-Kennung, wo es eine gibt — sonst nach
+  // source_key. Derselbe Film kommt sonst zweimal auf die Seite, wenn ihn
+  // zwei Quellen melden: kino-zeit unter seiner node-ID, die Innenstadtkinos
+  // unter ihrer Programm-ID. Nebeneffekt, den die lokale Fassung mit einer
+  // eigenen Nachlese erkaufen musste: OV- und DF-Eintraege desselben Films
+  // fallen ebenfalls zusammen.
+  const key = r.tmdb_id ? 'tmdb:' + r.tmdb_id : String(r.source_key);
   if (!filme.has(key)) {
     // 'treffer' heisst hier: auf der Watchlist UND sicher aufgeloest.
     // Die alten Statuswerte bleiben, weil das Dashboard sie so liest.
@@ -75,7 +92,7 @@ for (const r of programm) {
       : 'kein_treffer';
     filme.set(key, {
       key,
-      film_nodes: /^\d+$/.test(key) ? [key] : [],
+      film_nodes: [],
       title:       r.raw_title,
       title_de:    r.title_de   || null,
       title_orig:  r.title_orig || null,
@@ -97,12 +114,16 @@ for (const r of programm) {
         } : null,
         related: []
       },
-      mubi_go: !!r.mubi_go,
+      mubi_go: istMubi(r),
       showings: []
     });
   }
 
   const f = filme.get(key);
+  // Die kino-zeit-node-ID bleibt als Herkunftsnachweis am Film haengen.
+  if (/^\d+$/.test(String(r.source_key)) && !f.film_nodes.includes(String(r.source_key)))
+    f.film_nodes.push(String(r.source_key));
+  if (!f.mubi_go && istMubi(r)) f.mubi_go = true;
   if (!f.genre && r.genre) f.genre = r.genre;
   if (!f.runtime_min && r.runtime_min) f.runtime_min = r.runtime_min;
   f.showings.push({
@@ -117,6 +138,15 @@ for (const r of programm) {
 }
 
 for (const f of filme.values()) {
+  // Melden zwei Quellen dieselbe Vorstellung, steht sie sonst doppelt im
+  // Tagesplan — gleiche Uhrzeit, gleiches Kino, einmal je Quelle.
+  const gesehen = new Set();
+  f.showings = f.showings.filter((s) => {
+    const k = s.cinema_id + '|' + s.date + '|' + s.time;
+    if (gesehen.has(k)) return false;
+    gesehen.add(k);
+    return true;
+  });
   f.showings.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
 }
 

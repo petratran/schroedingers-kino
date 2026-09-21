@@ -100,12 +100,14 @@ for (const item of $input.all()) {
 
   // Nur setzen, was wir wirklich wissen: Ein Upsert mit leeren Titeln wuerde
   // sonst ausgefuellte Zeilen aus Workflow 1 ueberschreiben.
-  const film = { tmdb_id: m.tmdb_id };
-  if (quelle) {
-    if (quelle.title)          film.title_de   = quelle.title;
-    if (quelle.original_title) film.title_orig = quelle.original_title;
-    if (quelle.release_date)   film.year       = Number(String(quelle.release_date).slice(0, 4)) || null;
-  }
+  // Einheitliche Schluessel: PostgREST verlangt bei einem Sammel-Insert von
+  // jedem Objekt dieselben Felder (PGRST102 "All object keys must match").
+  const film = {
+    tmdb_id:    m.tmdb_id,
+    title_de:   quelle?.title ?? null,
+    title_orig: quelle?.original_title ?? null,
+    year:       quelle?.release_date ? (Number(String(quelle.release_date).slice(0, 4)) || null) : null
+  };
   filmeNachId.set(film.tmdb_id, { ...(filmeNachId.get(film.tmdb_id) || {}), ...film });
 }
 

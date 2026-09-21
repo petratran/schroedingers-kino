@@ -191,11 +191,84 @@ Verdrahtung und Prompt stehen in `README.md` und `llm-prompt.md`.
 
 ## 6 · Workflow 5 · Ausspielung (30 Minuten)
 
-Supabase Select auf die View `v_programm` → Code-Node baut daraus die
-Struktur von `data/today.json` → GitHub-API-Node committet die Datei ins
-Repo. Das Dashboard lädt sie und ist damit live.
+Schedule Trigger 07:00 → vier HTTP-Nodes **hintereinander** → Code-Node
+`today.json bauen` (`08-today-json.js`) → HTTP-Node schreibt die Datei.
+
+| Reihenfolge | Node | Abruf |
+| --- | --- | --- |
+| 1 | `Kinos holen` | `/rest/v1/cinema?select=*` |
+| 2 | `Watchlist holen` | `/rest/v1/watchlist?select=tmdb_id` |
+| 3 | `MUBI holen` | `/rest/v1/mubi_go?...&limit=1` |
+| 4 | `Programm holen` | `/rest/v1/v_programm?select=*` |
+
+Bei 2, 3 und 4 **Execute Once**, bei 3 zusätzlich **Always Output Data** — eine
+leere MUBI-Tabelle liefert sonst null Items, und die Kette bricht dort ab.
+`Programm holen` steht zuletzt, weil der Code-Node dessen Zeilen als `$input`
+erwartet und die drei anderen über ihren Namen holt; die Namen sind Vertrag.
+
+Die Sicht `v_programm` wurde dafür um `source_key`, `ort`, `kinozeit_node`,
+die Watchlist-Felder und die Filmstammdaten erweitert. Ohne `source_key`
+gruppiert der Builder alle Vorstellungen zu **einem** Film — ein Fehler, der
+nicht wehtut, sondern nur falsch aussieht.
+
+Der Builder wirft, wenn `v_programm` genau 1000 Zeilen liefert: Das ist die
+Seitengrenze der Supabase-API, nicht das volle Programm. Eine halbe Seite ist
+schlimmer als eine leere, weil sie richtig aussieht. Abhilfe: *Project
+Settings → API → Max rows* hochsetzen.
+
+**Ausspielung in zwei Teilen.** Die Daten schreibt der letzte Node in den
+öffentlichen Supabase-Bucket (`POST /storage/v1/object/dashboard/data/today.json`,
+Header `x-upsert: true` und `cache-control: max-age=60`, Body **Raw** mit
+`{{ JSON.stringify($json, null, 1) }}`). Die Seite selbst liegt auf **GitHub
+Pages**.
+
+Warum getrennt: Supabase liefert HTML aus öffentlichen Buckets grundsätzlich
+als `text/plain` aus — auch wenn man den Content-Type beim Upload
+ausdrücklich setzt. Der Browser zeigt dann Quelltext statt Seite. Das ist eine
+Schutzmaßnahme des Anbieters, kein Konfigurationsfehler; Storage taugt für
+Daten, nicht für Webseiten. Entsprechend lädt das Dashboard die Datei über
+ihre absolute URL, nicht relativ.
+
+Zwei Stolpersteine bei Pages: Ohne eine leere Datei `.nojekyll` im Wurzel-
+verzeichnis schickt GitHub das Repo durch Jekyll, und der Build scheitert.
+Und der Kasten „Your site is live at …" erscheint erst nach dem ersten
+erfolgreichen Build — vorher sieht jede Seite des Projekts aus wie ein 404.
 
 **Fertig, wenn** die Seite dieselben Zahlen zeigt wie der lokale Lauf.
+Erreicht am 21.09.2026:
+https://petratran.github.io/schroedingers-kino/dashboard/
+
+## 6b · Wochentliche Handarbeit: MUBI GO
+
+Der Film der Woche ist der einzige Teil der Pipeline, der von Hand gepflegt
+wird — MUBI veröffentlicht ihn nur in der App. Einmal pro Woche eine Zeile
+anlegen; `valid_from` ist der Primärschlüssel, die View nimmt automatisch die
+jüngste.
+
+```sql
+insert into mubi_go (valid_from, raw_title, tmdb_id)
+select current_date, a.raw_title, a.tmdb_id
+  from title_alias a
+ where a.raw_title ilike '%<Titel>%'
+   and a.tmdb_id is not null
+   and exists (select 1 from film f where f.tmdb_id = a.tmdb_id)
+ limit 1
+on conflict (valid_from) do update
+   set raw_title = excluded.raw_title, tmdb_id = excluded.tmdb_id;
+```
+
+Läuft der Film in keinem der erfassten Kinos, kennt `title_alias` ihn nicht —
+dann TMDb-ID nachschlagen und zuerst `insert into film (tmdb_id) values (<ID>)
+on conflict do nothing;`.
+
+**Die `tmdb_id` ist der Punkt.** `v_programm` erkennt MUBI GO ausschliesslich
+über sie; ein Eintrag ohne ID lässt die Kennzeichnung im Dashboard stumm
+verschwinden. Der Titelvergleich in `08-today-json.js` faengt das ab, ist aber
+Rueckfallebene und kein Ersatz.
+
+Vergisst man die Zeile ganz, zeigt das Dashboard weiter den Film der Vorwoche —
+falsch, aber unauffällig. Das ist der Fehler, den man erst bemerkt, wenn jemand
+umsonst ins Kino fährt.
 
 ---
 

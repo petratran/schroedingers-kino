@@ -37,7 +37,11 @@ const ARTICLES = /\b(der|die|das|den|dem|des|the|a|an|le|la|les|el|los|il|lo|un|
  * Impossible" seinen halben Titel und "Dune: Part Three" seine Teil-Nummer.
  */
 const REIHEN = [
-  'weird wednesday', 'arthaus sneak', 'sneak preview', 'horror classics',
+  // Schreibweisen derselben Reihe, wie sie in den Quellen vorkommen —
+  // am 21.09.2026 bei den Innenstadtkinos abgelesen.
+  'weird wednesday special', 'w. wednesday special', 'weird wednesday',
+  'w. wednesday', 'ww',
+  'arthaus sneak', 'sneak preview', 'horror classics',
   'kitkatclub', 'met opera', 'the metropolitan opera', 'minikino',
   'disney channel mitmachkino', 'ladies night', 'schulkino', 'open air',
   'filmclub', 'klassiker am sonntag', 'preview'
@@ -46,12 +50,30 @@ const REIHEN = [
 /** "Weird Wednesday: Drive" -> { title: "Drive", reihe: "Weird Wednesday" } */
 function stripReihe(title) {
   const t = title.trim();
+
+  // Variante 1: "Reihe: Titel" — der Doppelpunkt trennt sauber.
   const m = t.match(/^([^:]{3,40}):\s*(.+)$/);
-  if (!m) return { title: t, reihe: null };
-  const kopf = m[1].toLowerCase().replace(/\s+/g, ' ').trim();
-  const treffer = REIHEN.find((r) => kopf === r || kopf.startsWith(r));
-  if (!treffer) return { title: t, reihe: null };
-  return { title: m[2].trim(), reihe: m[1].trim() };
+  if (m) {
+    const kopf = m[1].toLowerCase().replace(/\s+/g, ' ').trim();
+    if (REIHEN.find((r) => kopf === r || kopf.startsWith(r))) {
+      return { title: m[2].trim(), reihe: m[1].trim() };
+    }
+  }
+
+  // Variante 2: "Reihe Titel" ohne Trennzeichen. So schreiben es die
+  // Innenstadtkinos: "Weird Wednesday TAXI DRIVER (1976)". Abgeschnitten wird
+  // nur ein Name aus REIHEN — eine allgemeine Regel "alles vor dem ersten
+  // Grossbuchstabenblock" wuerde halbe Filmtitel fressen.
+  // Das Leerzeichen hinter dem Reihennamen ist Bedingung: sonst verlöre
+  // "WW84" seine ersten beiden Zeichen an die Reihe "WW".
+  const flach = t.toLowerCase().replace(/\s+/g, ' ');
+  for (const r of [...REIHEN].sort((a, b) => b.length - a.length)) {
+    if (!flach.startsWith(r + ' ')) continue;
+    const rest = t.slice(r.length).replace(/^[\s:\u2013\u2014-]+/, '').trim();
+    if (rest.length >= 2) return { title: rest, reihe: t.slice(0, r.length).trim() };
+  }
+
+  return { title: t, reihe: null };
 }
 
 /** Umlaute ausschreiben (fruehstueck), danach Diakritika entfernen. */
@@ -128,15 +150,34 @@ function sequelBase(cleanTitle) {
     .trim();
 }
 
+/**
+ * Eine Jahreszahl am Titelende ist eine Angabe zum Film, kein Teil seines
+ * Namens: "TAXI DRIVER (1976)". Sie bleibt als `jahr` erhalten und wandert
+ * aus dem Vergleichstitel heraus — sonst sinkt die Aehnlichkeit gegen den
+ * TMDb-Titel "Taxi Driver" auf 0,42, und der Film bleibt unaufgeloest.
+ * Fuer Repertoire-Vorstellungen ist das Jahr das einzige Unterscheidungs-
+ * merkmal, das die Quelle mitliefert.
+ */
+function splitJahr(title) {
+  const m = String(title).match(/\s*\((19|20)\d{2}\)\s*$/);
+  if (!m) return { title: String(title).trim(), jahr: null };
+  return {
+    title: String(title).slice(0, m.index).trim(),
+    jahr: Number(m[0].replace(/\D/g, ''))
+  };
+}
+
 function normalizeTitle(raw) {
   const ohneReihe = stripReihe(String(raw || ''));
-  const { clean, stripped } = stripVersions(ohneReihe.title);
-  const plain = squash(toPlain(ohneReihe.title));
+  const ohneJahr = splitJahr(ohneReihe.title);
+  const { clean, stripped } = stripVersions(ohneJahr.title);
+  const plain = squash(toPlain(ohneJahr.title));
   return {
     norm: clean,                       // fruehstueck-Variante, Zusaetze entfernt
-    normAscii: squash(toAscii(ohneReihe.title)),
+    normAscii: squash(toAscii(ohneJahr.title)),
     normPlain: plain,                  // fruhstuck-Variante
     queryTitle: clean,                 // das geht so an die TMDb-Suche
+    jahr: ohneJahr.jahr,               // Jahresangabe aus dem Aushangtitel
     sequel: sequelIndex(clean),
     sequelBase: sequelBase(clean),
     reihe: ohneReihe.reihe,
@@ -152,5 +193,5 @@ if (typeof $input !== 'undefined') {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { normalizeTitle, sequelIndex, sequelBase, squash, toAscii, toPlain, stripVersions, stripReihe, REIHEN };
+  module.exports = { normalizeTitle, splitJahr, sequelIndex, sequelBase, squash, toAscii, toPlain, stripVersions, stripReihe, REIHEN };
 }
