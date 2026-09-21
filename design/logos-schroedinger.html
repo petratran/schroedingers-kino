@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Logos für Schrödingers Kino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Syne:wght@700;800&display=swap">
+<style>
+:root{--paper:#F7F5F0;--ink:#16160F;--ink2:#56544b;--ink3:#8b887c;--rule:#ddd9cd;--card:#fff;
+  --gruen:#1F4D3C;--aubergine:#4A2E4D;--terra:#8C4A2F;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121210;--ink:#F2EFE6;--ink2:#a8a599;--ink3:#76736a;--rule:#2b2b26;--card:#1a1a17;
+  --gruen:#4FA184;--aubergine:#A985AE;--terra:#D08A64;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#121210;--ink:#F2EFE6;--ink2:#a8a599;--ink3:#76736a;--rule:#2b2b26;--card:#1a1a17;
+  --gruen:#4FA184;--aubergine:#A985AE;--terra:#D08A64;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 22px 80px}
+header{padding:46px 0 20px;border-bottom:3px double var(--ink)}
+h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:clamp(28px,5vw,42px);margin:0;letter-spacing:-.015em}
+header p{color:var(--ink3);font-family:"Source Serif 4",serif;font-style:italic;margin:6px 0 0}
+h2{font-family:"Source Serif 4",serif;font-weight:600;font-size:23px;margin:44px 0 6px}
+.lead{color:var(--ink2);max-width:66ch;margin:0 0 6px}
+
+.logo{background:var(--card);border:1px solid var(--rule);margin-top:18px}
+.logo .oben{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:24px;align-items:center;
+  padding:26px 24px;border-bottom:1px solid var(--rule)}
+@media (max-width:760px){.logo .oben{grid-template-columns:minmax(0,1fr) auto auto;gap:14px;padding:20px 16px}}
+@media (max-width:480px){.logo .oben{grid-template-columns:minmax(0,1fr) auto;row-gap:16px}}
+.buehne{display:flex;align-items:center;gap:16px;min-width:0}
+.buehne svg{flex:none}
+.wortmarke{min-width:0}
+.wortmarke .zeile1{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink3);white-space:nowrap}
+.wortmarke .zeile2{font-family:Syne,sans-serif;font-weight:800;font-size:clamp(22px,4.4vw,30px);
+  letter-spacing:.02em;line-height:1.05}
+.wortmarke.serif .zeile1{font-family:"Source Serif 4",serif;font-style:italic;text-transform:none;
+  letter-spacing:0;font-size:13px}
+.wortmarke.serif .zeile2{font-family:"Source Serif 4",serif;font-weight:600;letter-spacing:-.01em}
+.probe{text-align:center}
+.probe .lbl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink3);margin-top:6px}
+.probe .rahmen{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+  border:1px dashed var(--rule)}
+.nr{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);padding:12px 24px 0}
+.nr b{color:var(--ink);font-weight:600}
+.unten{padding:16px 24px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:18px}
+.unten h4{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);margin:0 0 5px;font-weight:500}
+.unten p{margin:0;font-size:13.5px;color:var(--ink2)}
+.unten .ok{color:var(--gruen);font-weight:600}
+.unten .halb{color:var(--terra);font-weight:600}
+.palette{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 0}
+.sw{display:flex;align-items:center;gap:8px;border:1px solid var(--rule);background:var(--card);padding:7px 11px}
+.sw i{width:15px;height:15px;display:block;border-radius:2px}
+.sw span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink2)}
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink3);max-width:70ch}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <!-- 1 · Die Schachtel -->
+  <symbol id="m1" viewBox="0 0 64 64">
+    <path d="M15 22 L20 8 L31 22 Z" fill="currentColor"/>
+    <path d="M49 22 L44 8 L33 22 Z" fill="currentColor"/>
+    <rect x="9" y="22" width="46" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="4.5"/>
+    <rect x="14.5" y="31" width="5" height="7" rx="1.6" fill="currentColor"/>
+    <rect x="14.5" y="43" width="5" height="7" rx="1.6" fill="currentColor"/>
+    <rect x="44.5" y="31" width="5" height="7" rx="1.6" fill="currentColor"/>
+    <rect x="44.5" y="43" width="5" height="7" rx="1.6" fill="currentColor"/>
+  </symbol>
+
+  <!-- 2 · Zwei Zustände -->
+  <symbol id="m2" viewBox="0 0 64 64">
+    <defs>
+      <path id="kopf" d="M32 56 C20 56 11.5 48.5 11.5 37.5 V29 L7 11 L22 20 C25 18.8 28.4 18.2 32 18.2
+        C35.6 18.2 39 18.8 42 20 L57 11 L52.5 29 V37.5 C52.5 48.5 44 56 32 56 Z"/>
+      <clipPath id="links"><rect x="0" y="0" width="32" height="64"/></clipPath>
+    </defs>
+    <use href="#kopf" fill="currentColor" clip-path="url(#links)"/>
+    <use href="#kopf" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+    <circle cx="41.5" cy="35" r="3.2" fill="currentColor"/>
+  </symbol>
+
+  <!-- 3 · Der Blick -->
+  <symbol id="m3" viewBox="0 0 64 64">
+    <path d="M4 32 C11 20 21 20 28 32 C21 44 11 44 4 32 Z" fill="none" stroke="currentColor"
+      stroke-width="4" stroke-linejoin="round"/>
+    <path d="M36 32 C43 20 53 20 60 32 C53 44 43 44 36 32 Z" fill="none" stroke="currentColor"
+      stroke-width="4" stroke-linejoin="round"/>
+    <rect x="13" y="26" width="6" height="12" rx="2.2" fill="currentColor"/>
+    <rect x="45" y="26" width="6" height="12" rx="2.2" fill="currentColor"/>
+  </symbol>
+
+  <!-- 4 · Der Schwanz -->
+  <symbol id="m4" viewBox="0 0 64 64">
+    <path d="M18 23 L13 7 L26 15 Z" fill="currentColor"/>
+    <path d="M35 22 L40 6 L46 17 Z" fill="currentColor"/>
+    <path d="M28 12 C35 12 39 19 40 29 L43 56 H13 L16 29 C17 19 21 12 28 12 Z" fill="currentColor"/>
+    <path d="M43 54 C58 52 62 33 53 26 C46.5 21 39.5 25.5 42 32.5 C43.5 36.6 49 36 49 31.5"
+      fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- 5 · Der Klappsitz -->
+  <symbol id="m5" viewBox="0 0 64 64">
+    <path d="M19 17 L21 4 L31 17 Z" fill="currentColor"/>
+    <path d="M45 17 L43 4 L33 17 Z" fill="currentColor"/>
+    <rect x="18" y="15" width="28" height="24" rx="6" fill="currentColor"/>
+    <path d="M9 37.5 L53 44 L52 52 L10 45.5 Z" fill="none" stroke="currentColor"
+      stroke-width="4.5" stroke-linejoin="round"/>
+    <rect x="4" y="36" width="7" height="20" rx="3.5" fill="currentColor"/>
+    <rect x="52" y="36" width="7" height="20" rx="3.5" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<div class="wrap">
+<header>
+  <h1>Logos für Schrödingers Kino</h1>
+  <p>Fünf Zeichen zum selben Namen. Jedes in Farbe, einfarbig und bei 16 Pixeln.</p>
+</header>
+
+<h2>Wie die Wortmarke gesetzt ist</h2>
+<p class="lead">Der Name ist lang und unhandlich — sieben Silben, ein Umlaut, ein Genitiv-s.
+Deshalb steht er in allen fünf Entwürfen zweizeilig: „Schrödingers" klein und gesperrt über einem
+großen KINO. Das kurze Wort trägt die Marke, das lange erklärt sie. Auf einem Favicon oder einem
+Share-Bild bleibt am Ende nur das Zeichen, und genau darum ist dessen 16-Pixel-Probe unten die
+eigentliche Auswahlhilfe — nicht die große Fassung.</p>
+
+<!-- 1 -->
+<div class="logo">
+  <p class="nr">Entwurf 1 · <b>Die Schachtel</b> · Filmfeld</p>
+  <div class="oben">
+    <div class="buehne">
+      <svg width="58" height="58" style="color:var(--gruen)" role="img" aria-label="Zeichen 1"><use href="#m1"/></svg>
+      <div class="wortmarke">
+        <div class="zeile1">Schrödingers</div>
+        <div class="zeile2">KINO</div>
+      </div>
+    </div>
+    <div class="probe mono">
+      <svg width="34" height="34" style="color:var(--ink)" aria-hidden="true"><use href="#m1"/></svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe">
+      <span class="rahmen"><svg width="16" height="16" style="color:var(--ink)" aria-hidden="true"><use href="#m1"/></svg></span>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Idee</h4><p>Die geschlossene Schachtel des Gedankenexperiments — und gleichzeitig ein
+      Filmfeld: die vier Kerben an den Rändern sind die Perforation eines 35-mm-Streifens. Die Ohren
+      ragen über die Kante, die Katze ist also drin, ohne gezeigt zu werden.</p></div>
+    <div><h4>Einfarbig</h4><p class="ok">Uneingeschränkt.</p><p>Gefüllte Ohren gegen eine
+      offene Kontur — der Kontrast trägt ohne Farbe.</p></div>
+    <div><h4>16 px</h4><p class="ok">Stabil.</p><p>Die Perforation fällt weg, Rechteck plus zwei
+      Ohren bleiben eindeutig. Die klarste Silhouette der fünf.</p></div>
+  </div>
+</div>
+
+<!-- 2 -->
+<div class="logo">
+  <p class="nr">Entwurf 2 · <b>Zwei Zustände</b> · geteilter Kopf</p>
+  <div class="oben">
+    <div class="buehne">
+      <svg width="58" height="58" style="color:var(--aubergine)" role="img" aria-label="Zeichen 2"><use href="#m2"/></svg>
+      <div class="wortmarke">
+        <div class="zeile1">Schrödingers</div>
+        <div class="zeile2">KINO</div>
+      </div>
+    </div>
+    <div class="probe mono">
+      <svg width="34" height="34" style="color:var(--ink)" aria-hidden="true"><use href="#m2"/></svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe">
+      <span class="rahmen"><svg width="16" height="16" style="color:var(--ink)" aria-hidden="true"><use href="#m2"/></svg></span>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Idee</h4><p>Ein Katzenkopf, dieselbe Silhouette zweimal: links ausgefüllt, rechts nur
+      als Umriss. Beide Zustände gleichzeitig, bis man nachsieht. Das einzige Auge sitzt auf der
+      offenen Seite — es blickt aus dem unentschiedenen Teil heraus.</p></div>
+    <div><h4>Einfarbig</h4><p class="ok">Uneingeschränkt.</p><p>Die Aussage steckt in Fläche gegen
+      Linie, nicht in zwei Farben. Funktioniert invertiert genauso.</p></div>
+    <div><h4>16 px</h4><p class="halb">Bedingt.</p><p>Der Umrissteil wird dünn; als Favicon
+      empfiehlt sich eine Variante mit kräftigerer Linie.</p></div>
+  </div>
+</div>
+
+<!-- 3 -->
+<div class="logo">
+  <p class="nr">Entwurf 3 · <b>Der Blick</b> · Pupille als Perforation</p>
+  <div class="oben">
+    <div class="buehne">
+      <svg width="58" height="58" style="color:var(--terra)" role="img" aria-label="Zeichen 3"><use href="#m3"/></svg>
+      <div class="wortmarke serif">
+        <div class="zeile1">Schrödingers</div>
+        <div class="zeile2">Kino</div>
+      </div>
+    </div>
+    <div class="probe mono">
+      <svg width="34" height="34" style="color:var(--ink)" aria-hidden="true"><use href="#m3"/></svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe">
+      <span class="rahmen"><svg width="16" height="16" style="color:var(--ink)" aria-hidden="true"><use href="#m3"/></svg></span>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Idee</h4><p>Zwei Katzenaugen, deren Schlitzpupillen exakt die Form der Filmperforation
+      haben. Das Nachsehen ist die Handlung, die den Zustand auflöst — hier ist das Nachsehen selbst
+      das Zeichen. Dazu die Serifen-Wortmarke: ruhiger, näher am Arthaus-Ton.</p></div>
+    <div><h4>Einfarbig</h4><p class="ok">Uneingeschränkt.</p><p>Nur Kontur und zwei gefüllte
+      Schlitze.</p></div>
+    <div><h4>16 px</h4><p class="ok">Gut.</p><p>Zwei Mandeln mit dunklem Kern bleiben lesbar —
+      wirkt in der Browserleiste allerdings eher wie ein Symbol als wie eine Marke.</p></div>
+  </div>
+</div>
+
+<!-- 4 -->
+<div class="logo">
+  <p class="nr">Entwurf 4 · <b>Der Schwanz</b> · die offene Frage</p>
+  <div class="oben">
+    <div class="buehne">
+      <svg width="58" height="58" style="color:var(--gruen)" role="img" aria-label="Zeichen 4"><use href="#m4"/></svg>
+      <div class="wortmarke">
+        <div class="zeile1">Schrödingers</div>
+        <div class="zeile2">KINO</div>
+      </div>
+    </div>
+    <div class="probe mono">
+      <svg width="34" height="34" style="color:var(--ink)" aria-hidden="true"><use href="#m4"/></svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe">
+      <span class="rahmen"><svg width="16" height="16" style="color:var(--ink)" aria-hidden="true"><use href="#m4"/></svg></span>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Idee</h4><p>Eine sitzende Katze von hinten, wie sie vor der Leinwand sitzen würde.
+      Ihr Schwanz rollt sich nach innen ein — eine Spirale, die nirgends ankommt. Das ist der offene
+      Zustand als Geste statt als Symbol: Der Film läuft, oder eben nicht.</p></div>
+    <div><h4>Einfarbig</h4><p class="ok">Uneingeschränkt.</p><p>Eine geschlossene Fläche plus eine
+      Linie — sauber trennbar, auch invertiert.</p></div>
+    <div><h4>16 px</h4><p class="halb">Bedingt.</p><p>Die innere Windung der Spirale läuft zu; der
+      Schwanz bleibt als Bogen erkennbar, die Einrollung nicht.</p></div>
+  </div>
+</div>
+
+<!-- 5 -->
+<div class="logo">
+  <p class="nr">Entwurf 5 · <b>Der Klappsitz</b> · halb geklappt</p>
+  <div class="oben">
+    <div class="buehne">
+      <svg width="58" height="58" style="color:var(--aubergine)" role="img" aria-label="Zeichen 5"><use href="#m5"/></svg>
+      <div class="wortmarke">
+        <div class="zeile1">Schrödingers</div>
+        <div class="zeile2">KINO</div>
+      </div>
+    </div>
+    <div class="probe mono">
+      <svg width="34" height="34" style="color:var(--ink)" aria-hidden="true"><use href="#m5"/></svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe">
+      <span class="rahmen"><svg width="16" height="16" style="color:var(--ink)" aria-hidden="true"><use href="#m5"/></svg></span>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Idee</h4><p>Ein Kinosessel mit Ohren an der Lehne. Ein Klappsitz kennt genau zwei
+      Zustände, oben oder unten — hier steht er schräg dazwischen, also weder besetzt noch frei.
+      Das ist die Superposition als Möbelstück.</p></div>
+    <div><h4>Einfarbig</h4><p class="ok">Uneingeschränkt.</p><p>Gefüllte Lehne, offene Sitzfläche,
+      zwei Armlehnen — klare Hierarchie ohne Farbe.</p></div>
+    <div><h4>16 px</h4><p class="halb">Bedingt.</p><p>Die Schräge der Sitzfläche verschwindet, der
+      Sessel wirkt dann wie ein normaler Block mit Ohren.</p></div>
+  </div>
+</div>
+
+<h2>Die Farben</h2>
+<p class="lead">Alle drei meiden bewusst Blau und Orange: Kobaltblau gehört im Dashboard dem
+MUBI-GO-Label, Orange der Letterboxd-Watchlist. Ein Markenakzent aus einer dieser Familien würde die
+beiden Badges entwerten, weil Farbe dort Bedeutung trägt und nicht Dekoration ist.</p>
+<div class="palette">
+  <span class="sw"><i style="background:#1F4D3C"></i><span>Saalgrün · #1F4D3C</span></span>
+  <span class="sw"><i style="background:#4A2E4D"></i><span>Aubergine · #4A2E4D</span></span>
+  <span class="sw"><i style="background:#8C4A2F"></i><span>Terrakotta · #8C4A2F</span></span>
+</div>
+
+<footer>Jedes Zeichen liegt als SVG in einem einzigen Pfadsatz vor und lässt sich ohne Neuzeichnung
+in Kopfzeile, Favicon und Share-Bild des Dashboards einsetzen. Sobald du eines ausgewählt hast,
+baue ich es ein — Kopfzeile, Favicon und die Farbvariable des Akzents in einem Durchgang.</footer>
+</div>
+</body>
+</html>

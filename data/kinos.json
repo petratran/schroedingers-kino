@@ -1,0 +1,224 @@
+{
+  "region": "Region Stuttgart",
+  "quelle": "kino-zeit.de — Knotennummern am 20.09.2026 direkt von den Ortsseiten und Kinoseiten abgelesen",
+  "ort_reihenfolge": [
+    "Stuttgart",
+    "Ludwigsburg",
+    "Esslingen",
+    "Leonberg"
+  ],
+  "ort_reihenfolge_hinweis": "Reihenfolge der Orte im Dashboard — bewusst nicht alphabetisch, sondern nach Nähe zum Wohnort. Innerhalb eines Ortes wird alphabetisch sortiert. Ein hier nicht genannter Ort landet hinten, dann alphabetisch.",
+  "gruppen": [
+    {
+      "id": "arthaus",
+      "name": "Arthaus Filmtheater",
+      "ort": "Stuttgart"
+    },
+    {
+      "id": "innenstadt",
+      "name": "Innenstadtkinos",
+      "ort": "Stuttgart"
+    },
+    {
+      "id": "cinemaxx",
+      "name": "CinemaxX",
+      "ort": "Stuttgart"
+    },
+    {
+      "id": "corso",
+      "name": "Corso",
+      "ort": "Stuttgart"
+    },
+    {
+      "id": "metropol",
+      "name": "Das Metropol",
+      "ort": "Stuttgart"
+    },
+    {
+      "id": "esslingen",
+      "name": "Esslingen",
+      "ort": "Esslingen"
+    },
+    {
+      "id": "ludwigsburg",
+      "name": "Ludwigsburg",
+      "ort": "Ludwigsburg"
+    },
+    {
+      "id": "leonberg",
+      "name": "Leonberg · IMAX",
+      "ort": "Leonberg"
+    }
+  ],
+  "kinos": [
+    {
+      "node": "2354",
+      "id": "delphi",
+      "group": "arthaus",
+      "name": "Delphi Arthaus Kino",
+      "ort": "Stuttgart",
+      "district": "Stuttgart-Süd",
+      "mubi_partner": true,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2357",
+      "id": "atelier",
+      "group": "arthaus",
+      "name": "atelier am bollwerk",
+      "ort": "Stuttgart",
+      "district": "Stuttgart-Mitte",
+      "mubi_partner": true,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2356",
+      "id": "gloria",
+      "group": "innenstadt",
+      "name": "Gloria",
+      "ort": "Stuttgart",
+      "district": "Marquardtbau, Mitte",
+      "mubi_partner": true,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2355",
+      "id": "em",
+      "group": "innenstadt",
+      "name": "EM",
+      "ort": "Stuttgart",
+      "district": "Marquardtbau, Mitte",
+      "mubi_partner": true,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2812",
+      "id": "cinema",
+      "group": "innenstadt",
+      "name": "Cinema",
+      "ort": "Stuttgart",
+      "district": "Marquardtbau, Mitte",
+      "mubi_partner": true,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2586",
+      "id": "metropol",
+      "group": "metropol",
+      "name": "Das Metropol",
+      "ort": "Stuttgart",
+      "district": "Stuttgart-Mitte",
+      "mubi_partner": false,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2359",
+      "id": "corso",
+      "group": "corso",
+      "name": "Corso Cinema International",
+      "ort": "Stuttgart",
+      "district": "Stuttgart-Vaihingen",
+      "mubi_partner": false,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2667",
+      "id": "cinemaxx-liederhalle",
+      "group": "cinemaxx",
+      "name": "CinemaxX Liederhalle",
+      "ort": "Stuttgart",
+      "district": "Stuttgart-Mitte",
+      "mubi_partner": false,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2448",
+      "id": "cinemaxx-si",
+      "group": "cinemaxx",
+      "name": "CinemaxX SI-Centrum",
+      "ort": "Stuttgart",
+      "district": "Stuttgart-Möhringen",
+      "mubi_partner": false,
+      "abruf": "erfasst"
+    },
+    {
+      "node": "2194",
+      "id": "komm-es",
+      "group": "esslingen",
+      "name": "Kommunales Kino Esslingen",
+      "ort": "Esslingen",
+      "district": "Esslingen",
+      "mubi_partner": false,
+      "abruf": "offen"
+    },
+    {
+      "node": "2741",
+      "id": "traumpalast-es",
+      "group": "esslingen",
+      "name": "Traumpalast Esslingen",
+      "ort": "Esslingen",
+      "district": "Esslingen",
+      "mubi_partner": false,
+      "abruf": "offen"
+    },
+    {
+      "node": "2246",
+      "id": "caligari",
+      "group": "ludwigsburg",
+      "name": "Caligari Kino",
+      "ort": "Ludwigsburg",
+      "district": "Ludwigsburg",
+      "mubi_partner": false,
+      "abruf": "offen"
+    },
+    {
+      "node": "2248",
+      "id": "central-lb",
+      "group": "ludwigsburg",
+      "name": "Central Kino",
+      "ort": "Ludwigsburg",
+      "district": "Ludwigsburg",
+      "mubi_partner": false,
+      "abruf": "offen"
+    },
+    {
+      "node": "2598",
+      "id": "luna",
+      "group": "ludwigsburg",
+      "name": "Luna Lichtspieltheater",
+      "ort": "Ludwigsburg",
+      "district": "Ludwigsburg",
+      "mubi_partner": false,
+      "abruf": "offen"
+    },
+    {
+      "node": "2249",
+      "id": "union-lb",
+      "group": "ludwigsburg",
+      "name": "Union Kino",
+      "ort": "Ludwigsburg",
+      "district": "Ludwigsburg",
+      "mubi_partner": false,
+      "abruf": "offen"
+    },
+    {
+      "node": "53864",
+      "id": "traumpalast-imax",
+      "group": "leonberg",
+      "name": "Traumpalast IMAX Leonberg",
+      "ort": "Leonberg",
+      "district": "Leonberg",
+      "mubi_partner": false,
+      "abruf": "offen",
+      "quelle": "leonberg.traumpalast.de/index.php/PID/11321.html",
+      "quelle_hinweis": "Nicht ueber kino-zeit: Die Ortsseite Leonberg listet nur den regulaeren Traumpalast (Knoten 3321), und die kino-zeit-Seite des IMAX sagt am 21.09.2026 \"Leider ist derzeit kein Programm verfuegbar\". Der Knoten 53864 bleibt als Kennung stehen, die Daten kommen aber von der Kinowebsite."
+    }
+  ],
+  "ignorieren": [
+    {
+      "node": "3321",
+      "name": "Traumpalast Kino, Leonberg",
+      "grund": "Für Leonberg sollen nur IMAX-Vorstellungen erscheinen. kino-zeit führt den IMAX-Saal als eigenes Kino (node 53864); der reguläre Traumpalast bleibt deshalb bewusst draußen. Ein Format-Filter wäre hier der falsche Weg — die Ortsseite vergibt für Leonberg gar keine Formatkürzel. Am 21.09.2026 geprueft: Auf der Kinoseite traegt kein einziger Titel ein IMAX-, PLF- oder MXP-Kuerzel, ein Formatfilter waere also auch dort wirkungslos. Deshalb zweite Quelle fuer den IMAX-Saal."
+    }
+  ]
+}

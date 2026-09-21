@@ -1,0 +1,37 @@
+{
+  "zweck": "Vorstellungen, die kino-zeit nachweislich nicht führt. Von Hand gepflegt, jede mit Beleg und Prüfdatum. Kein Ersatz für einen Adapter — nur die ehrliche Zwischenlösung, solange keiner läuft.",
+  "regel": "Hier steht nur, was auf der Seite des Kinos selbst belegt ist. Jeder Eintrag trägt seine Quell-URL. Im Dashboard sind diese Vorstellungen gestrichelt markiert, damit sie nicht wie Abrufdaten aussehen.",
+  "geprueft_am": "2026-09-19",
+  "eintraege": [
+    {
+      "kino_id": "em",
+      "raw_title": "Taxi Driver",
+      "film_node": "nachtrag:taxi-driver",
+      "date": "2026-10-21",
+      "time": "20:30",
+      "version": "OV",
+      "format": null,
+      "booking_url": "https://www.innenstadtkinos.de/de/programm/1985455",
+      "genre": null,
+      "runtime_min": 114,
+      "reihe": "Weird Wednesday",
+      "beleg": "https://www.innenstadtkinos.de/de/programm/1985455",
+      "belegt_am": "2026-09-19"
+    },
+    {
+      "kino_id": "em",
+      "raw_title": "Drive",
+      "film_node": "nachtrag:drive",
+      "date": "2026-11-04",
+      "time": "20:30",
+      "version": "OV",
+      "format": null,
+      "booking_url": "https://www.innenstadtkinos.de/de/programm/1985454",
+      "genre": null,
+      "runtime_min": 100,
+      "reihe": "Weird Wednesday",
+      "beleg": "https://www.innenstadtkinos.de/de/programm/1985454",
+      "belegt_am": "2026-09-19"
+    }
+  ]
+}

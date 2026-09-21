@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Schrödingers Kino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap">
+<style>
+/* ============================================================
+   Design "Papier" — warme Neutraltöne, weiche Karten,
+   Syne als Display, IBM Plex für Text und Ziffern.
+   MUBI-Kobalt #001489 und dessen Null-Radius bleiben
+   unangetastet: die Marke gehört MUBI, nicht diesem Design.
+   ============================================================ */
+
+:root {
+  --mubi:        #001489;   /* MUBI Blue, CI-Wert */
+  --mubi-ink:    #ffffff;
+  --mubi-line:   #001489;
+
+  --radius: 10px;
+  --radius-sm: 5px;
+  --shadow: 0 1px 2px rgba(22,24,31,.06), 0 8px 24px -16px rgba(22,24,31,.35);
+  --font-display: Syne, "IBM Plex Sans", sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --display-case: none;
+  --display-tracking: -.02em;
+  --display-weight: 800;
+  --h2-size: 19px;
+  --border-w: 1px;
+
+  --bg:#f4f5f7; --surface:#fff; --surface-2:#eceef2;
+  --ink:#16181f; --ink-2:#4d5261; --ink-3:#7a8091;
+  --line:#dfe2e9; --line-strong:#c6cbd6;
+  --accent:#FF8000; --accent-soft:#fff3e4; --accent-line:#ffc98a; --accent-ink:#b35c00;
+  --lbxd-ink:#14181C;
+  --quantum:#9a6406; --quantum-soft:#fdf1da; --quantum-line:#e8d0a0;
+  --ok:#1f7a5c;
+  color-scheme: light;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#101218; --surface:#191c24; --surface-2:#212530;
+  --ink:#edeff5; --ink-2:#a6acbc; --ink-3:#737a8c;
+  --line:#2a2f3c; --line-strong:#3a4152;
+  --accent:#FF8000; --accent-soft:#2a1b08; --accent-line:#6b4610; --accent-ink:#ff9a33;
+  --quantum:#e2aa47; --quantum-soft:#34280f; --quantum-line:#5a4519;
+  --ok:#52c69d; --mubi-line:#3b39c9;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  color-scheme: dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#101218; --surface:#191c24; --surface-2:#212530;
+  --ink:#edeff5; --ink-2:#a6acbc; --ink-3:#737a8c;
+  --line:#2a2f3c; --line-strong:#3a4152;
+  --accent:#FF8000; --accent-soft:#2a1b08; --accent-line:#6b4610; --accent-ink:#ff9a33;
+  --quantum:#e2aa47; --quantum-soft:#34280f; --quantum-line:#5a4519;
+  --ok:#52c69d; --mubi-line:#3b39c9;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  color-scheme: dark;
+}
+
+/* ---- Struktur ---------------------------- */
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img{max-width:100%}[hidden]{display:none!important}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:20px;padding-block:32px 24px;border-bottom:2px solid var(--ink)}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}.brand svg{flex:none}
+.brand h1{font-family:var(--font-display);font-weight:var(--display-weight);font-size:clamp(25px,5.2vw,38px);letter-spacing:var(--display-tracking);line-height:1;margin:0;text-wrap:balance}
+.tagline{margin:6px 0 0;font-size:13px;font-style:italic;color:var(--ink-3)}
+.whenwhere{margin-left:auto;text-align:right;font-family:var(--font-mono);font-size:12.5px;color:var(--ink-2);line-height:1.7}
+.whenwhere strong{color:var(--ink);font-weight:600}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:var(--border-w) solid var(--line);border-radius:var(--radius);overflow:hidden;margin-top:24px}
+.metric{background:var(--surface);padding:14px 16px}
+.metric .num{font-family:var(--font-display);font-weight:var(--display-weight);font-size:27px;line-height:1.1;font-variant-numeric:tabular-nums;display:block}
+.metric .lbl{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-top:3px;display:block}
+.metric.hit .num{color:var(--accent-ink)}
+.metric.mubi .num{color:var(--mubi)}
+.metric .num small{font-size:18px;color:var(--ink-3);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:24px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.bar.tight{border-bottom:0;padding-bottom:0;margin-top:14px}
+.lead{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-right:4px}
+.chip{font:inherit;font-family:var(--font-body);font-size:13px;padding:5px 13px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-2);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.chip:hover{border-color:var(--ink-3);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chip[data-leer]{opacity:.45}
+.chip .n{font-family:var(--font-mono);font-size:11px;opacity:.7;margin-left:5px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:12.5px;color:var(--ink-3);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+section{margin-top:38px}
+.sec-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.sec-head h2{font-family:var(--font-display);font-weight:var(--display-weight);font-size:var(--h2-size);letter-spacing:var(--display-tracking);margin:0}
+.sec-head .note{font-size:13px;color:var(--ink-3)}
+.hits{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+.hit-card{background:var(--surface);border:var(--border-w) solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius);padding:15px 17px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px}
+.hit-card.unscharf{border-left-style:dashed;border-left-color:var(--quantum)}
+.hit-card h3{font-family:var(--font-display);font-weight:var(--display-weight);font-size:17px;margin:0;letter-spacing:var(--display-tracking);text-wrap:balance}
+.hit-card .where{font-size:13px;color:var(--ink-2)}
+.hit-card .why{font-size:12.5px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:9px;margin-top:auto}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2.5px 7px;border-radius:var(--radius-sm);border:1px solid transparent;white-space:nowrap}
+.b-watch{background:#FF8000;color:var(--lbxd-ink,#14181C);border-color:#FF8000;border-radius:2px}
+.b-mubi{background:var(--mubi);color:var(--mubi-ink);border-color:var(--mubi-line);border-radius:0}
+.b-quant{background:var(--quantum-soft);color:var(--quantum);border-color:var(--quantum-line);border-style:dashed}
+.b-plain{background:var(--surface-2);color:var(--ink-3);border-color:var(--line)}
+.cinema{background:var(--surface);border:var(--border-w) solid var(--line);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.cinema-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 17px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.cinema-head h3{font-family:var(--font-display);font-weight:var(--display-weight);font-size:16px;margin:0;letter-spacing:var(--display-tracking)}
+.cinema-head .addr{font-size:12.5px;color:var(--ink-3)}
+.cinema-head .right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.status{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;color:var(--ink-3)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none}
+.films{list-style:none;margin:0;padding:0}
+.film{display:grid;grid-template-columns:minmax(150px,1fr) auto;gap:6px 16px;align-items:start;padding:11px 17px;border-bottom:1px solid var(--line)}
+.film:last-child{border-bottom:0}
+.film.treffer{background:var(--accent-soft)}
+.film.unscharf{background:var(--quantum-soft)}
+.film .title{font-weight:600;font-size:15px;display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.film .sub{grid-column:1;font-size:12.5px;color:var(--ink-3)}
+.times{grid-column:2;grid-row:1/span 2;display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;max-width:100%}
+a.time,span.time{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:13px;font-weight:500;padding:3px 8px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--line);color:var(--ink);white-space:nowrap;text-decoration:none;display:inline-block}
+a.time:hover{border-color:var(--accent);color:var(--accent-ink)}
+a.time:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.film.treffer .time{background:var(--surface);border-color:var(--accent-line)}
+.time .v{font-size:10px;color:var(--ink-3);margin-left:4px;letter-spacing:.04em}
+.film.stacked{grid-template-columns:minmax(0,1fr)}
+.film.stacked .times{grid-column:1;grid-row:auto;justify-content:flex-start;margin-top:4px}
+.time .d{font-size:10px;color:var(--ink-3);margin-right:5px;letter-spacing:.04em}
+.empty-msg{padding:22px 17px;font-size:13.5px;color:var(--ink-3);text-align:center}
+.banner{margin-top:24px;border:1px solid var(--quantum-line);background:var(--quantum-soft);border-radius:var(--radius);padding:12px 16px;font-size:13px;color:var(--ink-2)}
+.banner strong{color:var(--quantum)}
+.sources{border:var(--border-w) solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.src-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:10px 17px;border-bottom:1px solid var(--line);font-size:13.5px}
+.src-row:last-child{border-bottom:0}
+.src-row .what{font-weight:600;min-width:190px}
+.src-row .how{color:var(--ink-3);font-family:var(--font-mono);font-size:12px}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+footer p{margin:0 0 8px;max-width:68ch}
+a{color:var(--accent-ink);text-underline-offset:2px}
+@media (max-width:620px){
+  .film{grid-template-columns:minmax(0,1fr)}
+  .times{grid-column:1;grid-row:auto;justify-content:flex-start;max-width:100%}
+  .whenwhere{margin-left:0;text-align:left}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="empty-msg" id="boot">Lade Spielplan …</p></div>
+
+<script>
+(function () {
+  var DAYS = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]; }); };
+  var kurz = function (iso) { var d = new Date(iso + 'T12:00:00');
+    return String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.'; };
+  var dayLabel = function (iso, first) {
+    return (first ? 'Heute' : DAYS[new Date(iso + 'T12:00:00').getDay()]) + ' ' + kurz(iso); };
+
+  var LOGO = '<svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">' +
+    '<rect x="3.5" y="9.5" width="45" height="35" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>' +
+    '<path d="M26 9.5 v35" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>' +
+    '<path d="M26 38.5 c-7 0 -11 -3.6 -11 -9 v-6.2 l-4.4 -5.6 6.6 1.6 c2.4 -1.5 5.4 -2.3 8.8 -2.3" fill="currentColor" opacity=".9"/>' +
+    '<circle cx="19.6" cy="27.6" r="1.7" fill="var(--bg)"/>' +
+    '<path d="M26 38.5 c7 0 11 -3.6 11 -9 v-6.2 l4.4 -5.6 -6.6 1.6 c-2.4 -1.5 -5.4 -2.3 -8.8 -2.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2.5 2.5" opacity=".55"/></svg>';
+
+  function badge(cls, txt) { return '<span class="badge ' + cls + '">' + esc(txt) + '</span>'; }
+
+  function timeChip(s, mitDatum) {
+    var inner = (mitDatum ? '<span class="d">' + esc(kurz(s.date)) + '</span>' : '') + esc(s.time) +
+      (s.version ? '<span class="v">' + esc(s.version) + '</span>' : '');
+    return s.booking_url
+      ? '<a class="time" href="' + esc(s.booking_url) + '" target="_blank" rel="noopener">' + inner + '</a>'
+      : '<span class="time">' + inner + '</span>';
+  }
+
+  // Deutsche Kinos wechseln ihr Programm donnerstags. Bis zum naechsten
+  // Donnerstag steht jeder Tag einzeln, alles danach kommt unter "ab <Datum>" —
+  // dort sind es ohnehin nur noch einzelne Vorverkaufstermine.
+  function grenzdatum(dates) {
+    for (var i = 1; i < dates.length; i++)
+      if (new Date(dates[i] + 'T12:00:00').getDay() === 4) return dates[i];
+    return null;
+  }
+
+  function trifftDatum(s, sel, grenze) {
+    if (sel === 'alle') return true;
+    if (sel === 'ab') return grenze && s.date >= grenze;
+    return s.date === sel;
+  }
+
+  function render(d, state) {
+    var grenze = grenzdatum(d.dates);
+    var sel = state.sel, nurKinos = state.kinos;
+    var cinemas = {}; d.cinemas.forEach(function (c) { cinemas[c.id] = c; });
+    var gruppeVon = {};
+    d.cinemas.forEach(function (c) { gruppeVon[c.id] = c.group; });
+    var imFilter = function (cid) { return !nurKinos.size || nurKinos.has(gruppeVon[cid]); };
+    var passt = function (s) { return trifftDatum(s, sel, grenze) && imFilter(s.cinema_id); };
+
+    var shown = d.films.map(function (f) { return { f: f, s: f.showings.filter(passt) }; })
+                       .filter(function (x) { return x.s.length; });
+    var vorst = shown.reduce(function (n, x) { return n + x.s.length; }, 0);
+    var treffer = shown.filter(function (x) { return x.f.match.status === 'treffer'; });
+    var unscharf = shown.filter(function (x) { return x.f.match.status === 'unscharf'; });
+    var mubi = shown.filter(function (x) { return x.f.mubi_go; });
+
+    var titel = sel === 'alle' ? kurz(d.date_from) + '–' + kurz(d.date_to)
+              : sel === 'ab'   ? 'ab ' + kurz(grenze)
+              : dayLabel(sel, sel === d.dates[0]);
+    var wann = sel === 'alle' ? 'im ganzen Zeitraum'
+             : sel === 'ab'   ? 'ab ' + kurz(grenze)
+             : (sel === d.dates[0] ? 'heute' : 'an diesem Tag');
+    var zeigeDatum = sel === 'alle' || sel === 'ab';
+
+    var h = [];
+    h.push('<header class="masthead"><div class="brand">' + LOGO +
+      '<div><h1>Schrödingers Kino</h1><p class="tagline">Der Film läuft. Vielleicht. Bis du nachschaust.</p></div></div>' +
+      '<div class="whenwhere"><strong>' + esc(titel) + '</strong><br>' + esc(d.city) + ' · ' +
+      (nurKinos.size ? d.cinemas.filter(function (c) { return nurKinos.has(c.group); }).length + ' von ' + d.cinemas.length : d.cinemas.length) + ' Kinos<br>' +
+      'Watchlist <strong>' + esc(d.watchlist.username) + '</strong> · ' + d.watchlist.total + ' Titel</div></header>');
+
+    h.push('<div class="metrics">' +
+      '<div class="metric hit"><span class="num">' + treffer.length + '</span><span class="lbl">Treffer</span></div>' +
+      '<div class="metric mubi"><span class="num">' + mubi.length + '</span><span class="lbl">MUBI-GO-Film</span></div>' +
+      '<div class="metric"><span class="num">' + vorst + '</span><span class="lbl">Vorstellungen</span></div>' +
+      '<div class="metric"><span class="num">' + shown.length + '</span><span class="lbl">Filme im Programm</span></div>' +
+      '<div class="metric"><span class="num">' + d.dates.length + '<small> Tage</small></span><span class="lbl">im Fenster</span></div></div>');
+
+    // Datum
+    var zaehl = function (pruef) {
+      return d.films.reduce(function (a, f) {
+        return a + f.showings.filter(function (x) {
+          return pruef(x) && imFilter(x.cinema_id); }).length; }, 0);
+    };
+    var tage = grenze ? d.dates.filter(function (x) { return x < grenze; }) : d.dates;
+    h.push('<div class="bar"><span class="lead">Datum</span>' +
+      '<button class="chip" data-day="alle" aria-pressed="' + (sel === 'alle') + '">Alle<span class="n">' +
+        zaehl(function () { return true; }) + '</span></button>' +
+      tage.map(function (dt, i) {
+        return '<button class="chip" data-day="' + dt + '" aria-pressed="' + (dt === sel) + '">' +
+          esc(dayLabel(dt, i === 0)) + '<span class="n">' +
+          zaehl(function (x) { return x.date === dt; }) + '</span></button>';
+      }).join('') +
+      (grenze ? '<button class="chip" data-day="ab" aria-pressed="' + (sel === 'ab') + '">ab ' +
+        esc(kurz(grenze)) + '<span class="n">' +
+        zaehl(function (x) { return x.date >= grenze; }) + '</span></button>' : '') +
+      '</div>');
+
+    // Kinos, nach Betreibergruppe zusammengefasst
+    h.push('<div class="bar tight"><span class="lead">Kinos</span>' +
+      '<button class="chip" data-kino="alle" aria-pressed="' + (!nurKinos.size) + '">Alle Kinos</button>' +
+      (d.groups || []).map(function (g) {
+        var n = d.films.reduce(function (a, f) {
+          return a + f.showings.filter(function (x) {
+            return g.cinemas.indexOf(x.cinema_id) >= 0 && trifftDatum(x, sel, grenze); }).length; }, 0);
+        return '<button class="chip" data-kino="' + g.id + '" aria-pressed="' + nurKinos.has(g.id) + '"' +
+          (n ? '' : ' data-leer') + ' title="' + esc(g.cinemas.map(function (id) {
+            var c = d.cinemas.filter(function (y) { return y.id === id; })[0];
+            return c ? c.name : id; }).join(' · ')) + '">' +
+          esc(g.name) + (g.mubi_partner ? ' ●' : '') + '<span class="n">' + n + '</span></button>';
+      }).join('') + '</div>');
+
+    h.push('<div class="bar tight"><span class="lead">Filter</span>' +
+      '<button class="chip" data-filter="all" aria-pressed="true">Alles zeigen</button>' +
+      '<button class="chip" data-filter="watchlist" aria-pressed="false">Nur Watchlist</button>' +
+      '<button class="chip" data-filter="mubi" aria-pressed="false">Nur MUBI GO</button>' +
+      '<button class="chip" data-filter="ov" aria-pressed="false">Nur OmU / OV</button></div>');
+
+    h.push('<div class="legend">' +
+      '<span>' + badge('b-watch','Watchlist') + ' steht auf deiner Letterboxd-Liste</span>' +
+      '<span>' + badge('b-mubi','MUBI GO') + ' Ticket über MUBI GO einlösbar</span>' +
+      '<span>● MUBI-GO-Partnerkino</span></div>');
+
+    var cards = treffer.concat(unscharf);
+    h.push('<section><div class="sec-head"><h2>Deine Treffer</h2><span class="note">' +
+      (cards.length ? 'Filme von deiner Watchlist, die ' + wann + ' laufen' : 'hier läuft nichts von deiner Liste') +
+      '</span></div>');
+    if (cards.length) {
+      h.push('<div class="hits">' + cards.map(function (x) {
+        var f = x.f, m = f.match, w = m.watchlist;
+        var orte = [...new Set(x.s.map(function (s) { return cinemas[s.cinema_id].name; }))];
+        var zeiten = zeigeDatum
+          ? (x.s.length === 1 ? kurz(x.s[0].date) + ' ' + x.s[0].time
+             : x.s.length + ' Vorstellungen, ' + kurz(x.s[0].date) + '–' + kurz(x.s[x.s.length-1].date))
+          : x.s.map(function (s) { return s.time + (s.version ? ' ' + s.version : ''); }).join(' · ');
+        var why = m.status === 'treffer'
+          ? 'Auf der Watchlist seit ' + esc(w.added_on) + (f.mubi_go ? '. Aktueller MUBI-GO-Film — Ticket kostenlos.' : '.')
+          : 'Möglicher Treffer zu „' + esc(w.title) + ' (' + esc(w.year) + ')" bei ' + m.confidence + '. Erst die TMDb-ID entscheidet.';
+        return '<article class="hit-card' + (m.status === 'unscharf' ? ' unscharf' : '') + '"><div class="badges">' +
+          (m.status === 'treffer' ? badge('b-watch','Watchlist') : badge('b-quant','unscharf')) +
+          (f.mubi_go ? badge('b-mubi','MUBI GO') : '') +
+          (x.s[0].version ? badge('b-plain', x.s[0].version) : '') +
+          '</div><h3>' + esc(f.title) + '</h3><div class="where">' + esc(orte.join(' · ')) +
+          ' · <strong>' + esc(zeiten) + '</strong></div><div class="why">' + why + '</div></article>';
+      }).join('') + '</div>');
+    } else {
+      h.push('<p class="empty-msg">Hier läuft nichts von deiner Liste. Die Katze bleibt in der Kiste.</p>');
+    }
+    h.push('</section>');
+
+    h.push('<section><div class="sec-head"><h2>Kinos &amp; Vorstellungszeiten</h2><span class="note">' +
+      esc(titel) + ' — Zeiten führen direkt zum Ticket</span></div><div id="cinemas">');
+    d.cinemas.forEach(function (c) {
+      if (!imFilter(c.id)) return;
+      var rows = shown.filter(function (x) {
+        return x.s.some(function (s) { return s.cinema_id === c.id; }); });
+      if (!rows.length) return;
+      h.push('<article class="cinema" data-cinema><div class="cinema-head"><h3>' + esc(c.name) + '</h3>' +
+        '<span class="addr">' + esc(c.district || '') + '</span><span class="right">' +
+        (c.mubi_partner ? badge('b-mubi','MUBI GO') : '') +
+        '<span class="status"><span class="dot"></span>Programm live</span></span></div>');
+      h.push('<ul class="films">' + rows.map(function (x) {
+        var f = x.f, st = f.match.status;
+        var slots = x.s.filter(function (s) { return s.cinema_id === c.id; });
+        if (!slots.length) return '';
+        var hasOV = slots.some(function (s) { return s.version && s.version !== 'DF'; });
+        var attrs = (st === 'treffer' || st === 'unscharf' ? ' data-watchlist' : '') +
+                    (f.mubi_go ? ' data-mubi' : '') + (hasOV ? ' data-ov' : '');
+        var sub = [f.genre, f.runtime_min ? f.runtime_min + ' Min' : null,
+          zeigeDatum && slots.length > 1 ? slots.length + ' Vorstellungen' : null,
+          f.match.related.length ? 'Vorgänger „' + f.match.related[0].title + '" steht auf deiner Watchlist' : null]
+          .filter(Boolean).join(' · ');
+        return '<li class="film ' + (st === 'treffer' ? 'treffer' : st === 'unscharf' ? 'unscharf' : '') +
+          (zeigeDatum && slots.length > 3 ? ' stacked' : '') + '"' + attrs + '>' +
+          '<div class="title">' + esc(f.title) +
+          (st === 'treffer' ? badge('b-watch','Watchlist') : '') +
+          (st === 'unscharf' ? badge('b-quant','unscharf') : '') +
+          (f.mubi_go ? badge('b-mubi','MUBI GO') : '') + '</div>' +
+          '<div class="sub">' + esc(sub) + '</div>' +
+          '<div class="times">' + slots.map(function (s) { return timeChip(s, zeigeDatum); }).join('') + '</div></li>';
+      }).join('') + '</ul></article>');
+    });
+    h.push('</div><p id="noresults" class="empty-msg" hidden>In diesem Filter läuft nichts.</p></section>');
+
+    h.push('<div class="banner"><strong>Matching-Stufe ' + esc(d.matching.stufe) + '.</strong> ' +
+      esc(d.matching.verfahren) + '. ' + esc(d.matching.grenze) + '</div>');
+
+    h.push('<section><div class="sec-head"><h2>Datenquellen</h2><span class="note">Stand ' +
+      esc(new Date(d.generated_at).toLocaleString('de-DE', { dateStyle:'short', timeStyle:'short' })) +
+      '</span></div><div class="sources">' + d.sources.map(function (s) {
+        return '<div class="src-row"><span class="what">' + esc(s.name) + '</span><span class="how">' +
+          esc(String(s.url).replace(/^https?:\/\/(www\.)?/, '').slice(0, 52)) + '</span></div>';
+      }).join('') + '</div></section>');
+
+    h.push('<footer><p><strong>Prototyp.</strong> Kinos, Filme und Zeiten kommen direkt von kino-zeit.de; ' +
+      'einzelne Vorstellungen können kurzfristig abweichen. Vor der Fahrt in die Stadt beim Kino gegenprüfen.</p>' +
+      '<p>MUBI und MUBI GO sind Marken von MUBI, Letterboxd ist eine Marke von Letterboxd Limited. ' +
+      'Das Kobaltblau kennzeichnet MUBI-GO-Vorstellungen, das Orange Titel von der Letterboxd-Watchlist.</p></footer>');
+
+    return h.join('');
+  }
+
+  function wire(d, state) {
+    var app = document.getElementById('app');
+    app.innerHTML = render(d, state);
+
+    app.querySelectorAll('[data-day]').forEach(function (b) {
+      b.addEventListener('click', function () { state.sel = b.getAttribute('data-day'); wire(d, state); });
+    });
+    app.querySelectorAll('[data-kino]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-kino');
+        if (id === 'alle') state.kinos.clear();
+        else if (state.kinos.has(id)) state.kinos.delete(id);
+        else state.kinos.add(id);
+        wire(d, state);
+      });
+    });
+
+    var chips = [].slice.call(app.querySelectorAll('[data-filter]'));
+    var films = [].slice.call(app.querySelectorAll('.film'));
+    var kinos = [].slice.call(app.querySelectorAll('[data-cinema]'));
+    var none = document.getElementById('noresults');
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var mode = chip.getAttribute('data-filter');
+        chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c === chip)); });
+        var any = false;
+        films.forEach(function (f) {
+          f.hidden = !(mode === 'all' ||
+            (mode === 'watchlist' && f.hasAttribute('data-watchlist')) ||
+            (mode === 'mubi' && f.hasAttribute('data-mubi')) ||
+            (mode === 'ov' && f.hasAttribute('data-ov')));
+        });
+        kinos.forEach(function (c) {
+          var vis = c.querySelectorAll('.film:not([hidden])').length;
+          c.hidden = mode !== 'all' && vis === 0;
+          if (!c.hidden) any = true;
+        });
+        if (none) none.hidden = any;
+      });
+    });
+  }
+
+  function start(d) { wire(d, { sel: d.dates[0], kinos: new Set() }); }
+
+  if (window.__TODAY__) { start(window.__TODAY__); }
+  else {
+    fetch('./data/today.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(start)
+      .catch(function (e) {
+        document.getElementById('boot').textContent =
+          'Spielplan konnte nicht geladen werden (' + e.message + ').'; });
+  }
+})();
+</script>
+</body>
+</html>

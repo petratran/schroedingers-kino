@@ -1,0 +1,328 @@
+<title>Namen und Logos — zweite Runde</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Syne:wght@700;800&display=swap">
+<style>
+:root{--paper:#F7F5F0;--ink:#16160F;--ink2:#56544b;--ink3:#8b887c;--rule:#ddd9cd;--card:#fff;
+  --gruen:#1F4D3C;--aubergine:#4A2E4D;--terra:#8C4A2F;--nacht:#12151A;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121210;--ink:#F2EFE6;--ink2:#a8a599;--ink3:#76736a;--rule:#2b2b26;--card:#1a1a17;
+  --gruen:#4FA184;--aubergine:#A985AE;--terra:#D08A64;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#121210;--ink:#F2EFE6;--ink2:#a8a599;--ink3:#76736a;--rule:#2b2b26;--card:#1a1a17;
+  --gruen:#4FA184;--aubergine:#A985AE;--terra:#D08A64;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 22px 80px}
+header{padding:46px 0 20px;border-bottom:3px double var(--ink)}
+h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:clamp(28px,5vw,42px);margin:0;letter-spacing:-.015em}
+header p{color:var(--ink3);font-family:"Source Serif 4",serif;font-style:italic;margin:6px 0 0}
+h2{font-family:"Source Serif 4",serif;font-weight:600;font-size:23px;margin:46px 0 6px}
+.lead{color:var(--ink2);max-width:66ch;margin:0 0 18px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3);margin:0 0 4px}
+
+.namen{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:8px}
+.n{background:var(--card);border:1px solid var(--rule);padding:16px 18px}
+.n.top{border-color:var(--gruen);box-shadow:inset 3px 0 0 var(--gruen)}
+.n h3{font-family:"Source Serif 4",serif;font-weight:600;font-size:20px;margin:0 0 2px}
+.n .art{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.n p{margin:8px 0 0;font-size:14px;color:var(--ink2)}
+.n .marke{display:inline-block;margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--gruen);border:1px solid var(--gruen);padding:2px 7px}
+
+.logo{background:var(--card);border:1px solid var(--rule);margin-top:16px}
+.logo .oben{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:24px;align-items:center;
+  padding:26px 24px;border-bottom:1px solid var(--rule)}
+@media (max-width:760px){.logo .oben{grid-template-columns:1fr;gap:18px}}
+.buehne{display:flex;align-items:center;gap:18px;min-width:0}
+.buehne svg{flex:none}
+.wortmarke{min-width:0}
+.wortmarke .zeile1{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink3)}
+.wortmarke .zeile2{font-family:Syne,sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em;line-height:1.05}
+.wortmarke.serif .zeile2{font-family:"Source Serif 4",serif;font-weight:600;letter-spacing:-.01em}
+.probe{text-align:center}
+.probe .lbl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);margin-top:6px}
+.mono svg{color:var(--ink)}
+.favicon{width:16px;height:16px;image-rendering:auto}
+.unten{padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.unten h4{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);margin:0 0 5px;font-weight:500}
+.unten p{margin:0;font-size:13.5px;color:var(--ink2)}
+.unten .ok{color:var(--gruen);font-weight:600}
+.unten .halb{color:var(--terra);font-weight:600}
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink3);max-width:68ch}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Namen und Logos — zweite Runde</h1>
+  <p>Fünf neue Namen, fünf gezeichnete Marken. Das Dashboard bleibt, wie es ist.</p>
+</header>
+
+<h2>Fünf neue Namen</h2>
+<p class="lead">Die erste Runde hat Katzen-Komposita variiert. Diese hier greifen je einen anderen
+Mechanismus: eine Redewendung, ein Kleidungsstück, eine Zahl, ein Material, eine Gruppe.</p>
+
+<div class="namen">
+  <article class="n top">
+    <div class="art">Redewendung</div>
+    <h3>Katzensprung</h3>
+    <p>Die Redewendung bedeutet bereits „ganz in der Nähe" — genau das Versprechen des Produkts,
+    räumlich wie zeitlich: dieser Film läuft nicht irgendwann irgendwo, sondern übermorgen um die Ecke.
+    Die Katze steckt im Wort, muss also nie gezeichnet werden.</p>
+    <span class="marke">Empfehlung</span>
+  </article>
+
+  <article class="n">
+    <div class="art">Kleidungsstück</div>
+    <h3>Frack &amp; Foyer</h3>
+    <p>Pinguine tragen permanent Frack und sind damit als Einzige immer für die Premiere gekleidet.
+    Der Vogel wird nie genannt — wer den Witz sieht, sieht ihn sofort, wer nicht, liest ein
+    seriöses Arthaus-Label.</p>
+  </article>
+
+  <article class="n">
+    <div class="art">Zahl</div>
+    <h3>Neun Leben</h3>
+    <p>Katzen haben neun, Filme auch: Wiederaufführung, Klassikerreihe, Sondervorstellung.
+    Der Name beschreibt die Entdeckung, die dieses Projekt erst gemacht hat — dass das Repertoire
+    der interessantere Teil des Spielplans ist.</p>
+  </article>
+
+  <article class="n">
+    <div class="art">Material</div>
+    <h3>Samtvorhang</h3>
+    <p>Samt verbindet Kinovorhang und Samtpfote in einem Wort. Der leiseste der fünf Witze,
+    und der einzige Name, der auch ohne Tier vollständig funktioniert.</p>
+  </article>
+
+  <article class="n">
+    <div class="art">Gruppe</div>
+    <h3>Kinokolonie</h3>
+    <p>Pinguine leben in Kolonien, die Stuttgarter Häuser drängen sich zu dritt im Marquardtbau.
+    Klingt nach Programmkino-Verein — was für ein Projekt über Arthaus-Spielpläne kein Nachteil ist.</p>
+  </article>
+</div>
+
+<h2>Fünf gezeichnete Marken</h2>
+<p class="lead">Jede Marke steht dreimal: in Farbe, einfarbig, und als 16-Pixel-Favicon.
+Die dritte Spalte ist die ehrlichste — dort scheitern die meisten Logos.</p>
+
+<!-- 1 -->
+<section class="logo">
+  <div class="oben">
+    <div class="buehne">
+      <svg width="88" height="88" viewBox="0 0 100 100" aria-label="Katzensprung, Konzept Der Sprung">
+        <path d="M16 74 Q40 8 74 40" fill="none" stroke="var(--gruen)" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 9"/>
+        <circle cx="16" cy="74" r="6" fill="var(--gruen)"/>
+        <rect x="62" y="34" width="30" height="24" fill="none" stroke="var(--gruen)" stroke-width="4"/>
+        <path d="M66 34v-5M76 34v-5M86 34v-5M66 58v5M76 58v5M86 58v5" stroke="var(--gruen)" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div class="wortmarke"><div class="zeile1">Kino für deine Liste</div><div class="zeile2">Katzensprung</div></div>
+    </div>
+    <div class="probe mono">
+      <svg width="54" height="54" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M16 74 Q40 8 74 40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 9"/>
+        <circle cx="16" cy="74" r="6" fill="currentColor"/>
+        <rect x="62" y="34" width="30" height="24" fill="none" stroke="currentColor" stroke-width="4"/>
+        <path d="M66 34v-5M76 34v-5M86 34v-5M66 58v5M76 58v5M86 58v5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe mono">
+      <svg class="favicon" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M14 76 Q40 6 72 40" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-dasharray="2 17"/>
+        <circle cx="14" cy="76" r="11" fill="currentColor"/>
+        <rect x="58" y="32" width="36" height="30" fill="none" stroke="currentColor" stroke-width="9"/>
+      </svg>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Konzept · Der Sprung</h4><p>Ein Punkt, eine gepunktete Flugbahn, ein Filmkader. Du bist der Punkt,
+    die Vorstellung ist der Kader, dazwischen liegt ein Katzensprung. Kein Tier, nur seine Bewegung.</p></div>
+    <div><h4>Typografie</h4><p>Geometrische Grotesk, kräftig, leicht negative Laufweite. Darüber eine
+    gesperrte Mono-Zeile als Untertitel — dieselbe Schrift, die im Dashboard die Uhrzeiten setzt.</p></div>
+    <div><h4>Einfarbig</h4><p><span class="ok">Trägt vollständig.</span> Die Marke ist als Strichzeichnung
+    gedacht; Farbe fügt nichts hinzu. Im Favicon werden die Perforationskerben weggelassen.</p></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="logo">
+  <div class="oben">
+    <div class="buehne">
+      <svg width="88" height="88" viewBox="0 0 100 100" aria-label="Katzensprung, Konzept Pfote als Perforation">
+        <rect x="20" y="16" width="13" height="16" rx="3" fill="var(--gruen)"/>
+        <rect x="38" y="10" width="13" height="16" rx="3" fill="var(--gruen)"/>
+        <rect x="56" y="12" width="13" height="16" rx="3" fill="var(--gruen)"/>
+        <rect x="73" y="22" width="13" height="16" rx="3" fill="var(--gruen)"/>
+        <path d="M30 56c0-13 10-20 22-20s22 7 22 20c0 12-9 20-22 20s-22-8-22-20z" fill="var(--gruen)"/>
+      </svg>
+      <div class="wortmarke"><div class="zeile1">Kino für deine Liste</div><div class="zeile2">Katzensprung</div></div>
+    </div>
+    <div class="probe mono">
+      <svg width="54" height="54" viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="20" y="16" width="13" height="16" rx="3" fill="currentColor"/>
+        <rect x="38" y="10" width="13" height="16" rx="3" fill="currentColor"/>
+        <rect x="56" y="12" width="13" height="16" rx="3" fill="currentColor"/>
+        <rect x="73" y="22" width="13" height="16" rx="3" fill="currentColor"/>
+        <path d="M30 56c0-13 10-20 22-20s22 7 22 20c0 12-9 20-22 20s-22-8-22-20z" fill="currentColor"/>
+      </svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe mono">
+      <svg class="favicon" viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="16" y="14" width="16" height="20" rx="4" fill="currentColor"/>
+        <rect x="38" y="8" width="16" height="20" rx="4" fill="currentColor"/>
+        <rect x="60" y="14" width="16" height="20" rx="4" fill="currentColor"/>
+        <path d="M24 60c0-14 12-22 26-22s26 8 26 22c0 13-11 21-26 21s-26-8-26-21z" fill="currentColor"/>
+      </svg>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Konzept · Pfote als Perforation</h4><p>Vier Zehen als abgerundete Rechtecke, in leichtem Bogen —
+    aus der Nähe ein Pfotenabdruck, aus der Ferne die Lochreihe eines Filmstreifens. Wärmer als Konzept 1,
+    und das einzige, das die Katze zeigt, ohne sie zu zeichnen.</p></div>
+    <div><h4>Typografie</h4><p>Dieselbe Lockup wie Konzept 1. Die weichen Rundungen der Marke vertragen
+    eine etwas offenere Laufweite im Wortbild.</p></div>
+    <div><h4>Einfarbig</h4><p><span class="ok">Uneingeschränkt.</span> Reine Flächen ohne Linienstärke —
+    das robusteste der fünf Konzepte. Im Favicon fällt eine Zehe weg, drei reichen.</p></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="logo">
+  <div class="oben">
+    <div class="buehne">
+      <svg width="88" height="88" viewBox="0 0 100 100" aria-label="Neun Leben, Konzept Das Raster">
+        <g fill="var(--ink3)">
+          <circle cx="26" cy="26" r="7"/><circle cx="50" cy="26" r="7"/><circle cx="74" cy="26" r="7"/>
+          <circle cx="26" cy="50" r="7"/><circle cx="74" cy="50" r="7"/>
+          <circle cx="26" cy="74" r="7"/><circle cx="50" cy="74" r="7"/><circle cx="74" cy="74" r="7"/>
+        </g>
+        <circle cx="50" cy="50" r="12" fill="var(--terra)"/>
+      </svg>
+      <div class="wortmarke serif"><div class="zeile1">Was heute läuft</div><div class="zeile2">Neun Leben</div></div>
+    </div>
+    <div class="probe mono">
+      <svg width="54" height="54" viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="3">
+          <circle cx="26" cy="26" r="7"/><circle cx="50" cy="26" r="7"/><circle cx="74" cy="26" r="7"/>
+          <circle cx="26" cy="50" r="7"/><circle cx="74" cy="50" r="7"/>
+          <circle cx="26" cy="74" r="7"/><circle cx="50" cy="74" r="7"/><circle cx="74" cy="74" r="7"/>
+        </g>
+        <circle cx="50" cy="50" r="12" fill="currentColor"/>
+      </svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe mono">
+      <svg class="favicon" viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="8">
+          <circle cx="22" cy="22" r="8"/><circle cx="78" cy="22" r="8"/>
+          <circle cx="22" cy="78" r="8"/><circle cx="78" cy="78" r="8"/>
+        </g>
+        <circle cx="50" cy="50" r="20" fill="currentColor"/>
+      </svg>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Konzept · Das Raster</h4><p>Neun Punkte, acht blass, einer gefüllt: die neun Leben, und das eine,
+    das gerade läuft. Die Marke ist zugleich ein Zustandsdiagramm — sie könnte im Produkt mitzählen,
+    statt nur zu dekorieren.</p></div>
+    <div><h4>Typografie</h4><p>Textserife statt Grotesk. Der Name ist literarisch, nicht technisch,
+    und verträgt eine Schrift mit Strichstärkenkontrast.</p></div>
+    <div><h4>Einfarbig</h4><p><span class="ok">Trägt</span>, wenn die acht Punkte als Umriss und der neunte
+    als Fläche gesetzt werden. Bei 16 px müssen vier Punkte genügen — dann wird aus der Zahl eine Form.</p></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="logo">
+  <div class="oben">
+    <div class="buehne">
+      <svg width="88" height="88" viewBox="0 0 100 100" aria-label="Frack und Foyer, Konzept Die Schulter">
+        <circle cx="50" cy="50" r="42" fill="var(--nacht)"/>
+        <path d="M50 92c-14 0-26-7-33-18 5-20 17-32 33-32s28 12 33 32c-7 11-19 18-33 18z" fill="#F7F5F0"/>
+        <path d="M50 42c-6 0-11 5-11 11h22c0-6-5-11-11-11z" fill="var(--terra)"/>
+      </svg>
+      <div class="wortmarke serif"><div class="zeile1">Programmkino Stuttgart</div><div class="zeile2">Frack &amp; Foyer</div></div>
+    </div>
+    <div class="probe mono">
+      <svg width="54" height="54" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="42" fill="currentColor"/>
+        <path d="M50 92c-14 0-26-7-33-18 5-20 17-32 33-32s28 12 33 32c-7 11-19 18-33 18z" fill="var(--paper)"/>
+      </svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe mono">
+      <svg class="favicon" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="currentColor"/>
+        <path d="M50 96c-16 0-30-8-38-21 6-23 20-37 38-37s32 14 38 37c-8 13-22 21-38 21z" fill="var(--paper)"/>
+      </svg>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Konzept · Die Schulter</h4><p>Ein dunkler Kreis, aus dem eine helle Hemdbrust wächst — die
+    Silhouette eines Pinguins im Frack, die zugleich ein Scheinwerferkegel auf einer Bühne ist.
+    Der orangene Schnabel ist das einzige Farbdetail und kann entfallen.</p></div>
+    <div><h4>Typografie</h4><p>Textserife mit klassischer Anmutung, Versalien für die Zeile darüber.
+    Das Kaufmanns-Und im Namen ist gestalterisch gemeint und sollte aus einer Schrift mit schönem
+    Ampersand kommen.</p></div>
+    <div><h4>Einfarbig</h4><p><span class="ok">Trägt gut</span>, weil das Konzept ohnehin auf
+    Schwarz-Weiß beruht. Ohne Schnabel bleibt eine reine Positiv-Negativ-Form, die bei 16 px sogar
+    kräftiger wirkt als in Farbe.</p></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="logo">
+  <div class="oben">
+    <div class="buehne">
+      <svg width="140" height="88" viewBox="0 0 170 100" aria-label="Schrödingers Kino, typografische Marke">
+        <text x="6" y="44" font-family="Syne, sans-serif" font-weight="800" font-size="40"
+              letter-spacing="-1" fill="var(--aubergine)" opacity=".28">KINO</text>
+        <text x="12" y="50" font-family="Syne, sans-serif" font-weight="800" font-size="40"
+              letter-spacing="-1" fill="var(--ink)">KINO</text>
+        <text x="13" y="72" font-family="IBM Plex Mono, monospace" font-size="11.5"
+              letter-spacing="3.6" fill="var(--ink3)">SCHRÖDINGERS</text>
+      </svg>
+    </div>
+    <div class="probe mono">
+      <svg width="100" height="54" viewBox="0 0 170 100" aria-hidden="true">
+        <text x="6" y="44" font-family="Syne, sans-serif" font-weight="800" font-size="40"
+              letter-spacing="-1" fill="currentColor" opacity=".3">KINO</text>
+        <text x="12" y="50" font-family="Syne, sans-serif" font-weight="800" font-size="40"
+              letter-spacing="-1" fill="currentColor">KINO</text>
+      </svg>
+      <div class="lbl">einfarbig</div>
+    </div>
+    <div class="probe mono">
+      <svg class="favicon" viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="10" y="22" width="56" height="56" fill="currentColor" opacity=".3"/>
+        <rect x="26" y="34" width="56" height="56" fill="currentColor"/>
+      </svg>
+      <div class="lbl">16 px</div>
+    </div>
+  </div>
+  <div class="unten">
+    <div><h4>Konzept · Doppelsatz</h4><p>Kein Bildzeichen, sondern der Name zweimal gesetzt: einmal blass,
+    einmal fest, um Haaresbreite versetzt. Der Film läuft und läuft nicht. Für den Fall, dass du beim
+    bestehenden Namen bleibst und nur die Marke erneuern willst.</p></div>
+    <div><h4>Typografie</h4><p>Die Wortmarke <em>ist</em> das Logo. Fette geometrische Grotesk in
+    Versalien für „KINO", darunter gesperrte Mono für „SCHRÖDINGERS" — dasselbe Schriftpaar wie im Dashboard.</p></div>
+    <div><h4>Einfarbig</h4><p><span class="halb">Eingeschränkt.</span> In einer Farbe funktioniert der
+    Versatz nur über Deckkraft; bei Prägung oder Stempel fällt das flach. Als Favicon braucht es eine
+    Ersatzform — zwei versetzte Quadrate.</p></div>
+  </div>
+</section>
+
+<footer>
+  Farben: Saalgrün <code>#1F4D3C</code>, Aubergine <code>#4A2E4D</code>, Terrakotta <code>#8C4A2F</code>.
+  Alle drei meiden bewusst Blau und Orange, weil diese beiden Farben im Produkt bereits MUBI GO
+  und der Letterboxd-Watchlist gehören.
+</footer>
+</div>

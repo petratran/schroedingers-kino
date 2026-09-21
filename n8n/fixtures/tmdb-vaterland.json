@@ -1,0 +1,12 @@
+{
+  "_hinweis": "Echte TMDb-Antwort auf search/movie?query=Vaterland&language=de-DE, abgerufen am 18.09.2026. Gekürzt auf die Kandidaten mit relevantem Titel.",
+  "results": [
+    { "id": 1437696, "title": "Vaterland", "original_title": "Ojczyzna", "original_language": "pl", "release_date": "2026-06-19", "popularity": 11.5689 },
+    { "id": 96820,   "title": "Vaterland", "original_title": "Vaterland", "original_language": "de", "release_date": "2002-10-18", "popularity": 1.0975 },
+    { "id": 1138987, "title": "Vaterland", "original_title": "Vaterland", "original_language": "de", "release_date": "1992-10-29", "popularity": 1.4573 },
+    { "id": 11248,   "title": "Vaterland", "original_title": "Fatherland", "original_language": "en", "release_date": "1994-11-26", "popularity": 3.6392 },
+    { "id": 129455,  "title": "Vaterland", "original_title": "Fatherland", "original_language": "de", "release_date": "1986-09-02", "popularity": 1.8709 },
+    { "id": 566557,  "title": "Haus Vaterland", "original_title": "Haus Vaterland", "original_language": "de", "release_date": "1983-12-12", "popularity": 0.845 },
+    { "id": 266684,  "title": "Menschen ohne Vaterland", "original_title": "Menschen ohne Vaterland", "original_language": "de", "release_date": "1937-02-16", "popularity": 0.8608 }
+  ]
+}

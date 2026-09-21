@@ -1,0 +1,172 @@
+# -*- coding: utf-8 -*-
+VAR = [
+ ("gruen", "Saalgrün", "Ring",
+  "--ring:#1F4D3C", "--ring:#4FA184", "", "",
+  "Ein Grün, das im Produkt noch keine Bedeutung trägt — Orange gehört der Watchlist, "
+  "Kobalt gehört MUBI GO. Genau deshalb kann es „ausgewählt“ heißen, ohne mit einem Status "
+  "verwechselt zu werden. Kontrast 8,8:1 hell, 6,0:1 dunkel.",
+  "empfehlung"),
+
+ ("aubergine", "Aubergine", "Ring",
+  "--ring:#4A2E4D", "--ring:#A985AE", "", "",
+  "Kühler und zurückhaltender als Grün, im Dunkelmodus deutlich weicher. Trägt ebenfalls keine "
+  "Bedeutung im Produkt. Kontrast 10,8:1 hell, 5,9:1 dunkel.",
+  ""),
+
+ ("gruen-ton", "Saalgrün", "Ring + Tönung",
+  "--ring:#1F4D3C;--tint:#eef4f1", "--ring:#4FA184;--tint:#14231d", "", "",
+  "Derselbe Ring, dazu eine sehr blasse Tönung der Kartenfläche. Die Auswahl liest sich schon "
+  "aus dem Augenwinkel, kostet aber etwas von der Ruhe des Papier-Designs — und die Tönung "
+  "konkurriert leicht mit dem hellblauen Grund der MUBI-GO-Zeilen.",
+  ""),
+
+ ("neutral", "Ohne Farbe", "kräftigerer Rahmen",
+  "--ring:#4d5261;--ringbreite:1px;--randbreite:2px", "--ring:#a6acbc;--ringbreite:1px;--randbreite:2px", "", "",
+  "Kein Farbring, sondern ein doppelt so kräftiger Rahmen um die ganze Karte plus ein "
+  "angehobener Schatten. Die leiseste Lösung: sie führt keine neue Farbe ein und bleibt "
+  "damit auch dann richtig, wenn später weitere Zustände dazukommen.",
+  ""),
+
+ ("dimmen", "Ohne Ring", "die anderen treten zurück",
+  "--ring:transparent;--dim:1", "--ring:transparent;--dim:1", "", "",
+  "Statt die gewählte Karte hervorzuheben, treten die übrigen zurück — blasser und leicht "
+  "entsättigt. Funktioniert ganz ohne zusätzliche Farbe und macht sofort klar, dass eine Auswahl "
+  "aktiv ist. Schwäche: bei nur zwei Karten wirkt es wie ein Ladefehler, und Blasses ist "
+  "schlechter lesbar.",
+  ""),
+]
+
+def karten(vid, dunkel=False):
+    """Zwei Karten: eine gewaehlt, eine nicht."""
+    def karte(titel, wo, warum, gewaehlt, mubi=False):
+        cls = 'karte' + (' gewaehlt' if gewaehlt else '') + (' mubi' if mubi else '')
+        badges = ('<span class="badge b-mubi">MUBI GO</span>' if mubi else '') + \
+                 '<span class="badge b-watch">Watchlist</span><span class="badge b-plain">OV</span>'
+        tipp = 'Auswahl aufheben ×' if gewaehlt else 'Zeiten unten zeigen →'
+        return (f'<article class="{cls}"><div class="badges">{badges}</div>'
+                f'<h3>{titel}</h3><div class="wo">{wo}</div>'
+                f'<div class="warum">{warum}</div><div class="tipp">{tipp}</div></article>')
+    return (karte('Taxi Driver', 'EM · <strong>21.10. 20:30</strong>',
+                  'Auf der Watchlist seit 2026-09-19. Termin von der Kinoseite belegt.', True) +
+            karte('Gentle Monster', 'Delphi Arthaus Kino · <strong>9 Vorstellungen</strong>',
+                  'Aktueller MUBI-GO-Film — Ticket kostenlos.', False, mubi=True))
+
+bloecke = []
+for vid, name, art, sh, sd, _a, _b, text, marke in VAR:
+    bloecke.append(f'''
+<section class="wahl">
+  <div class="kopf">
+    <span class="rolle">{art}</span><h2>{name}</h2>
+    {'<span class="marke">Empfehlung</span>' if marke else ''}
+  </div>
+  <p class="warum-text">{text}</p>
+  <div class="paar">
+    <div class="panel hell" style="{sh}"><div class="panelkopf">hell</div><div class="karten">{karten(vid)}</div></div>
+    <div class="panel dunkel" style="{sd}"><div class="panelkopf">dunkel</div><div class="karten">{karten(vid, True)}</div></div>
+  </div>
+</section>''')
+
+html = '''<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Auswahl markieren — fünf Varianten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --seite-bg:#f4f5f7; --seite-ink:#16181f; --seite-ink3:#7a8091; --seite-line:#dfe2e9;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --seite-bg:#101218; --seite-ink:#edeff5; --seite-ink3:#737a8c; --seite-line:#2a2f3c;
+  color-scheme:dark;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--seite-bg);color:var(--seite-ink);font-family:var(--sans);
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:auto}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px 80px}
+header.seite{padding:44px 0 20px;border-bottom:2px solid var(--seite-ink)}
+header.seite h1{font-family:var(--serif);font-size:clamp(26px,5vw,38px);margin:0;line-height:1.05;
+  letter-spacing:-.005em}
+header.seite p{margin:10px 0 0;color:var(--seite-ink3);max-width:66ch}
+.wahl{margin-top:40px;padding-top:24px;border-top:1px solid var(--seite-line)}
+.wahl:first-of-type{border-top:0}
+.kopf{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+.rolle{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--seite-ink3);border:1px solid var(--seite-line);border-radius:999px;padding:3px 9px}
+.kopf h2{font-family:var(--serif);font-size:22px;margin:0;letter-spacing:-.005em}
+.marke{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:#1F4D3C;border:1px solid #1F4D3C;border-radius:999px;padding:3px 9px}
+@media (prefers-color-scheme:dark){.marke{color:#4FA184;border-color:#4FA184}}
+.warum-text{margin:10px 0 0;color:var(--seite-ink3);max-width:72ch}
+.paar{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+@media (max-width:760px){.paar{grid-template-columns:1fr}}
+
+/* ---- Panel: traegt die Farbwelt des Dashboards, unabhaengig vom Seitenmodus ---- */
+.panel{border:1px solid var(--seite-line);border-radius:12px;padding:16px;position:relative;
+  --ringbreite:2px; --randbreite:1px; --tint:transparent; --dim:0}
+.panel.hell{--bg:#f4f5f7;--surface:#fff;--ink:#16181f;--ink2:#4d5261;--ink3:#7a8091;
+  --line:#dfe2e9;--line-strong:#c6cbd6;--accent:#FF8000;--lbxd:#14181C;--mubi:#001489;
+  --mubi-line:#001489;--schatten:0 1px 2px rgba(22,24,31,.06),0 8px 24px -16px rgba(22,24,31,.35);
+  background:#f4f5f7}
+.panel.dunkel{--bg:#101218;--surface:#191c24;--ink:#edeff5;--ink2:#a6acbc;--ink3:#737a8c;
+  --line:#2a2f3c;--line-strong:#3a4152;--accent:#FF8000;--lbxd:#14181C;--mubi:#001489;
+  --mubi-line:#7a8eff;--schatten:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  background:#101218}
+.panelkopf{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:12px}
+.karten{display:grid;gap:12px}
+
+.karte{background:var(--surface);border:var(--randbreite) solid var(--line);
+  border-left:3px solid var(--accent);border-radius:10px;padding:14px 16px;box-shadow:var(--schatten);
+  display:flex;flex-direction:column;gap:8px;color:var(--ink);font-size:14px}
+.karte.mubi{border-left-color:var(--mubi-line)}
+.karte.gewaehlt{box-shadow:0 0 0 var(--ringbreite) var(--ring),var(--schatten);
+  background:var(--tint,var(--surface))}
+.karte.gewaehlt[style]{}
+.panel[style*="--tint"] .karte.gewaehlt{background:var(--tint)}
+.panel[style*="--dim"] .karte:not(.gewaehlt){opacity:.42;filter:saturate(.45)}
+.karte h3{font-family:var(--serif);font-size:17px;margin:0;letter-spacing:-.005em}
+.wo{font-size:13px;color:var(--ink2)}
+.wo strong{color:var(--ink)}
+.warum{font-size:12.5px;color:var(--ink3);border-top:1px solid var(--line);padding-top:8px;margin-top:auto}
+.tipp{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.karte.gewaehlt .tipp{color:var(--ink)}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  padding:2.5px 7px;border-radius:5px;border:1px solid transparent;white-space:nowrap}
+.b-watch{background:#FF8000;color:var(--lbxd);border-color:#FF8000;border-radius:2px}
+.b-mubi{background:var(--mubi);color:#fff;border-color:var(--mubi-line);border-radius:0}
+.b-plain{background:var(--bg);color:var(--ink3);border-color:var(--line)}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--seite-line);
+  font-size:13px;color:var(--seite-ink3);max-width:72ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="seite">
+  <h1>Wie die Auswahl aussehen soll</h1>
+  <p>Fünf Varianten für den Moment, in dem eine Trefferkarte das Programm unten filtert.
+  Jede links auf hellem, rechts auf dunklem Grund — unabhängig davon, wie deine Systemeinstellung
+  gerade steht, damit du beides nebeneinander siehst.</p>
+</header>
+
+<p class="warum-text" style="margin-top:22px">Zwei Farben scheiden vorweg aus: Orange steht im
+Dashboard für „auf der Watchlist“, Kobaltblau für MUBI GO. Ein Auswahlring in einer dieser Farben
+würde als Status gelesen und beide Kennzeichen entwerten. Alles Folgende meidet sie deshalb.</p>
+''' + '\n'.join(bloecke) + '''
+<footer>Alle Varianten liegen über 3:1 gegen den Seitengrund, der Schwelle für bedeutungstragende
+Flächen — der Ring ist ja kein Schmuck, sondern die einzige Anzeige, welche Karte gerade filtert.
+Sag mir eine Nummer oder einen Namen, dann baue ich sie ein.</footer>
+</div>
+</body>
+</html>'''
+
+open('/home/claude/ring.html','w',encoding='utf-8').write(html)
+print('ring.html', round(len(html)/1024,1), 'KB ·', len(VAR), 'Varianten')

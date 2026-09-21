@@ -1,0 +1,8577 @@
+<title>Schrödingers Kino — Designrichtungen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Archivo+Narrow:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;background:#111}
+[hidden]{display:none!important}
+
+/* ---- Umschalter (gehört zur Vorschau, nicht zum Entwurf) ---- */
+.switch{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  padding:10px 20px;background:#111;color:#8b8b93;border-bottom:1px solid #2a2a31;
+  font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.switch button{font:inherit;padding:7px 14px;border-radius:0;border:1px solid #3a3a44;background:transparent;
+  color:#c9c9d2;cursor:pointer;letter-spacing:.06em}
+.switch button[aria-pressed="true"]{background:#f2f2f5;color:#111;border-color:#f2f2f5}
+.switch .note{margin-left:auto;text-transform:none;letter-spacing:0;font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:#6c6c76}
+@media (max-width:700px){.switch .note{margin-left:0;width:100%}}
+
+.stage{min-height:100vh}
+
+/* ==========================================================
+   A · PROGRAMMHEFT
+   ========================================================== */
+.a{--paper:#F7F5F0;--ink:#14140F;--ink2:#54524a;--ink3:#8a877c;--rule:#d8d4c8;--gruen:#1F4D3C;
+   background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",sans-serif}
+.a .wrap{max-width:980px;margin:0 auto;padding:0 24px 80px}
+.a .kopf{padding:44px 0 18px;border-bottom:3px double var(--ink)}
+.a h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:clamp(30px,5vw,46px);
+  margin:0;letter-spacing:-.015em;line-height:1.05}
+.a .unter{font-family:"Source Serif 4",serif;font-style:italic;color:var(--ink3);margin:6px 0 0;font-size:15px}
+.a .stand{float:right;text-align:right;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink2);line-height:1.8}
+.a .lauf{display:flex;flex-wrap:wrap;gap:0 28px;padding:16px 0;border-bottom:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink2)}
+.a .lauf b{color:var(--gruen);font-weight:600}
+.a h2{font-family:"Source Serif 4",serif;font-weight:600;font-size:21px;margin:38px 0 4px;color:var(--gruen)}
+.a .h2note{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink3);letter-spacing:.04em;
+  text-transform:uppercase;margin-bottom:14px}
+.a .treffer{columns:2;column-gap:32px}
+@media (max-width:760px){.a .treffer{columns:1}}
+.a .tr{break-inside:avoid;border-left:3px solid var(--gruen);padding:2px 0 14px 14px;margin-bottom:18px}
+.a .tr .t{font-family:"Source Serif 4",serif;font-weight:600;font-size:19px;line-height:1.2}
+.a .tr .m{font-size:13.5px;color:var(--ink2);margin-top:3px}
+.a .tr .z{font-family:"IBM Plex Mono",monospace;font-size:13px;margin-top:6px}
+.a .tag{margin-top:26px;border-top:1px solid var(--ink);padding-top:10px}
+.a .tag .d{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.a .kino{margin-top:14px}
+.a .kino .n{font-family:"Source Serif 4",serif;font-weight:600;font-size:16px;border-bottom:1px solid var(--rule);padding-bottom:3px}
+.a .z{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 18px;padding:7px 0;border-bottom:1px dotted var(--rule);align-items:baseline}
+.a .z:last-child{border-bottom:0}
+.a .z .film{font-family:"Source Serif 4",serif;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.a .z .film em{font-style:normal;color:var(--gruen);font-weight:600}
+.a .z .meta{grid-column:1;font-size:12px;color:var(--ink3)}
+.a .z .zeiten{grid-row:1/span 2;font-family:"IBM Plex Mono",monospace;font-size:13.5px;text-align:right;white-space:nowrap}
+.a .z .zeiten a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+.a .z .zeiten a:hover{border-color:var(--gruen);color:var(--gruen)}
+@media (max-width:560px){.a .z{grid-template-columns:minmax(0,1fr)}.a .z .zeiten{grid-row:auto;text-align:left;margin-top:3px}.a .stand{float:none;text-align:left;margin-bottom:10px}}
+.a .fuss{margin-top:40px;padding-top:14px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--ink3);max-width:62ch}
+
+/* ==========================================================
+   B · NACHTVORSTELLUNG
+   ========================================================== */
+.b{--grund:#0E1013;--tief:#15181d;--text:#EDE9E1;--text2:#9aa0a8;--text3:#61666e;--linie:#232830;--licht:#7FD8CC;
+   background:var(--grund);color:var(--text);font-family:"Archivo Narrow","IBM Plex Sans",sans-serif}
+.b .wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px}
+.b .kopf{padding:40px 0 22px}
+.b h1{font-weight:700;font-size:clamp(28px,6vw,52px);text-transform:uppercase;letter-spacing:.01em;margin:0;line-height:.98}
+.b .unter{color:var(--text3);font-size:14px;margin:8px 0 0;font-family:"IBM Plex Sans",sans-serif}
+.b .band{margin-top:30px;border-top:1px solid var(--linie);padding-top:16px}
+.b .band>h2{font-size:14px;text-transform:uppercase;letter-spacing:.14em;color:var(--text3);margin:0 0 14px;font-weight:700}
+.b .band.jetzt>h2{color:var(--licht)}
+.b .zeile{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:14px 0;border-bottom:1px solid var(--linie)}
+.b .zeile:last-child{border-bottom:0}
+.b .uhr{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:26px;font-weight:500;min-width:96px;color:var(--text2)}
+.b .zeile.hit .uhr{color:var(--licht);text-shadow:0 0 24px rgba(127,216,204,.35)}
+.b .titel{font-size:21px;text-transform:uppercase;font-weight:700;letter-spacing:.01em}
+.b .zeile.hit .titel{color:#fff}
+.b .ort{font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--text3);margin-left:auto;text-align:right}
+.b .marke{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;padding:2px 6px;border:1px solid currentColor}
+.b .m-w{color:#FF8000}
+.b .m-m{color:#fff;background:#001489;border-color:#001489}
+.b .leer{padding:26px 0;color:var(--text3);font-family:"IBM Plex Sans",sans-serif;font-size:14px;border-bottom:1px solid var(--linie)}
+.b a{color:inherit;text-decoration:none}
+.b .fuss{margin-top:40px;padding-top:14px;border-top:1px solid var(--linie);font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;color:var(--text3);max-width:62ch}
+
+/* ==========================================================
+   C · KARTEIKARTE
+   ========================================================== */
+.c{--karton:#EFE7D8;--karte:#F8F3E8;--graph:#2B2B28;--graph2:#5f5d54;--graph3:#8d8a7e;--linie:#d6cdb9;--stempel:#4A2E4D;
+   background:var(--karton);color:var(--graph);font-family:"IBM Plex Sans",sans-serif}
+.c .wrap{max-width:1060px;margin:0 auto;padding:0 20px 80px}
+.c .kopf{padding:40px 0 18px;border-bottom:2px solid var(--graph)}
+.c h1{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:clamp(22px,4vw,32px);margin:0;letter-spacing:-.01em}
+.c .unter{font-size:13.5px;color:var(--graph3);margin:6px 0 0}
+.c .bilanz{display:flex;flex-wrap:wrap;gap:0;margin-top:22px;border:1px solid var(--linie);background:var(--karte)}
+.c .bilanz div{flex:1 1 130px;padding:14px 16px;border-right:1px solid var(--linie)}
+.c .bilanz div:last-child{border-right:0}
+.c .bilanz .n{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:600;display:block;line-height:1}
+.c .bilanz .l{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--graph3);margin-top:4px;display:block}
+.c .bilanz .laeuft .n{color:var(--stempel)}
+.c h2{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--graph2);margin:34px 0 12px}
+.c .karten{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.c .k{background:var(--karte);border:1px solid var(--linie);padding:13px 15px;position:relative;min-height:128px;display:flex;flex-direction:column}
+.c .k.aktiv{border-color:var(--stempel);box-shadow:inset 3px 0 0 var(--stempel)}
+.c .k .t{font-weight:600;font-size:15.5px;line-height:1.25;padding-right:64px}
+.c .k .o{font-size:12.5px;color:var(--graph3);font-style:italic;margin-top:2px}
+.c .k .felder{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--graph2);margin-top:9px;line-height:1.75}
+.c .k .felder span{color:var(--graph3)}
+.c .k .term{margin-top:auto;padding-top:9px;border-top:1px dotted var(--linie);font-family:"IBM Plex Mono",monospace;font-size:12px}
+.c .stempel{position:absolute;top:11px;right:12px;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;padding:3px 6px;border:1.5px solid var(--graph3);color:var(--graph3);transform:rotate(-4deg)}
+.c .stempel.an{border-color:var(--stempel);color:var(--stempel)}
+.c .fuss{margin-top:40px;padding-top:14px;border-top:1px solid var(--linie);font-size:12.5px;color:var(--graph3);max-width:62ch}
+</style>
+
+<script>window.__TODAY__ = {
+ "generated_at": "2026-09-18T20:07:42.104Z",
+ "city": "Stuttgart",
+ "date_from": "2026-09-18",
+ "date_to": "2026-12-26",
+ "dates": [
+  "2026-09-18",
+  "2026-09-19",
+  "2026-09-20",
+  "2026-09-21",
+  "2026-09-22",
+  "2026-09-23",
+  "2026-09-24",
+  "2026-09-25",
+  "2026-09-26",
+  "2026-09-27",
+  "2026-09-28",
+  "2026-09-29",
+  "2026-09-30",
+  "2026-10-01",
+  "2026-10-03",
+  "2026-10-04",
+  "2026-10-06",
+  "2026-10-07",
+  "2026-10-09",
+  "2026-10-10",
+  "2026-10-11",
+  "2026-10-12",
+  "2026-10-14",
+  "2026-10-17",
+  "2026-10-18",
+  "2026-10-21",
+  "2026-10-22",
+  "2026-10-23",
+  "2026-10-24",
+  "2026-10-25",
+  "2026-10-31",
+  "2026-11-01",
+  "2026-11-03",
+  "2026-11-07",
+  "2026-11-08",
+  "2026-11-12",
+  "2026-11-19",
+  "2026-11-22",
+  "2026-12-01",
+  "2026-12-05",
+  "2026-12-15",
+  "2026-12-23",
+  "2026-12-26"
+ ],
+ "watchlist": {
+  "username": "savoy_truffle",
+  "total": 74,
+  "source": "https://letterboxd.com/savoy_truffle/watchlist/"
+ },
+ "mubi_go": {
+  "title": "Gentle Monster",
+  "source": "https://mubi.com/de/de/go"
+ },
+ "matching": {
+  "stufe": "B",
+  "verfahren": "normalisierte Titel, Zeichen-Bigramme, harte Fortsetzungssperre",
+  "schwellen": {
+   "treffer": 0.95,
+   "unscharf": 0.9
+  },
+  "grenze": "Ohne TMDb-Abgleich bleiben Filme unentdeckt, deren deutscher Verleihtitel vom Originaltitel abweicht — etwa Vaterland gegen Fatherland."
+ },
+ "groups": [
+  {
+   "id": "arthaus",
+   "name": "Arthaus Filmtheater",
+   "cinemas": [
+    "delphi",
+    "atelier"
+   ],
+   "mubi_partner": true
+  },
+  {
+   "id": "innenstadt",
+   "name": "Innenstadtkinos",
+   "cinemas": [
+    "em",
+    "gloria",
+    "cinema"
+   ],
+   "mubi_partner": true
+  },
+  {
+   "id": "cinemaxx",
+   "name": "CinemaxX",
+   "cinemas": [
+    "cinemaxx-si",
+    "cinemaxx-liederhalle"
+   ],
+   "mubi_partner": false
+  },
+  {
+   "id": "corso",
+   "name": "Corso",
+   "cinemas": [
+    "corso"
+   ],
+   "mubi_partner": false
+  },
+  {
+   "id": "metropol",
+   "name": "Das Metropol",
+   "cinemas": [
+    "metropol"
+   ],
+   "mubi_partner": false
+  }
+ ],
+ "cinemas": [
+  {
+   "id": "atelier",
+   "name": "atelier am bollwerk",
+   "district": "Stuttgart-Mitte",
+   "mubi_partner": true,
+   "group": "arthaus",
+   "group_name": "Arthaus Filmtheater",
+   "kinozeit_node": "2357",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  },
+  {
+   "id": "cinema",
+   "name": "Cinema",
+   "district": "Marquardtbau, Mitte",
+   "mubi_partner": true,
+   "group": "innenstadt",
+   "group_name": "Innenstadtkinos",
+   "kinozeit_node": "2812",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  },
+  {
+   "id": "delphi",
+   "name": "Delphi Arthaus Kino",
+   "district": "Stuttgart-Süd",
+   "mubi_partner": true,
+   "group": "arthaus",
+   "group_name": "Arthaus Filmtheater",
+   "kinozeit_node": "2354",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  },
+  {
+   "id": "em",
+   "name": "EM",
+   "district": "Marquardtbau, Mitte",
+   "mubi_partner": true,
+   "group": "innenstadt",
+   "group_name": "Innenstadtkinos",
+   "kinozeit_node": "2355",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  },
+  {
+   "id": "gloria",
+   "name": "Gloria",
+   "district": "Marquardtbau, Mitte",
+   "mubi_partner": true,
+   "group": "innenstadt",
+   "group_name": "Innenstadtkinos",
+   "kinozeit_node": "2356",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  },
+  {
+   "id": "cinemaxx-liederhalle",
+   "name": "CinemaxX Liederhalle",
+   "district": "Stuttgart-Mitte",
+   "mubi_partner": false,
+   "group": "cinemaxx",
+   "group_name": "CinemaxX",
+   "kinozeit_node": "2667",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  },
+  {
+   "id": "cinemaxx-si",
+   "name": "CinemaxX SI-Centrum",
+   "district": "Stuttgart-Möhringen",
+   "mubi_partner": false,
+   "group": "cinemaxx",
+   "group_name": "CinemaxX",
+   "kinozeit_node": "2448",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  },
+  {
+   "id": "corso",
+   "name": "Corso Cinema International",
+   "district": "Stuttgart-Vaihingen",
+   "mubi_partner": false,
+   "group": "corso",
+   "group_name": "Corso",
+   "kinozeit_node": "2359",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  },
+  {
+   "id": "metropol",
+   "name": "Das Metropol",
+   "district": "Stuttgart-Mitte",
+   "mubi_partner": false,
+   "group": "metropol",
+   "group_name": "Das Metropol",
+   "kinozeit_node": "2586",
+   "source_url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "status": "live"
+  }
+ ],
+ "films": [
+  {
+   "key": "62765",
+   "film_nodes": [
+    "62765"
+   ],
+   "title": "Bad Apples",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "treffer",
+    "confidence": 1,
+    "resolved_by": "titel",
+    "watchlist": {
+     "title": "Bad Apples",
+     "year": "2025",
+     "added_on": "2026-09-19",
+     "uri": "https://boxd.it/JseO"
+    },
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "18:10",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-19",
+     "time": "18:10",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-20",
+     "time": "18:10",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-21",
+     "time": "18:10",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-22",
+     "time": "18:10",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-23",
+     "time": "18:10",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63892",
+   "film_nodes": [
+    "63892",
+    "slug:412576",
+    "slug:412575"
+   ],
+   "title": "Dune: Part Three",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "treffer",
+    "confidence": 1,
+    "resolved_by": "titel",
+    "watchlist": {
+     "title": "Dune: Part Three",
+     "year": "2026",
+     "added_on": "2026-09-19",
+     "uri": "https://boxd.it/ImWe"
+    },
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-12-15",
+     "time": "19:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-12-15",
+     "time": "19:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-12-15",
+     "time": "20:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-12-15",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64039",
+   "film_nodes": [
+    "64039"
+   ],
+   "title": "Gentle Monster",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "treffer",
+    "confidence": 1,
+    "resolved_by": "titel",
+    "watchlist": {
+     "title": "Gentle Monster",
+     "year": "2026",
+     "added_on": "2026-09-19",
+     "uri": "https://boxd.it/UEAa"
+    },
+    "related": []
+   },
+   "mubi_go": true,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-19",
+     "time": "15:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-19",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-20",
+     "time": "15:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-20",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-21",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-22",
+     "time": "15:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-22",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-23",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "9656",
+   "film_nodes": [
+    "9656"
+   ],
+   "title": "Her",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "treffer",
+    "confidence": 1,
+    "resolved_by": "titel",
+    "watchlist": {
+     "title": "Her",
+     "year": "2013",
+     "added_on": "2026-09-19",
+     "uri": "https://boxd.it/4O24"
+    },
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-29",
+     "time": "20:15",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "62930",
+   "film_nodes": [
+    "62930"
+   ],
+   "title": "Adams Acht",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "15:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "15:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-18",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-19",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "15:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-19",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "20:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-20",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "15:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-20",
+     "time": "18:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "15:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-21",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-22",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "15:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "18:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-22",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "15:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-23",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:always lalisa",
+   "film_nodes": [
+    "slug:422036"
+   ],
+   "title": "ALWAYS LALISA",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-12",
+     "time": "18:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-14",
+     "time": "18:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64331",
+   "film_nodes": [
+    "64331"
+   ],
+   "title": "Arnie & Barney - Retten das Wasser",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "12:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:arthouse",
+   "film_nodes": [
+    "slug:372380"
+   ],
+   "title": "Arthouse",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "20:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "44631",
+   "film_nodes": [
+    "44631"
+   ],
+   "title": "Avengers: Endgame",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-24",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-24",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-24",
+     "time": "20:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-24",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-25",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-25",
+     "time": "16:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-25",
+     "time": "20:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-25",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-25",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-26",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-26",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-26",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-26",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-26",
+     "time": "20:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-27",
+     "time": "15:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-27",
+     "time": "19:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-27",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-27",
+     "time": "20:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:batman triple",
+   "film_nodes": [
+    "slug:347388"
+   ],
+   "title": "Batman Triple",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "11:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64212",
+   "film_nodes": [
+    "64212"
+   ],
+   "title": "Bibi Blocksberg - Die total verhexte Zeitreise",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63479",
+   "film_nodes": [
+    "63479"
+   ],
+   "title": "Casablanca",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-11-22",
+     "time": "15:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64170",
+   "film_nodes": [
+    "64170"
+   ],
+   "title": "Coyote Vs. Acme",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-18",
+     "time": "14:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-18",
+     "time": "16:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "16:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-18",
+     "time": "18:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "18:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "18:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-18",
+     "time": "18:30",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "20:40",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "11:25",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "12:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-19",
+     "time": "14:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-19",
+     "time": "16:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-19",
+     "time": "16:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "17:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "17:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-19",
+     "time": "18:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-19",
+     "time": "18:30",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "18:50",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "19:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-19",
+     "time": "20:40",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "11:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "12:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "12:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "13:25",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "14:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-20",
+     "time": "16:20",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "16:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "16:30",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "17:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "18:20",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "18:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-20",
+     "time": "18:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-20",
+     "time": "20:40",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-21",
+     "time": "14:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-21",
+     "time": "16:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-21",
+     "time": "18:25",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-21",
+     "time": "18:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-21",
+     "time": "18:30",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-21",
+     "time": "20:40",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-22",
+     "time": "14:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-22",
+     "time": "16:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-22",
+     "time": "18:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-22",
+     "time": "18:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-22",
+     "time": "18:30",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-22",
+     "time": "20:40",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-23",
+     "time": "14:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-23",
+     "time": "16:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-23",
+     "time": "18:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-23",
+     "time": "18:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-23",
+     "time": "18:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-23",
+     "time": "20:40",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "14750",
+   "film_nodes": [
+    "14750"
+   ],
+   "title": "Dangerous Minds - Wilde Gedanken",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "20:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64115",
+   "film_nodes": [
+    "64115"
+   ],
+   "title": "Das Ende der Sterne",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-18",
+     "time": "15:40",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "17:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64249",
+   "film_nodes": [
+    "64249"
+   ],
+   "title": "Das geträumte Abenteuer",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-27",
+     "time": "12:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64270",
+   "film_nodes": [
+    "64270"
+   ],
+   "title": "Das gewisse Etwas",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "14:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-18",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "20:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "14:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "14:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-20",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "14:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-21",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "14:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "14:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-23",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64402",
+   "film_nodes": [
+    "64402"
+   ],
+   "title": "David",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "13:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "17:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:herr ringe trilogie version",
+   "film_nodes": [
+    "slug:415458"
+   ],
+   "title": "Der Herr der Ringe Trilogie (Extended Version)",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-11-07",
+     "time": "11:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-11-07",
+     "time": "11:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64345",
+   "film_nodes": [
+    "64345"
+   ],
+   "title": "Der perfekte Urlaub",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-21",
+     "time": "19:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-21",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-22",
+     "time": "17:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-22",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-22",
+     "time": "20:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-22",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-23",
+     "time": "17:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-23",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-23",
+     "time": "20:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-23",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-24",
+     "time": "17:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-24",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-24",
+     "time": "20:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-24",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-25",
+     "time": "17:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-25",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-10-25",
+     "time": "20:00",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-25",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "61276",
+   "film_nodes": [
+    "61276"
+   ],
+   "title": "Die Odyssee",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-18",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "16:20",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "19:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "22:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "22:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "16:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "17:20",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "22:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "22:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "16:20",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "17:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-21",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "16:20",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "20:20",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "22:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "16:20",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-22",
+     "time": "16:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "19:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "22:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-23",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "16:20",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "19:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "22:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "12838",
+   "film_nodes": [
+    "12838"
+   ],
+   "title": "Die Tribute von Panem - The Hunger Games",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-11",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64976",
+   "film_nodes": [
+    "64976"
+   ],
+   "title": "Disney Channel Mitmachkino September 2026",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "14:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "11:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "11:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "12:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "11:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "11:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "12:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63490",
+   "film_nodes": [
+    "63490"
+   ],
+   "title": "Eine Krankheit wie ein Gedicht",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-27",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "42215",
+   "film_nodes": [
+    "42215"
+   ],
+   "title": "Elias - Das kleine Rettungsboot",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "11:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "11:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "11:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "11:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "32011",
+   "film_nodes": [
+    "32011"
+   ],
+   "title": "Emil und die Detektive",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-20",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "17:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63992",
+   "film_nodes": [
+    "63992"
+   ],
+   "title": "Emil und die Detektive",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63989",
+   "film_nodes": [
+    "63989"
+   ],
+   "title": "Finding Emily",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "18:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "21:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "18:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "20:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "21:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "21:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64814",
+   "film_nodes": [
+    "64814"
+   ],
+   "title": "Frost ohne Schnee und Eis",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "14:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-19",
+     "time": "14:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-22",
+     "time": "14:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63354",
+   "film_nodes": [
+    "63354"
+   ],
+   "title": "Frühstück bei Audrey",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:gewalt und leidenschaft",
+   "film_nodes": [
+    "slug:24434"
+   ],
+   "title": "Gewalt und Leidenschaft",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-27",
+     "time": "20:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64522",
+   "film_nodes": [
+    "64522"
+   ],
+   "title": "Gioia mia",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-28",
+     "time": "20:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:hanuman ansh",
+   "film_nodes": [
+    "slug:422251"
+   ],
+   "title": "Hanuman Ansh",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "11:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64054",
+   "film_nodes": [
+    "64054"
+   ],
+   "title": "Hiddensee",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "13:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "60752",
+   "film_nodes": [
+    "60752"
+   ],
+   "title": "Hirten",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-21",
+     "time": "15:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-23",
+     "time": "15:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:horror classics",
+   "film_nodes": [
+    "slug:396083"
+   ],
+   "title": "Horror Classics",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-25",
+     "time": "22:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:bene comune",
+   "film_nodes": [
+    "slug:422236"
+   ],
+   "title": "Il bene comune",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-24",
+     "time": "20:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64073",
+   "film_nodes": [
+    "64073",
+    "slug:402528"
+   ],
+   "title": "Insidious: Out of the Further",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "20:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "21:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "22:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "22:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "23:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "22:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "18:30",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-23",
+     "time": "18:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "22:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64361",
+   "film_nodes": [
+    "64361"
+   ],
+   "title": "Jim Queen",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "18:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "20:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64499",
+   "film_nodes": [
+    "64499"
+   ],
+   "title": "Kalter Hund",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:kevin allein zu haus",
+   "film_nodes": [
+    "slug:333496"
+   ],
+   "title": "Kevin - Allein zu Haus",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-12-26",
+     "time": "15:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64528",
+   "film_nodes": [
+    "64528"
+   ],
+   "title": "KitKatClub: Kinks of Berlin",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "22:40",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:vita da grandi",
+   "film_nodes": [
+    "slug:422230"
+   ],
+   "title": "La vita da grandi",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-29",
+     "time": "20:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "16988",
+   "film_nodes": [
+    "16988"
+   ],
+   "title": "Liebe braucht keine Ferien",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-12-01",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-12-01",
+     "time": "20:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64816",
+   "film_nodes": [
+    "64816"
+   ],
+   "title": "LINKIN PARK: UNSHATTER",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-30",
+     "time": "17:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-30",
+     "time": "20:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-01",
+     "time": "18:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-03",
+     "time": "17:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-03",
+     "time": "19:50",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-03",
+     "time": "22:40",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-04",
+     "time": "17:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64129",
+   "film_nodes": [
+    "64129"
+   ],
+   "title": "Lovebox",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-28",
+     "time": "18:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:luegen ueber meine mutter",
+   "film_nodes": [
+    "slug:409922"
+   ],
+   "title": "Lügen über meine Mutter",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-10-11",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-11-12",
+     "time": "18:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinema",
+     "date": "2026-11-19",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64481",
+   "film_nodes": [
+    "64481"
+   ],
+   "title": "Marsupilami",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "12:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64630",
+   "film_nodes": [
+    "64630"
+   ],
+   "title": "Meeting the Buddha",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-10-12",
+     "time": "17:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:met opera 2026 27 camille saint saens samson et dalila",
+   "film_nodes": [
+    "slug:418970"
+   ],
+   "title": "Met Opera 2026/27: Camille Saint-Saëns SAMSON ET DALILA",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinema",
+     "date": "2026-12-05",
+     "time": "18:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "65044",
+   "film_nodes": [
+    "65044"
+   ],
+   "title": "Met Opera 2026/27: GEBURTSTAGSGALA - 20 Jahre Met live im Kino",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinema",
+     "date": "2026-09-19",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:met opera 2026 27 wolfgang amadeus mozart cosi fan tutte",
+   "film_nodes": [
+    "slug:418964"
+   ],
+   "title": "Met Opera 2026/27: Wolfgang Amadeus Mozart COSÌ FAN TUTTE",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinema",
+     "date": "2026-10-03",
+     "time": "19:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63693",
+   "film_nodes": [
+    "63693"
+   ],
+   "title": "Minions & Monster",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "12:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "14:50",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "12:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "13:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "13:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64085",
+   "film_nodes": [
+    "64085"
+   ],
+   "title": "Mutiny",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "23:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "23:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "23:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "23:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "65045",
+   "film_nodes": [
+    "65045"
+   ],
+   "title": "NCT 127 5TH TOUR 'NEO CITY : SEOUL - THE REDLINE' in CINEMAS",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:nosferatu eine symphonie grauens",
+   "film_nodes": [
+    "slug:10530"
+   ],
+   "title": "Nosferatu - Eine Symphonie des Grauens",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-10-09",
+     "time": "22:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64604",
+   "film_nodes": [
+    "64604"
+   ],
+   "title": "Nur ein kleines bisschen Glück",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "16:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64705",
+   "film_nodes": [
+    "64705"
+   ],
+   "title": "Nur geträumt",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-10-07",
+     "time": "20:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64578",
+   "film_nodes": [
+    "64578"
+   ],
+   "title": "OASIS: Don't Look Back In Anger",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "17:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "17610",
+   "film_nodes": [
+    "17610"
+   ],
+   "title": "Ocean's Eleven",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-10-04",
+     "time": "17:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64324",
+   "film_nodes": [
+    "64324"
+   ],
+   "title": "Oh la la 2 - Neue Tests, neues Chaos",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64215",
+   "film_nodes": [
+    "64215"
+   ],
+   "title": "One Night Only",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "16946",
+   "film_nodes": [
+    "16946"
+   ],
+   "title": "Pan's Labyrinth",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "metropol",
+     "date": "2026-10-06",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-10-06",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-10-06",
+     "time": "20:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63984",
+   "film_nodes": [
+    "63984"
+   ],
+   "title": "Paw Patrol: Der Dino Film",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "14:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "11:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "11:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "11:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "11:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "11:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "11:50",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "14:20",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "14:20",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "14:20",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64147",
+   "film_nodes": [
+    "64147"
+   ],
+   "title": "Practical Magic 2 - Zauberhafte Schwestern",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "16:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "19:10",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-18",
+     "time": "20:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "20:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "14:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "18:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "20:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "14:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "15:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "17:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "20:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "20:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "20:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "16:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "18:30",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "19:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-21",
+     "time": "20:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "16:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "17:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "19:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-22",
+     "time": "20:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "20:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "15:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "16:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "19:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "19:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-23",
+     "time": "20:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63637",
+   "film_nodes": [
+    "63637"
+   ],
+   "title": "Pressure",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "15:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "16:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "20:15",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "21:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "15:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "16:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "21:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "15:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "15:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "20:15",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "20:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "15:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "16:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "20:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "15:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "16:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "20:15",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "20:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "16:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "20:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "14975",
+   "film_nodes": [
+    "14975"
+   ],
+   "title": "Prime Time",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-24",
+     "time": "20:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-25",
+     "time": "20:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-26",
+     "time": "20:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-27",
+     "time": "20:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-28",
+     "time": "20:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-29",
+     "time": "20:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-30",
+     "time": "20:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64946",
+   "film_nodes": [
+    "64946"
+   ],
+   "title": "Queen Budapest",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-07",
+     "time": "20:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-10-10",
+     "time": "15:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-10-10",
+     "time": "18:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64213",
+   "film_nodes": [
+    "64213"
+   ],
+   "title": "Resident Evil",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "17:50",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-18",
+     "time": "18:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "20:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-18",
+     "time": "20:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-18",
+     "time": "20:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "23:15",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "23:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "15:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "17:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-19",
+     "time": "18:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "20:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-19",
+     "time": "20:45",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "21:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "21:15",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "22:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "23:00",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "17:45",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "17:50",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "18:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "20:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "20:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "20:45",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "22:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-21",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "17:50",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "19:40",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-21",
+     "time": "20:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-21",
+     "time": "20:45",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "22:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-22",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "17:50",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "20:15",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-22",
+     "time": "20:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-22",
+     "time": "20:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "22:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-23",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "17:50",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "20:15",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-23",
+     "time": "20:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-23",
+     "time": "20:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "22:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "23:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "4516",
+   "film_nodes": [
+    "4516"
+   ],
+   "title": "Resident Evil: The Final Chapter",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:rocky",
+   "film_nodes": [
+    "slug:33557",
+    "slug:33558"
+   ],
+   "title": "Rocky",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-11-03",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-11-03",
+     "time": "20:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:royal opera macbeth",
+   "film_nodes": [
+    "slug:240152"
+   ],
+   "title": "Royal Opera: Macbeth",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinema",
+     "date": "2026-10-17",
+     "time": "19:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64216",
+   "film_nodes": [
+    "64216"
+   ],
+   "title": "Runner",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-18",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-18",
+     "time": "16:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-18",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-19",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-19",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "18:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-20",
+     "time": "20:45",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-21",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-21",
+     "time": "18:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "21:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-22",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-22",
+     "time": "18:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-22",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-23",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-23",
+     "time": "18:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "gloria",
+     "date": "2026-09-23",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:sam dylan iconic drama",
+   "film_nodes": [
+    "slug:408822"
+   ],
+   "title": "Sam Dylan: Iconic Drama",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "62327",
+   "film_nodes": [
+    "62327"
+   ],
+   "title": "Shaun das Schaf - Spuk im Kürbisfeld",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-27",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-27",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64797",
+   "film_nodes": [
+    "64797"
+   ],
+   "title": "Shrek - Der tollkühne Held (25 Jahre)",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "13:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64099",
+   "film_nodes": [
+    "64099"
+   ],
+   "title": "Spaziergang nach Syrakus",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "14:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "17:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "17:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63901",
+   "film_nodes": [
+    "63901"
+   ],
+   "title": "Spider-Man: Brand New Day",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "14:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-18",
+     "time": "15:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "18:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "19:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "22:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "22:50",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "11:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "11:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "13:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "15:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "19:50",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "22:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "22:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "11:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "13:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "16:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "17:15",
+     "version": "OV",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "19:50",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-20",
+     "time": "22:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "14:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "19:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "22:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "14:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-22",
+     "time": "17:55",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "19:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "22:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "14:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "14:45",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "19:30",
+     "version": "DF",
+     "format": "MXP",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "19:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "22:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63360",
+   "film_nodes": [
+    "63360"
+   ],
+   "title": "Staatsschutz",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-19",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-21",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-23",
+     "time": "16:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63119",
+   "film_nodes": [
+    "63119"
+   ],
+   "title": "Steckerlfischfiasko",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "13:45",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "16:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "17:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "18:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "17:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63578",
+   "film_nodes": [
+    "63578"
+   ],
+   "title": "The Invite",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "17:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "17:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "14961",
+   "film_nodes": [
+    "14961"
+   ],
+   "title": "The Rocky Horror Picture Show",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-10-31",
+     "time": "20:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-11-01",
+     "time": "15:00",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:uprising",
+   "film_nodes": [
+    "slug:368167",
+    "slug:368168"
+   ],
+   "title": "The Uprising",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-18",
+     "time": "18:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-18",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-19",
+     "time": "16:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "17:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "15:50",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-20",
+     "time": "20:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-21",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-22",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-23",
+     "time": "20:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:thelma und louise",
+   "film_nodes": [
+    "slug:20545"
+   ],
+   "title": "Thelma & Louise",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-11-08",
+     "time": "17:15",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "16358",
+   "film_nodes": [
+    "16358"
+   ],
+   "title": "Tim Burton's Nightmare Before Christmas",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-12-23",
+     "time": "20:55",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63164",
+   "film_nodes": [
+    "63164"
+   ],
+   "title": "Toy Story 5",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-18",
+     "time": "14:20",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-18",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "em",
+     "date": "2026-09-19",
+     "time": "13:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-19",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-19",
+     "time": "13:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "corso",
+     "date": "2026-09-20",
+     "time": "11:25",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-20",
+     "time": "11:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-21",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-21",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-22",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-22",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-23",
+     "time": "14:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-23",
+     "time": "14:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:tre ciotole",
+   "film_nodes": [
+    "slug:422233"
+   ],
+   "title": "Tre Ciotole",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-26",
+     "time": "20:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64346",
+   "film_nodes": [
+    "64346"
+   ],
+   "title": "Und es war Sommer - Dieter Thomas Kuhn & Band",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-18",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-19",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-20",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-21",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-22",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "18:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64046",
+   "film_nodes": [
+    "64046"
+   ],
+   "title": "Vaterland",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-18",
+     "time": "16:20",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "18:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-18",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-19",
+     "time": "14:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "18:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-19",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "13:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-20",
+     "time": "14:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "18:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "20:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "18:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-21",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "delphi",
+     "date": "2026-09-22",
+     "time": "16:45",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "18:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "15:00",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "16:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "18:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "20:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64199",
+   "film_nodes": [
+    "64199"
+   ],
+   "title": "Verity - Dunkle Geheimnisse",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "cinemaxx-si",
+     "date": "2026-09-30",
+     "time": "19:30",
+     "version": "DF",
+     "format": "PLF",
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-30",
+     "time": "19:30",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "63342",
+   "film_nodes": [
+    "63342"
+   ],
+   "title": "Von Scham und Geld",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "metropol",
+     "date": "2026-09-23",
+     "time": "19:30",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "cinemaxx-liederhalle",
+     "date": "2026-09-27",
+     "time": "17:00",
+     "version": "OmU",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "64103",
+   "film_nodes": [
+    "64103"
+   ],
+   "title": "Was haben wir gelacht",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-20",
+     "time": "13:15",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-22",
+     "time": "17:50",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    },
+    {
+     "cinema_id": "atelier",
+     "date": "2026-09-23",
+     "time": "15:40",
+     "version": null,
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  },
+  {
+   "key": "titel:west side story",
+   "film_nodes": [
+    "slug:132562"
+   ],
+   "title": "West Side Story",
+   "genre": null,
+   "runtime_min": null,
+   "match": {
+    "status": "kein_treffer",
+    "confidence": 0,
+    "resolved_by": "titel",
+    "watchlist": null,
+    "related": []
+   },
+   "mubi_go": false,
+   "showings": [
+    {
+     "cinema_id": "corso",
+     "date": "2026-10-18",
+     "time": "14:30",
+     "version": "OF",
+     "format": null,
+     "booking_url": null
+    }
+   ]
+  }
+ ],
+ "stats": {
+  "treffer": 4,
+  "unscharf": 0,
+  "verwandt": 0,
+  "filme": 93,
+  "vorstellungen": 766,
+  "vorstellungen_heute": 114,
+  "mubi_go": 1,
+  "kinos_live": 9
+ },
+ "sources": [
+  {
+   "name": "kino-zeit.de — Stadtseite Stuttgart",
+   "url": "https://www.kino-zeit.de/kinoprogramm/ort/Stuttgart",
+   "captured_at": "2026-09-18T20:07:41.632Z"
+  },
+  {
+   "name": "Letterboxd-Datenexport",
+   "url": "https://letterboxd.com/savoy_truffle/watchlist/"
+  },
+  {
+   "name": "MUBI GO",
+   "url": "https://mubi.com/de/de/go"
+  }
+ ]
+};window.__WATCHLIST__ = {
+  "quelle": "letterboxd.com/film/<slug>/json/ je Film, abgerufen 18.09.2026",
+  "user": "savoy_truffle",
+  "felder": ["slug","lid","name","originalName","year","runtime","director"],
+  "filme": [
+["fatherland-2026","TbK4","Fatherland","Ojczyzna",2026,82,"Paweł Pawlikowski"],
+["gentle-monster","UEAa","Gentle Monster",null,2026,114,"Marie Kreutzer"],
+["bad-lieutenant-tokyo","UEnq","Bad Lieutenant: Tokyo","バッド・ルーテナント:トウキョウ",2026,108,"Takashi Miike"],
+["ferine-2025","QkkS","Ferine",null,2025,105,"Andrea Corsini"],
+["paradise-lost-2026-1","Z5Ku","Paradise Lost","실낙원",2026,101,"Yeon Sang-ho"],
+["colony-2026","QXtO","Colony","군체",2026,123,"Yeon Sang-ho"],
+["her","4O24","Her",null,2013,126,"Spike Jonze"],
+["drive-2011","IG","Drive",null,2011,100,"Nicolas Winding Refn"],
+["taxi-driver","2b8y","Taxi Driver",null,1976,114,"Martin Scorsese"],
+["dune-part-three","ImWe","Dune: Part Three",null,2026,140,"Denis Villeneuve"],
+["not-alone-2027","14xGK","Not Alone",null,2027,null,"Eric Guillon"],
+["ally-3","vfq0","Ally","앨리",null,null,"Bong Joon Ho"],
+["looking-for-paradise-1992","Jujw","Looking For Paradise","고릴라",1992,23,"Bong Joon Ho"],
+["incoherence","2fSK","Incoherence","지리멸렬",1994,31,"Bong Joon Ho"],
+["the-memories-in-my-frame","n53O","The Memories in My Frame","프레임 속의 기억들",1994,5,"Bong Joon Ho"],
+["white-man-1994","n53E","White Man","백색인",1994,19,"Bong Joon Ho"],
+["barking-dogs-never-bite","1BLa","Barking Dogs Never Bite","플란다스의 개",2000,110,"Bong Joon Ho"],
+["sink-rise","5G5m","Sink & Rise","싱크 앤 라이즈",2004,6,"Bong Joon Ho"],
+["jeonju-digital-project-2004","nFTw","Jeonju Digital Project 2004","거울에 비친 마음: 디지털삼인삼색2004",2004,98,"Gakuryu Ishii u. a."],
+["influenza","3Vvq","Influenza","인플루엔자",2004,28,"Bong Joon Ho"],
+["the-host","28ZY","The Host","괴물",2006,120,"Bong Joon Ho"],
+["311-a-sense-of-home-films","dWvc","3.11 A Sense of Home Films",null,2011,75,"Víctor Erice u. a."],
+["the-brigands-of-rattlecreek","YYfE","The Brigands of Rattlecreek",null,null,null,"Park Chan-wook"],
+["the-moon-is-the-suns-dream","6eS8","The Moon Is... the Sun's Dream","달은... 해가 꾸는 꿈",1992,103,"Park Chan-wook"],
+["trio-1997","7MLi","Trio","3인조",1997,103,"Park Chan-wook"],
+["judgement-1999","17p4","Judgement","심판",1999,27,"Park Chan-wook"],
+["sympathy-for-mr-vengeance","23WU","Sympathy for Mr. Vengeance","복수는 나의 것",2002,129,"Park Chan-wook"],
+["if-you-were-me","3VS","If You Were Me","여섯개의 시선",2003,110,"Yim Soon-rye u. a."],
+["never-ending-peace-and-love","nHOy","Never Ending Peace and Love","믿거나 말거나 찬드라의 경우",2003,28,"Park Chan-wook"],
+["three-extremes","1eGw","Three... Extremes","쓰리, 몬스터",2004,125,"Fruit Chan u. a."],
+["lady-vengeance","248G","Lady Vengeance","친절한 금자씨",2005,115,"Park Chan-wook"],
+["im-a-cyborg-but-thats-ok","2328","I'm a Cyborg, But That's OK","싸이보그지만 괜찮아",2006,105,"Park Chan-wook"],
+["thirst-2009","1Aqq","Thirst","박쥐",2009,134,"Park Chan-wook"],
+["night-fishing","2L1I","Night Fishing","파란만장",2011,33,"Park Chan-wook"],
+["60-seconds-of-solitude-in-year-zero","gDM0","60 Seconds of Solitude in Year Zero","60 Sekundit Üksindust Aastal Null",2011,60,"Rafi Pitts u. a."],
+["day-trip","5TRe","Day Trip","청출어람",2012,20,"Park Chan-wook"],
+["stoker","34S2","Stoker",null,2013,99,"Park Chan-wook"],
+["bitter-sweet-seoul","86Io","Bitter, Sweet, Seoul","고진감래",2014,63,"Park Chan-wook"],
+["a-rose-reborn","9yaw","A Rose Reborn",null,2014,20,"Park Chan-wook"],
+["decades-apart","jYyY","Decades Apart","격세지감",2017,18,"Park Chan-wook"],
+["the-little-drummer-girl-2018","kkCS","The Little Drummer Girl",null,2018,342,"Park Chan-wook"],
+["the-sympathizer","G4lK","The Sympathizer",null,2024,408,"Park Chan-wook u. a."],
+["little-women-2019","aSVk","Little Women",null,2019,135,"Greta Gerwig"],
+["the-tragedy-of-macbeth-2021","xpu6","The Tragedy of Macbeth",null,2021,185,"Yaël Farber"],
+["foe-2023","sy7U","Foe",null,2023,111,"Garth Davis"],
+["blitz-2024","xR8i","Blitz",null,2024,120,"Steve McQueen"],
+["bad-apples-2025","JseO","Bad Apples",null,2025,100,"Jonatan Etzler"],
+["the-beatles-ringo","LpRs","The Beatles: Ringo",null,2028,null,"Sam Mendes"],
+["the-beatles-john","LpQY","The Beatles: John",null,2028,null,"Sam Mendes"],
+["the-beatles-george","LpRi","The Beatles: George",null,2028,null,"Sam Mendes"],
+["the-beatles-paul","LpR8","The Beatles: Paul",null,2028,null,"Sam Mendes"],
+["sacrifice-3","V6SQ","Sacrifice",null,null,null,"Damien Chazelle"],
+["sunburn","esW","Sunburn",null,1999,86,"Nelson Hume"],
+["how-harry-became-a-tree","3qv0","How Harry Became a Tree",null,2001,100,"Goran Paskaljević"],
+["on-the-edge-2001","2N3G","On the Edge",null,2001,85,"John Carney"],
+["the-way-we-live-now","dD1M","The Way We Live Now",null,2001,300,"David Yates"],
+["28-days-later","2aXU","28 Days Later",null,2002,113,"Danny Boyle"],
+["girl-with-a-pearl-earring","256G","Girl with a Pearl Earring",null,2003,101,"Peter Webber"],
+["cold-mountain","270A","Cold Mountain",null,2003,154,"Anthony Minghella"],
+["breakfast-on-pluto","28MU","Breakfast on Pluto",null,2005,128,"Neil Jordan"],
+["the-wind-that-shakes-the-barley","293Q","The Wind That Shakes the Barley",null,2006,127,"Ken Loach"],
+["peacock-2010","1T94","Peacock",null,2010,90,"Michael Lander"],
+["retreat","2wWO","Retreat",null,2011,89,"Carl Tibbetts"],
+["in-time","FPS","In Time",null,2011,109,"Andrew Niccol"],
+["broken-2012","3GWQ","Broken",null,2012,91,"Rufus Norris"],
+["aloft","7mvo","Aloft",null,2014,112,"Claudia Llosa"],
+["anthropoid","bOr8","Anthropoid",null,2016,120,"Sean Ellis"],
+["the-delinquent-season","gLiC","The Delinquent Season",null,2018,103,"Mark O'Rowe"],
+["small-things-like-these","FHIm","Small Things Like These",null,2024,99,"Tim Mielants"],
+["steve-2025","LekC","Steve",null,2025,92,"Tim Mielants"],
+["28-years-later-the-bone-temple","MwlA","28 Years Later: The Bone Temple",null,2026,109,"Nia DaCosta"],
+["peaky-blinders-the-immortal-man","x3yq","Peaky Blinders: The Immortal Man",null,2026,112,"Tom Harper"],
+["waffle-f1-the-movie-2","14srU","Waffle F1 The Movie: 2",null,2026,177,"Reece Nuttall"],
+["a-quiet-place-part-iii","Ozne","A Quiet Place Part III",null,2027,null,"John Krasinski"]
+  ]
+}
+;</script>
+
+<nav class="switch" id="sw">
+  <span>Richtung</span>
+  <button data-k="a" aria-pressed="true">A · Programmheft</button>
+  <button data-k="b" aria-pressed="false">B · Nachtvorstellung</button>
+  <button data-k="c" aria-pressed="false">C · Karteikarte</button>
+  <span class="note">Echte Daten vom 18.09.2026 — dieselbe Grundlage wie im Dashboard.</span>
+</nav>
+<div class="stage" id="stage"></div>
+
+<script>
+(function () {
+  var d = window.__TODAY__, WL = (window.__WATCHLIST__ || { filme: [] }).filme.map(function (f) {
+    return { slug: f[0], name: f[2], original: f[3], jahr: f[4], laufzeit: f[5], regie: f[6] }; });
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]; }); };
+  var TAGE = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  var kurz = function (iso) { var x = new Date(iso + 'T12:00:00');
+    return String(x.getDate()).padStart(2,'0') + '.' + String(x.getMonth()+1).padStart(2,'0') + '.'; };
+  var wtag = function (iso) { return TAGE[new Date(iso + 'T12:00:00').getDay()]; };
+  var kino = {}; d.cinemas.forEach(function (c) { kino[c.id] = c; });
+  var heute = d.dates[0];
+  var grenze = (function () { for (var i = 1; i < d.dates.length; i++)
+    if (new Date(d.dates[i] + 'T12:00:00').getDay() === 4) return d.dates[i]; return null; })();
+
+  function alleVorst(filter) {
+    var out = [];
+    d.films.forEach(function (f) { f.showings.forEach(function (s) {
+      if (!filter || filter(s, f)) out.push({ f: f, s: s }); }); });
+    return out.sort(function (a, b) {
+      return (a.s.date + a.s.time).localeCompare(b.s.date + b.s.time); });
+  }
+  var istTreffer = function (f) { return f.match.status === 'treffer'; };
+
+  // ---------- A · Programmheft ----------
+  function renderA() {
+    var h = ['<div class="a"><div class="wrap">'];
+    h.push('<header class="kopf"><div class="stand">Stuttgart · ' + d.cinemas.length + ' Kinos<br>' +
+      kurz(d.date_from) + '–' + kurz(d.date_to) + '<br>' + d.stats.vorstellungen + ' Vorstellungen</div>' +
+      '<h1>Schrödingers Kino</h1><p class="unter">Programm für deine Watchlist · Stuttgart</p></header>');
+
+    h.push('<div class="lauf"><span>Watchlist <b>' + d.watchlist.total + ' Titel</b></span>' +
+      '<span>Im Programm <b>' + d.stats.filme + '</b></span>' +
+      '<span>Treffer <b>' + d.stats.treffer + '</b></span>' +
+      '<span>MUBI GO <b>' + d.stats.mubi_go + '</b></span></div>');
+
+    var tr = d.films.filter(istTreffer);
+    h.push('<h2>Deine Treffer</h2><p class="h2note">Filme von der Watchlist im gesamten Zeitraum</p><div class="treffer">');
+    tr.forEach(function (f) {
+      var orte = [...new Set(f.showings.map(function (s) { return kino[s.cinema_id].name; }))];
+      var t0 = f.showings[0], tn = f.showings[f.showings.length - 1];
+      h.push('<article class="tr"><div class="t">' + esc(f.title) + '</div>' +
+        '<div class="m">' + esc(orte.join(' · ')) + (f.mubi_go ? ' · MUBI GO' : '') + '</div>' +
+        '<div class="z">' + (f.showings.length === 1
+          ? kurz(t0.date) + ' um ' + t0.time + (t0.version ? ' · ' + t0.version : '')
+          : f.showings.length + ' Vorstellungen, ' + kurz(t0.date) + '–' + kurz(tn.date)) + '</div></article>');
+    });
+    h.push('</div>');
+
+    var tage = grenze ? d.dates.filter(function (x) { return x < grenze; }) : d.dates.slice(0, 6);
+    h.push('<h2>Das Programm</h2><p class="h2note">Die laufende Spielwoche</p>');
+    tage.forEach(function (dt) {
+      h.push('<section class="tag"><div class="d">' + wtag(dt) + ', ' + kurz(dt) + '</div>');
+      d.cinemas.forEach(function (c) {
+        var rows = d.films.map(function (f) {
+          return { f: f, s: f.showings.filter(function (s) { return s.date === dt && s.cinema_id === c.id; }) };
+        }).filter(function (x) { return x.s.length; });
+        if (!rows.length) return;
+        h.push('<div class="kino"><div class="n">' + esc(c.name) + '</div>');
+        rows.forEach(function (x) {
+          var meta = [x.f.genre, x.f.runtime_min ? x.f.runtime_min + ' Min' : null].filter(Boolean).join(' · ');
+          h.push('<div class="z"><div class="film">' + (istTreffer(x.f) ? '<em>' + esc(x.f.title) + '</em>' : esc(x.f.title)) +
+            (x.f.mubi_go ? ' <span style="font-size:11px;color:#001489">MUBI GO</span>' : '') + '</div>' +
+            '<div class="meta">' + esc(meta) + '</div><div class="zeiten">' +
+            x.s.map(function (s) { return s.booking_url
+              ? '<a href="' + esc(s.booking_url) + '" target="_blank" rel="noopener">' + s.time + '</a>' + (s.version ? ' ' + s.version : '')
+              : s.time + (s.version ? ' ' + s.version : ''); }).join('&nbsp; ') + '</div></div>');
+        });
+        h.push('</div>');
+      });
+      h.push('</section>');
+    });
+
+    if (grenze) {
+      var spaet = alleVorst(function (s) { return s.date >= grenze; });
+      h.push('<h2>Im Vorverkauf</h2><p class="h2note">Einzeltermine bis ' + kurz(d.date_to) + '</p><section class="tag">');
+      spaet.slice(0, 18).forEach(function (x) {
+        h.push('<div class="z"><div class="film">' + (istTreffer(x.f) ? '<em>' + esc(x.f.title) + '</em>' : esc(x.f.title)) +
+          '</div><div class="meta">' + esc(kino[x.s.cinema_id].name) + '</div>' +
+          '<div class="zeiten">' + kurz(x.s.date) + ' · ' + x.s.time + '</div></div>');
+      });
+      h.push('</section>');
+    }
+    h.push('<p class="fuss">Kinos, Filme und Zeiten von kino-zeit.de. Vor der Fahrt in die Stadt beim Kino gegenprüfen.</p>');
+    return h.join('') + '</div></div>';
+  }
+
+  // ---------- B · Nachtvorstellung ----------
+  function renderB() {
+    var h = ['<div class="b"><div class="wrap">'];
+    h.push('<header class="kopf"><h1>Schrödingers Kino</h1>' +
+      '<p class="unter">' + wtag(heute) + ', ' + kurz(heute) + ' · Stuttgart · ' +
+      d.watchlist.total + ' Titel auf der Watchlist</p></header>');
+
+    function zeile(x, hit) {
+      var c = kino[x.s.cinema_id];
+      return '<div class="zeile' + (hit ? ' hit' : '') + '">' +
+        '<div class="uhr">' + x.s.time + '</div>' +
+        '<div class="titel">' + esc(x.f.title) + '</div>' +
+        (hit ? '<span class="marke m-w">Watchlist</span>' : '') +
+        (x.f.mubi_go ? '<span class="marke m-m">MUBI GO</span>' : '') +
+        '<div class="ort">' + esc(c.name) + (x.s.version ? ' · ' + x.s.version : '') + '</div></div>';
+    }
+
+    var heuteAlle = alleVorst(function (s) { return s.date === heute; });
+    var abend = heuteAlle.filter(function (x) { return x.s.time >= '17:00'; });
+    h.push('<section class="band jetzt"><h2>Heute Abend · ab 17 Uhr</h2>');
+    abend.forEach(function (x) { h.push(zeile(x, istTreffer(x.f))); });
+    h.push('</section>');
+
+    var woche = alleVorst(function (s) { return s.date > heute && (!grenze || s.date < grenze); })
+      .filter(function (x) { return istTreffer(x.f); });
+    h.push('<section class="band"><h2>Diese Woche · von deiner Watchlist</h2>');
+    if (woche.length) woche.forEach(function (x) {
+      h.push(zeile(x, true).replace('class="uhr"', 'class="uhr" title="' + x.s.date + '"')
+        .replace('>' + x.s.time + '<', '>' + kurz(x.s.date) + ' ' + x.s.time + '<'));
+    });
+    else h.push('<div class="leer">Diese Woche läuft nichts weiter von deiner Liste.</div>');
+    h.push('</section>');
+
+    var vor = grenze ? alleVorst(function (s) { return s.date >= grenze; }).filter(function (x) { return istTreffer(x.f); }) : [];
+    h.push('<section class="band"><h2>Im Vorverkauf</h2>');
+    if (vor.length) vor.forEach(function (x) {
+      h.push('<div class="zeile hit"><div class="uhr" style="font-size:18px">' + kurz(x.s.date) + '</div>' +
+        '<div class="titel">' + esc(x.f.title) + '</div><span class="marke m-w">Watchlist</span>' +
+        '<div class="ort">' + esc(kino[x.s.cinema_id].name) + ' · ' + x.s.time + '</div></div>');
+    });
+    else h.push('<div class="leer">Nichts vorgemerkt.</div>');
+    h.push('</section>');
+
+    h.push('<section class="band"><h2>Verpasst</h2>' +
+      '<div class="leer">Noch leer — das Zeitfenster beginnt heute. Sobald der tägliche Lauf mitschreibt, ' +
+      'stehen hier Filme von deiner Liste, deren letzte Vorstellung vorbei ist.</div></section>');
+
+    h.push('<p class="fuss">Kinos, Filme und Zeiten von kino-zeit.de. Kobalt kennzeichnet MUBI GO, Orange die Watchlist.</p>');
+    return h.join('') + '</div></div>';
+  }
+
+  // ---------- C · Karteikarte ----------
+  function renderC() {
+    var laufend = {};
+    d.films.forEach(function (f) {
+      if (f.match.status === 'treffer' && f.match.watchlist) laufend[f.match.watchlist.title] = f;
+    });
+    var mit = WL.filter(function (w) { return laufend[w.name]; });
+    var ohne = WL.filter(function (w) { return !laufend[w.name]; });
+
+    var h = ['<div class="c"><div class="wrap">'];
+    h.push('<header class="kopf"><h1>Schrödingers Kino</h1>' +
+      '<p class="unter">Kartei der Watchlist · Stand ' + kurz(heute) + ' · Zeitraum bis ' + kurz(d.date_to) + '</p></header>');
+
+    h.push('<div class="bilanz">' +
+      '<div class="laeuft"><span class="n">' + mit.length + '</span><span class="l">läuft</span></div>' +
+      '<div><span class="n">' + ohne.length + '</span><span class="l">nicht im Programm</span></div>' +
+      '<div><span class="n">' + WL.length + '</span><span class="l">Titel gesamt</span></div>' +
+      '<div><span class="n">' + WL.filter(function (w) { return w.original; }).length +
+        '</span><span class="l">mit Originaltitel</span></div></div>');
+
+    function karte(w, aktiv) {
+      var f = laufend[w.name];
+      var felder = [];
+      if (w.regie) felder.push('<span>Regie</span> ' + esc(w.regie.split(',')[0]));
+      if (w.jahr) felder.push('<span>Jahr</span> ' + w.jahr);
+      if (w.laufzeit) felder.push('<span>Lauf</span> ' + w.laufzeit + ' Min');
+      var term = '';
+      if (f) {
+        var s0 = f.showings[0];
+        term = '<div class="term">' + kurz(s0.date) + ' · ' + s0.time + ' · ' + esc(kino[s0.cinema_id].name) +
+          (f.showings.length > 1 ? ' <span style="color:#8d8a7e">+' + (f.showings.length - 1) + '</span>' : '') + '</div>';
+      }
+      return '<article class="k' + (aktiv ? ' aktiv' : '') + '">' +
+        '<span class="stempel' + (aktiv ? ' an' : '') + '">' + (aktiv ? 'läuft' : 'kein Termin') + '</span>' +
+        '<div class="t">' + esc(w.name) + '</div>' +
+        (w.original ? '<div class="o">' + esc(w.original) + '</div>' : '') +
+        '<div class="felder">' + felder.join('<br>') + '</div>' + term + '</article>';
+    }
+
+    h.push('<h2>Läuft im Zeitraum</h2><div class="karten">');
+    mit.forEach(function (w) { h.push(karte(w, true)); });
+    h.push('</div>');
+
+    h.push('<h2>Ohne Termin · ' + ohne.length + ' Titel</h2><div class="karten">');
+    ohne.slice(0, 24).forEach(function (w) { h.push(karte(w, false)); });
+    h.push('</div>');
+
+    h.push('<p class="fuss">Regie, Originaltitel und Laufzeit stammen aus dem Letterboxd-Endpunkt ' +
+      '<code>/film/&lt;slug&gt;/json/</code>. Genau diese drei Felder tragen im Hintergrund den ' +
+      'sprachübergreifenden Abgleich — die Kartei zeigt also, woraus sie denkt. ' +
+      'Dargestellt sind die ersten 24 Titel ohne Termin.</p>');
+    return h.join('') + '</div></div>';
+  }
+
+  var render = { a: renderA, b: renderB, c: renderC };
+  function zeige(k) {
+    document.getElementById('stage').innerHTML = render[k]();
+    document.querySelectorAll('#sw button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-k') === k)); });
+    window.scrollTo(0, 0);
+    try { localStorage.setItem('sk-konzept', k); } catch (e) {}
+  }
+  document.querySelectorAll('#sw button').forEach(function (b) {
+    b.addEventListener('click', function () { zeige(b.getAttribute('data-k')); }); });
+  var start = 'a';
+  try { start = localStorage.getItem('sk-konzept') || 'a'; } catch (e) {}
+  zeige(render[start] ? start : 'a');
+})();
+</script>
