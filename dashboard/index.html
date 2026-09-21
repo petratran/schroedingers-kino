@@ -408,12 +408,15 @@ a{color:var(--accent-ink);text-underline-offset:2px}
       : '<span class="' + cls + '"' + tt + '>' + inner + '</span>';
   }
 
-  // Deutsche Kinos wechseln ihr Programm donnerstags. Bis zum naechsten
-  // Donnerstag steht jeder Tag einzeln, alles danach kommt unter "ab <Datum>" —
-  // dort sind es ohnehin nur noch einzelne Vorverkaufstermine.
+  // Die laufende Kalenderwoche steht Tag fuer Tag, alles ab dem naechsten
+  // Montag kommt unter "ab <Datum>" — dort sind es ohnehin nur noch einzelne
+  // Vorverkaufstermine. Die Grenze wandert dadurch jede Woche von selbst
+  // weiter: heute "ab 28.09.", naechste Woche "ab 05.10.".
+  // (Frueher lag die Grenze auf Donnerstag, dem Tag des Programmwechsels.
+  // Die Kalenderwoche ist fuer den taeglichen Blick die vertrautere Einteilung.)
   function grenzdatum(dates) {
     for (var i = 1; i < dates.length; i++)
-      if (new Date(dates[i] + 'T12:00:00').getDay() === 4) return dates[i];
+      if (new Date(dates[i] + 'T12:00:00').getDay() === 1) return dates[i];
     return null;
   }
 
