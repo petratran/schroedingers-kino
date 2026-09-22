@@ -233,3 +233,36 @@ alter default privileges in schema public
   grant select, insert, update, delete on tables to service_role;
 alter default privileges in schema public
   grant usage, select on sequences to service_role;
+
+-- =====================================================================
+-- Qualitätssicherung: Titelkollisionen zwischen den Quellen
+--
+-- Angelegt am 22.09.2026 nach dem Fall "Primetime". Delphi zeigt ab dem
+-- 24.09. den Film "Primetime" (2026, Lance Oppenheim). kino-zeit hat diese
+-- Vorstellungen seinem eigenen Filmknoten 14975 zugeordnet — und der gehört
+-- zu "Prime Time (2008)", einem spanischen Thriller. Die Kaskade hat den
+-- Knoten korrekt aufgelöst: Sie bekam den alten Film und fand den alten
+-- Film. Die Innenstadtkinos liefern über schema.org die Kennung des neuen.
+-- Ergebnis: derselbe Film steht zweimal auf der Seite, und keine Stufe der
+-- Pipeline hat einen Fehler gemacht.
+--
+-- Gegen einen falsch verknüpften Aushang ist kein Matching gewachsen — wohl
+-- aber gegen das stille Nebeneinander. Diese View zeigt Titel, die sich nach
+-- dem Normalisieren gleichen, aber auf verschiedene TMDb-Kennungen zeigen.
+-- Sie korrigiert nichts; sie legt den Widerspruch auf den Tisch.
+-- =====================================================================
+create or replace view v_titel_kollisionen as
+select lower(regexp_replace(s.raw_title, '[^a-zA-Z0-9]+', '', 'g')) as schluessel,
+       array_agg(distinct s.raw_title order by s.raw_title)          as schreibweisen,
+       array_agg(distinct a.tmdb_id)                                 as kennungen,
+       array_agg(distinct s.source)                                  as quellen,
+       count(*)                                                      as vorstellungen
+  from showing s
+  join title_alias a on a.source_key = s.source_key
+ where a.tmdb_id is not null
+   and s.starts_at >= now()
+ group by 1
+having count(distinct a.tmdb_id) > 1;
+
+comment on view v_titel_kollisionen is
+  'Gleicher Titel, verschiedene TMDb-Kennungen. Kein Fehler der Pipeline, sondern ein Widerspruch zwischen den Quellen — zur Sichtprüfung.';

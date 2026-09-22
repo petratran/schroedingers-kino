@@ -188,6 +188,28 @@ if (typeof $input !== 'undefined') {
   return out;
 }
 
+/**
+ * Kanarienvogel fuer den Schreibschritt: Fehlt im Ergebnis ausgerechnet der
+ * heutige Tag, darf nicht geschrieben werden.
+ *
+ * Hintergrund (22.09.2026, im Betrieb aufgefallen): Workflow 2 loescht vor dem
+ * Einfuegen alles ab jetzt (`starts_at=gte.now()`) und fuellt es aus dem
+ * frischen Abruf wieder auf. Faellt eine einzelne Seite aus, merkt das
+ * niemand — der Lauf ist gruen, weil die anderen 83 Seiten Daten geliefert
+ * haben. Faellt dabei die Seite von HEUTE aus, ist das Ergebnis maximal
+ * sichtbar: Das Dashboard zeigt fuer den laufenden Tag nichts mehr an,
+ * und zwar fuer alle elf kino-zeit-Kinos gleichzeitig.
+ *
+ * Sechzehn Kinos ohne eine einzige Vorstellung am heutigen Tag gibt es nicht.
+ * Die Ausnahme ist der spaete Abend, wenn alle Vorstellungen des Tages
+ * vorbei sind — deshalb greift die Pruefung nur bis 20 Uhr.
+ */
+function heuteFehlt(zeilen, planDaten, heute, stunde) {
+  if (Number(stunde) >= 20) return false;
+  if (!Array.isArray(planDaten) || !planDaten.includes(heute)) return false;
+  return !(zeilen || []).some((z) => String(z.starts_at || '').slice(0, 10) === heute);
+}
+
 if (typeof module !== 'undefined') {
-  module.exports = { parseKinozeit, splitVersion, toISODate, decode };
+  module.exports = { parseKinozeit, splitVersion, toISODate, decode, heuteFehlt };
 }

@@ -255,9 +255,33 @@ console.log(`Vorstellungen: ${eindeutig.length} (Rohzeilen ${zeilen.length})`);
 if (unbekannt.size) console.log('Nicht zugeordnete Kinos: ' + [...unbekannt].join(', '));
 if (probleme.length) console.log('Seiten ohne Ergebnis:\n' + probleme.join('\n'));
 
-// Kanarienvogel: ein gruener Lauf ohne Daten ist der gefaehrlichste Fehlerfall.
+// Kanarienvogel 1: ein gruener Lauf ohne Daten ist der gefaehrlichste Fehlerfall.
 if (!eindeutig.length) {
   throw new Error('0 Vorstellungen ueber alle Seiten. ' + probleme.slice(0, 3).join(' | '));
+}
+
+// Kanarienvogel 2: der heutige Tag fehlt, die anderen nicht.
+//
+// Am 22.09.2026 im Betrieb aufgefallen. Der 06:00-Lauf lieferte 121
+// Vorstellungen fuer morgen und eine Handvoll fuer die Tage danach, aber
+// keine einzige fuer heute. Kanarienvogel 1 schwieg — es waren ja Daten da.
+// Danach loeschte `showing leeren` alles ab jetzt, und das Dashboard zeigte
+// fuer den laufenden Tag in allen elf kino-zeit-Kinos nichts mehr an.
+//
+// Sechzehn Kinos ohne eine einzige Vorstellung am heutigen Tag gibt es nicht.
+// Ausnahme ist der spaete Abend, wenn der Tag durch ist — daher die Grenze
+// bei 20 Uhr. (Dieselbe Funktion, getestet, in 04-parse-kinozeit.js.)
+const jetzt = DateTime.now().setZone('Europe/Berlin');
+const heute = jetzt.toFormat('yyyy-MM-dd');
+const planDaten = $('Abrufplan').all().map((i) => i.json && i.json.datum);
+
+if (jetzt.hour < 20 && planDaten.includes(heute) &&
+    !eindeutig.some((z) => String(z.starts_at).slice(0, 10) === heute)) {
+  throw new Error(
+    `Kein einziger Treffer fuer heute (${heute}), aber ${eindeutig.length} fuer ` +
+    `andere Tage. Die Tagesseiten von heute haben nichts geliefert — es wird ` +
+    `nicht geschrieben, damit "showing leeren" den laufenden Tag nicht ` +
+    `wegraeumt. Seiten ohne Ergebnis: ${probleme.slice(0, 4).join(' | ') || 'keine gemeldet'}`);
 }
 
 return eindeutig.map((json) => ({ json }));

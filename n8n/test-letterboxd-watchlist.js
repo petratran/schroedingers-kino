@@ -43,6 +43,13 @@ pruefe('Umlaute und Apostroph im Titel',
   filme[2].titel === "Frühstück bei Tiffany's" && filme[2].jahr === '1961',
   JSON.stringify(filme[2]));
 
+pruefe('einfache Anfuehrungszeichen im Original-Markup (Server)',
+  filme[0].lid === 'TbK4' && filme[2].lid === '2b8y',
+  JSON.stringify(filme.map(f => f.lid)));
+
+pruefe('doppelte Anfuehrungszeichen (Browser-Schreibweise) ebenso',
+  filme[1].lid === 'UEAa', String(filme[1].lid));
+
 pruefe('Seitenzahl aus der Blaetter-Leiste', seitenAnzahl(html) === 3, String(seitenAnzahl(html)));
 
 pruefe('ohne Blaetter-Leiste genau eine Seite', seitenAnzahl('<html></html>') === 1);
@@ -88,6 +95,13 @@ pruefe('Date ist der Tag des Laufs', neu0.Date === '2026-09-21');
 
 pruefe('leerer Bestand: alles neu, nichts entfernt',
   abgleich(filme, [], '2026-09-21').every((p) => p.aktion === 'neu'));
+
+// Am 22.09.2026 im Betrieb: der Bestands-Node lief zweimal und lieferte jede
+// Zeile doppelt. Die Loeschliste darf davon nicht abhaengen.
+const DOPPELT = [...BESTAND, ...BESTAND];
+pruefe('doppelte Bestandszeilen zaehlen nur einmal',
+  abgleich(filme, DOPPELT, '2026-09-21').filter((p) => p.aktion === 'entfernt').length === 1,
+  JSON.stringify(abgleich(filme, DOPPELT, '2026-09-21').filter((p) => p.aktion === 'entfernt')));
 
 wirft('leere Seite loescht nichts, sondern wirft',
   () => abgleich([], BESTAND, '2026-09-21'), 'keinen einzigen Film');

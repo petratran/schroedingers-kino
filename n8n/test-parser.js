@@ -3,7 +3,7 @@
  * Laeuft ohne Netz:  node test-parser.js
  */
 const fs = require('fs');
-const { parseKinozeit, splitVersion, toISODate } = require('./04-parse-kinozeit.js');
+const { parseKinozeit, splitVersion, toISODate, heuteFehlt } = require('./04-parse-kinozeit.js');
 
 const html = fs.readFileSync(__dirname + '/fixtures/delphi-2026-09-18.html', 'utf8');
 const { showings, warnings, films } = parseKinozeit(html, {
@@ -55,6 +55,23 @@ check('Stadt-Layout: Kino-Node', stadt.showings.find(s => s.cinema_name.startsWi
 check('Stadt-Layout: Format geloest', stadt.showings.find(s => s.cinema_name.startsWith('Gloria')).format, 'MXP');
 check('Stadt-Layout: Sprache geloest', stadt.showings.find(s => s.cinema_name.startsWith('Gloria')).version, 'OV');
 check('Stadt-Layout: Titel sauber', stadt.showings.find(s => s.cinema_name.startsWith('Gloria')).raw_title, 'Coyote Vs. Acme');
+
+// --- Kanarienvogel: fehlt der heutige Tag im Ergebnis? -----------------
+// Am 22.09.2026 im Betrieb aufgefallen: Der 06:00-Lauf lieferte fuer alle
+// Tage ausser dem heutigen Daten, loeschte aber trotzdem ab jetzt — und das
+// Dashboard stand fuer den laufenden Tag leer da.
+const PLAN = ['2026-09-22', '2026-09-23', '2026-09-24'];
+const MIT  = [{ starts_at: '2026-09-22T20:30:00.000+02:00' },
+              { starts_at: '2026-09-23T18:00:00.000+02:00' }];
+const OHNE = [{ starts_at: '2026-09-23T18:00:00.000+02:00' },
+              { starts_at: '2026-09-24T18:00:00.000+02:00' }];
+
+check('heute vorhanden -> kein Alarm',  heuteFehlt(MIT,  PLAN, '2026-09-22', 6),  false);
+check('heute fehlt -> Alarm',           heuteFehlt(OHNE, PLAN, '2026-09-22', 6),  true);
+check('spaetabends kein Alarm',         heuteFehlt(OHNE, PLAN, '2026-09-22', 23), false);
+check('heute gar nicht im Plan',        heuteFehlt(OHNE, ['2026-09-23'], '2026-09-22', 6), false);
+check('leeres Ergebnis faengt der andere Kanarienvogel',
+      heuteFehlt([], PLAN, '2026-09-22', 6), true);
 
 console.log(fail ? `\n${fail} Test(s) fehlgeschlagen` : '\nAlle Tests bestanden');
 process.exit(fail ? 1 : 0);

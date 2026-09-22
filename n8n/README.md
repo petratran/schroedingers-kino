@@ -568,6 +568,253 @@ Ausnahme. Sichtbar wird die Dublette erst über den aufgelösten Film.
 
 ---
 
+### Was der Browser zeigt, ist nicht was der Server schickt (22.09.2026)
+
+Beim Bau des Watchlist-Abrufs habe ich das Markup der Letterboxd-Seite in der
+Entwicklerkonsole gelesen — `outerHTML` des ersten Posters — und den Parser
+danach gebaut. Im Betrieb fand er dann null Filme auf einer Seite, die
+nachweislich 28 enthielt.
+
+Der Unterschied ist ein Anfuehrungszeichen:
+
+```html
+Serverantwort:  data-postered-identifier='{&quot;lid&quot;:&quot;TbK4&quot;,…}'
+Browser-DOM:    data-postered-identifier="{&quot;lid&quot;:&quot;TbK4&quot;,…}"
+```
+
+`outerHTML` ist nicht das empfangene HTML, sondern die Serialisierung des
+geparsten DOM — und die vereinheitlicht Anfuehrungszeichen. Beide Fassungen
+sehen beim Lesen identisch aus; ein Parser, der nur doppelte kennt, findet in
+der einen alles und in der anderen nichts.
+
+**Die Lehre:** Ein Fixture gehoert aus der Antwort, die der Server schickt.
+`fixtures/letterboxd-watchlist.html` enthaelt seitdem den woertlichen
+Serverausschnitt — und daneben denselben Eintrag in der Browser-Schreibweise,
+damit beide Varianten getestet sind.
+
+Die Sicherung hat den Fehler abgefangen: Statt eine leere Watchlist zu
+schreiben und 74 Zeilen zu loeschen, brach der Lauf mit „Die Watchlist-Seite
+lieferte keinen einzigen Film" ab. Das war der dritte Fall an einem Tag, in
+dem nicht eine Fehlermeldung des Systems den Fehler fand, sondern eine
+Plausibilitaetspruefung, die jemand vorher hineingeschrieben hatte.
+
+---
+
+### Der vollstaendige Abgleich mit arthaus-kino.de (22.09.2026)
+
+Die erste Pruefung gegen eine Kinoseite statt gegen die eigene Datenbank.
+Verglichen wurden Tagesprogramm, Wochenprogramm und Sonderprogramm der beiden
+Arthaus-Haeuser mit dem, was auf dem Dashboard steht.
+
+| Bereich | Website | im Dashboard |
+| --- | --- | --- |
+| Heute (22.09.), atelier + Delphi | 10 | 10 |
+| Diese Woche, atelier | 15 | 13 |
+| Diese Woche, Delphi | 11 | 10 |
+| Sonderprogramm, im 21-Tage-Fenster | 12 | 11 |
+| Sonderprogramm, danach | 7 | 0 |
+
+**Die drei Luecken im Fenster** sind *Come ti muovi, sbagli* (25.09.),
+*KitKatClub: Kinks of Berlin* und *Emil und die Detektive* im atelier. Alle
+drei sind Luecken der Quelle, nicht des Verfahrens: Die kino-zeit-Tagesseite
+fuer den 25.09. fuehrt insgesamt **fuenf** Eintraege (dreimal *Avengers:
+Endgame Extended*, *Horror Classics Sneak*, *Prime Time*) — keinen der drei
+Titel. Der Parser hat genau das geholt, was dort steht.
+
+Dahinter steckt eine Eigenschaft des Aggregators, die man kennen muss: Eine
+Kinowoche laeuft Donnerstag bis Mittwoch, und kino-zeit bekommt die neue
+Woche erst kurz vor Beginn. Ab Donnerstag stehen dort nur noch die
+Sondervorstellungen (5 bis 16 Zeilen pro Tag statt 120). Die Kinos
+veroeffentlichen ihr eigenes Programm frueher. **Das Dashboard ist so
+aktuell wie sein Aggregator.**
+
+**Die sieben Luecken jenseits des Fensters** sind Absicht: `wf2-abrufplan.js`
+holt 21 Tage. Was danach kommt — *Biermann* (27.10.), *Leica* (10.11.),
+*Dune: Part Three* als Preview (15.12.), das Silvesterkonzert der Berliner
+Philharmoniker — steht im Vorverkauf, aber ausserhalb des Abrufs. Nebenbei
+beantwortet das die Frage vom Vortag, warum *Dune: Part Three* nicht auf dem
+Dashboard auftaucht: Die Vorpremiere ist am 15.12., das Fenster reicht bis
+Mitte Oktober.
+
+### Gegenprobe Corso: dasselbe Muster, zweites Kino (22.09.2026)
+
+Damit der Befund nicht an einem Haus haengt, dieselbe Pruefung gegen
+`corso-kino.com/en/program?date=all`:
+
+| | Kinoseite | Dashboard |
+| --- | --- | --- |
+| 22.09. (heute) | 4 | 4 |
+| 23.09. | 4 | 4 |
+| 24.09.–30.09. | 25 | **0** |
+| 04.10. (Ocean's Eleven) | 1 | 1 |
+| 31.10. / 01.11. (Rocky Horror) | 2 | 0 |
+
+Heute und morgen stimmen auf die Minute, danach bricht es ab — exakt an der
+Grenze der laufenden Kinowoche. *The Odyssey*, *Heart of the Beast* und
+*Verity* starten im Corso am Donnerstag und stehen bei kino-zeit noch
+nirgends; die Einzeltermine weit in der Zukunft (Ocean's Eleven am 04.10.)
+sind da, weil sie als Sondervorstellung schon gemeldet sind.
+
+Zwei unabhaengige Haeuser, dasselbe Muster: **Der Aggregator kennt die
+laufende Kinowoche, die Kinos kennen die naechste.** Das ist keine
+Eigenheit des Arthaus und kein Fehler im Abruf, sondern die
+Veroeffentlichungslogik der Quelle.
+
+### Der Fund nebenbei: die Arthaus-Kinos buchen ueber kinoheld
+
+Die Seite `arthaus-kino.de/filme/sonderprogramm/` enthaelt keinen eigenen
+Inhalt, sondern ein eingebettetes Widget:
+
+```
+kinoheld.de/site/cinemaGroup/shows?cid=NTA5MDQ,NTM1NzA0&layout=movies&flags=...
+```
+
+`NTA5MDQ` und `NTM1NzA0` sind base64 fuer die Kino-Nummern **50904**
+(atelier am bollwerk) und **535704** (Delphi). Damit haengen beide Haeuser am
+selben Buchungssystem wie die Innenstadtkinos — an der Quelle also, fuer die
+mit `09-innenstadtkinos.js` bereits ein Adapter existiert.
+
+Das ist die naheliegende vierte Quelle, und sie loest drei bekannte Probleme
+auf einmal:
+
+1. **Kein Vorlauf-Problem.** Das Widget zeigt Termine bis zum 31.12.2026 —
+   dieselben, die der Aggregator erst in zwei Tagen kennt.
+2. **Keine falschen Verknuepfungen.** kinoheld fuehrt den Film als eigenen
+   Eintrag; der Fall *Primetime* kann dort nicht entstehen.
+3. **Mehr Angaben pro Vorstellung:** Laenge, FSK, Genre und Merkmale wie
+   `FILMKLASSIKER`, `PREVIEW`, `JOURFIXE` — also genau die
+   Reihen-Information, die in den Aushangtiteln der anderen Quellen muehsam
+   erraten werden muss.
+
+Und es sind nicht nur die beiden Arthaus-Haeuser: Das Corso laeuft auf
+derselben Plattform, mit **denselben Film-IDs**. Die Programmliste des Corso
+fuehrt Spider-Man unter `1684845` — genau der Schluessel, unter dem er als
+`isk:1684845` aus den Innenstadtkinos in der Datenbank steht. Ein Adapter,
+drei zusaetzliche Kinos, gemeinsamer Titel-Cache.
+
+Gebaut ist das nicht; notiert schon. Es waere der naechste Schritt nach der
+Abgabe, und er ist klein: Der Adapter existiert in seiner Form bereits.
+
+---
+
+### „Primetime": wenn das Modell recht hat und die Daten falsch sind
+
+Beim selben Abgleich fiel ein zweiter Fall auf. Ab dem 24.09. steht derselbe
+Film zweimal auf der Seite:
+
+| Quelle | Kino | TMDb | aufgeloest per |
+| --- | --- | --- | --- |
+| kino-zeit | Delphi | `185849` „Prime Time" | llm, 0,95 |
+| innenstadtkinos | Cinema / EM | `1375441` „Primetime" | tmdb (schema.org), 1,00 |
+
+Der erste Verdacht war das Modell: eine zu selbstbewusste Auflösung auf einen
+alten Film, wie schon bei *Horror Classics*. Die Pruefung ergab das Gegenteil.
+
+Die Kinoseite sagt, was im Delphi laeuft: *Primetime*, Regie Lance Oppenheim,
+mit Robert Pattinson, 107 Minuten — der Film von 2026. Der Aushang bei
+kino-zeit haengt aber am Filmknoten **14975**, und dieser Knoten ist
+`kino-zeit.de/node/14975` = **„Prime Time (2008)"**, ein spanischer Thriller
+von Luis Calvo Ramos. Dieselbe Seite fuehrt die Delphi-Termine als
+„Vorstellungen bis 29.9.2026" auf.
+
+Damit ist die Kette klar:
+
+1. Das Delphi zeigt *Primetime* (2026).
+2. kino-zeit ordnet diese Vorstellungen seinem Eintrag fuer *Prime Time*
+   (2008) zu — ein Fehler in der Quelle.
+3. Die Kaskade loest den Knoten 14975 auf und findet den Film von 2008.
+   **Das ist die richtige Antwort auf die gestellte Frage.**
+4. Die Innenstadtkinos liefern per schema.org die Kennung des Films von 2026.
+
+Keine Stufe der Pipeline hat einen Fehler gemacht, und trotzdem steht der
+Film zweimal auf der Seite. Der Knoten ist in sich stimmig — Titel, Genre und
+Laenge auf der kino-zeit-Seite gehoeren alle zum Film von 2008 —, es gibt
+also nichts, woran ein Matching den Widerspruch erkennen koennte.
+
+**Warum hier nichts korrigiert wird.** Naheliegend waere, die Alias-Zeile von
+Hand auf `1375441` zu setzen. Das waere die richtige Anzeige aus dem falschen
+Grund: `title_alias` bildet *Knoten auf Film* ab, und Knoten 14975 **ist**
+der Film von 2008. Zeigt ihn irgendwann jemand wirklich, waere der Cache
+dauerhaft vergiftet. Ein Fehler der Quelle gehoert nicht im eigenen Cache
+weggebuegelt.
+
+**Was stattdessen passiert ist:** die View `v_titel_kollisionen` in
+`sql/schema.sql`. Sie meldet Titel, die sich nach dem Normalisieren gleichen,
+aber auf verschiedene TMDb-Kennungen zeigen. Sie korrigiert nichts, sie legt
+den Widerspruch auf den Tisch — dorthin, wo ein Mensch entscheiden kann.
+
+Zusammen mit *Horror Classics* ergibt das ein Paar, das die Grenzen des
+Verfahrens von beiden Seiten zeigt:
+
+| | Frage an das Modell | Antwort | Ergebnis |
+| --- | --- | --- | --- |
+| Horror Classics | falsch gestellt | richtig beantwortet | falscher Film auf der Seite |
+| Primetime | richtig gestellt | richtig beantwortet | falscher Film auf der Seite |
+
+Im ersten Fall half eine Regel vor dem Modell. Im zweiten hilft gar keine
+Technik, sondern nur ein Blick von aussen — und der kam von der Frage „stehen
+eigentlich alle Arthaus-Filme drin?".
+
+---
+
+### Der Tag, der verschwand (22.09.2026)
+
+Der erste unbeaufsichtigte Lauf hat den Fehler produziert, auf den das ganze
+Projekt ausgelegt war — und ihn fast nicht gemeldet.
+
+Ausgangspunkt war eine harmlose Frage: Stehen alle Filme der beiden
+Arthaus-Kinos auf dem Dashboard? Der Abgleich mit `arthaus-kino.de` ergab
+fuer den laufenden Tag: **kein einziger**. Nicht nur im Arthaus — in allen
+elf Kinos, die ueber kino-zeit laufen.
+
+Die Zaehlung in der Datenbank zeigt das Muster:
+
+| Tag | kino-zeit | Innenstadtkinos | Traumpalast |
+| --- | --- | --- | --- |
+| 21.09. (gestern) | 137 | 2 | 1 |
+| **22.09. (heute)** | **0** | 26 | 2 |
+| 23.09. (morgen) | 121 | 24 | 2 |
+| 24.09. | 9 | 26 | 2 |
+
+Die beiden anderen Quellen sind vollstaendig, kino-zeit fehlt genau einen
+Tag. Die Ursache ist das Zusammenspiel zweier fuer sich vernuenftiger
+Entscheidungen:
+
+1. **Workflow 2 loescht vor dem Einfuegen alles ab jetzt** und fuellt es aus
+   dem frischen Abruf wieder auf. Das ist richtig so — nur damit
+   verschwinden abgesagte Vorstellungen wieder.
+2. **Der Parser wirft nur, wenn *alle* 84 Seiten leer sind.** Auch das ist
+   richtig: Ein geschlossenes Kino darf den Lauf fuer die anderen 15 nicht
+   kippen.
+
+Faellt dazwischen eine einzelne Seite aus, greift keine der beiden Regeln.
+Der Lauf ist gruen, weil 83 Seiten Daten geliefert haben; geloescht wird
+trotzdem alles. Und die eine Seite, deren Ausfall am meisten wehtut, ist die
+von heute.
+
+**Warum das der gefaehrlichste Fehlertyp ist:** Es gab keine Fehlermeldung,
+keinen roten Lauf, keinen Eintrag in `error_log`. Der Fehler-Melder, auf den
+das Projekt stolz ist, konnte nichts melden — es ist nichts abgebrochen. Ein
+Dashboard, das fuer heute nichts anzeigt, sieht aus wie ein Tag, an dem
+nichts laeuft. Aufgefallen ist es nur, weil jemand gegen die Quelle geprueft
+hat.
+
+**Die Lehre ist nicht „mehr Fehlerbehandlung", sondern eine praezisere
+Frage.** „Sind Daten da?" war die falsche Pruefung. Die richtige lautet:
+„Sind Daten fuer den Zeitraum da, den ich gleich loesche?" Seit dem
+22.09.2026 wirft `04-code-node.js` auch dann, wenn ausgerechnet der heutige
+Tag im Ergebnis fehlt, die anderen aber nicht — sechzehn Kinos ohne eine
+einzige Vorstellung am laufenden Tag gibt es nicht. Ausgenommen ist der
+spaete Abend, wenn der Tag durch ist; die Grenze liegt bei 20 Uhr, und die
+Funktion `heuteFehlt()` steht mitsamt Tests in `04-parse-kinozeit.js`.
+
+Offen bleibt bewusst: Faellt ein Tag *mitten* im Zeitraum aus, wird er
+weiterhin still geleert. Die vollstaendige Loesung waere, nur die Tage zu
+loeschen, fuer die frische Daten vorliegen — also nie einen Bereich zu
+raeumen, den man nicht wieder fuellen kann. Das ist notiert, nicht gebaut.
+
+---
+
 # Die Watchlist anreichern — und warum das der größere Hebel ist
 
 Der Letterboxd-Export hat vier Spalten: Datum, Anzeigetitel, Jahr, URI. Der

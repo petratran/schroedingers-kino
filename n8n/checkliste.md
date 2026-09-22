@@ -152,7 +152,7 @@ und braucht keinen Titelvergleich. 28 Filme pro Seite, geblaettert wird ueber
 | 2 | `Watchlist Seite 1` | HTTP Request | Response Format **Text**, Feld `data` |
 | 3 | `Seitenplan` | Code | s. u., erzeugt Seite 2..n |
 | 4 | `Weitere Seiten` | HTTP Request | URL aus `{{ $json.url }}` (*Expression!*) |
-| 5 | `Bestand holen` | HTTP Request | Supabase `watchlist`, **Always Output Data** |
+| 5 | `Bestand holen` | HTTP Request | Supabase `watchlist`, **Always Output Data** + **Execute Once** |
 | 6 | `Watchlist lesen` | Code | Inhalt von `11-letterboxd-watchlist.js` |
 | 7 | `Was tun?` | Switch | `neu` / `entfernt` |
 | 8 | *(Zweig neu)* | — | die bestehende Kette aus Schritt 3 |
@@ -187,13 +187,40 @@ return plan;          // eine Seite: leere Liste, Node 4 laeuft nicht
 GET https://<projekt>.supabase.co/rest/v1/watchlist
     ?select=tmdb_id,letterboxd_uri,title_raw&limit=1000
 Settings -> Always Output Data: AN
+Settings -> Execute Once:        AN
 ```
+
+*Execute Once* ist hier nicht kosmetisch: Ohne den Schalter laeuft der Node
+einmal pro eingehendem Item — bei zwei Folgeseiten also zweimal, und der
+Bestand kommt doppelt zurueck. Am 22.09.2026 fuehrte das zu „92 von 148
+Eintraegen waeren zu loeschen". Der Abgleich entdoppelt seit dem selbst,
+weil eine Loeschliste nicht von einem Haekchen abhaengen darf — der Schalter
+spart trotzdem zwei unnoetige Anfragen.
 
 **Node 9 — `Entfernte loeschen`**
 
 ```
 DELETE https://<projekt>.supabase.co/rest/v1/watchlist?tmdb_id=eq.{{ $json.tmdb_id }}
 ```
+
+### Was der Lauf ausgibt, wenn nichts zu tun ist
+
+Immer eine Berichtszeile:
+
+```json
+{ "aktion": "bericht", "gelesen": 74, "seiten": 3, "im_bestand": 74,
+  "neu": 0, "entfernt": 0,
+  "text": "74 Filme auf 3 Seiten · 74 im Bestand · 0 neu · 0 entfernt" }
+```
+
+Der Switch kennt nur `neu` und `entfernt`; `bericht` faellt dort heraus und
+landet in keinem Ausgang. Damit ist im Code-Node ablesbar, was der Lauf
+gesehen hat, ohne dass die Verzweigung davon etwas mitbekommt.
+
+Zusammen mit den beiden Sicherungen macht das einen leeren Lauf beweiskraeftig:
+Haette der Parser nichts gelesen, waere er abgebrochen; waeren Filme
+verschwunden, stuenden sie unter `entfernt`. Kein Abbruch **und** keine
+Aktion heisst also: Abruf und Bestand sind deckungsgleich.
 
 ### Warum das mehr ist als eine Bequemlichkeit
 
@@ -241,7 +268,18 @@ Schedule Trigger täglich 06:00 → Code-Node **`Abrufplan`** (`wf2-abrufplan.js
 
 Gelöscht wird **nach** dem Parsen: `DELETE /rest/v1/showing?starts_at=gte.{{
 $now.toUTC().toISO() }}`. Bricht der Parser, bleiben die alten Daten stehen,
-statt dass das Dashboard leer dasteht. Eingefügt wird in **einem** Request,
+statt dass das Dashboard leer dasteht.
+
+> **Zwei Kanarienvögel, nicht einer.** Dass der Parser bei *null* Zeilen wirft,
+> reicht nicht: Am 22.09.2026 lieferte der 06:00-Lauf 121 Vorstellungen für
+> morgen und keine einzige für heute. Der Lauf war grün, das Löschen lief,
+> und das Dashboard zeigte für den laufenden Tag in allen elf
+> kino-zeit-Kinos nichts mehr. Seitdem wirft `04-code-node.js` auch dann,
+> wenn ausgerechnet der heutige Tag fehlt (bis 20 Uhr; danach ist ein leerer
+> Resttag normal). Rest­risiko, bewusst offen gelassen: Fällt ein Tag
+> *mitten* im Zeitraum aus, wird er weiterhin still geleert. Wer das auch
+> schließen will, löscht nicht ab `now()`, sondern nur die Tage, für die
+> frische Daten vorliegen. Eingefügt wird in **einem** Request,
 Body `{{ JSON.stringify($('Kinoprogramm parsen').all().map(i => i.json)) }}`,
 bei beiden Supabase-Nodes in den Settings **Execute Once**.
 
@@ -454,9 +492,18 @@ nachschaut. Ein Lauf, der nichts tut, muss trotzdem sagen können, was er
 gesehen hat — sonst prüft man bei jedem Mal von Hand nach, und dann ist nichts
 gewonnen.
 
-Deshalb ist der Trigger auch täglich und nicht wöchentlich: Wann MUBI wechselt,
-steht nirgends verbindlich. Ein täglicher Lauf merkt den Wechsel am Tag, an dem
-er passiert, und kostet an allen anderen Tagen einen Seitenabruf.
+Deshalb ist der Trigger auch täglich und nicht wöchentlich. **MUBI wechselt
+den Film der Woche donnerstags** — das ist Beobachtung aus der Nutzung, keine
+Zusage von MUBI, und nirgends dokumentiert. Ein wöchentlicher Lauf müsste
+diese Annahme in den Zeitplan gießen und läge bei einer Umstellung eine ganze
+Woche daneben, ohne dass es auffällt: Der Node schreibt ja nur bei einer
+Änderung. Ein täglicher Lauf merkt den Wechsel an dem Tag, an dem er
+passiert, macht `valid_from` dadurch belastbar und kostet an allen anderen
+Tagen einen einzigen Seitenabruf.
+
+Wenn nach einigen Wochen in `mubi_go` steht, dass die Wechsel immer auf
+denselben Wochentag fallen, kann man den Lauf reduzieren — dann aber mit
+Beleg statt mit Vermutung.
 
 ### Wenn der Node wirft
 

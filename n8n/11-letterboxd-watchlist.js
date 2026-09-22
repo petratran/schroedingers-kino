@@ -30,8 +30,24 @@ function entities(s) {
     .replace(/&[a-zA-Z]+;/g, (e) => (e in ENTITIES ? ENTITIES[e] : e));
 }
 
+/**
+ * Attributwert lesen — in BEIDEN Anführungszeichen-Varianten.
+ *
+ * Am 22.09.2026 im Betrieb gelernt: Letterboxd liefert die JSON-Attribute
+ * `data-postered-identifier` und `data-resolvable-poster-path` in einfachen
+ * Anführungszeichen aus (der Inhalt enthält &quot;-maskierte doppelte). Im
+ * Browser sieht man das nicht: Dort liest man `outerHTML`, also die von der
+ * DOM-Serialisierung vereinheitlichte Fassung mit doppelten Anführungszeichen.
+ *
+ * Ein Parser, der gegen die Browseransicht gebaut wurde, kann deshalb am
+ * echten Markup scheitern, obwohl beide Seiten identisch aussehen. Die
+ * Lehre: Fixtures immer aus der Antwort nehmen, die der Server schickt —
+ * nicht aus dem, was die Entwicklerkonsole anzeigt.
+ */
 function attr(tag, name) {
-  const m = String(tag).match(new RegExp(name + '\\s*=\\s*"([^"]*)"', 'i'));
+  const t = String(tag);
+  const m = t.match(new RegExp(name + '\\s*=\\s*"([^"]*)"', 'i'))
+         || t.match(new RegExp(name + "\\s*=\\s*'([^']*)'", 'i'));
   return m ? entities(m[1]) : null;
 }
 
@@ -48,7 +64,7 @@ function attr(tag, name) {
  * Titelvergleich.
  */
 function filmeAusSeite(html) {
-  const tags = String(html || '').match(/<div\b[^>]*data-item-slug="[^"]*"[^>]*>/gi) || [];
+  const tags = String(html || '').match(/<div\b[^>]*data-item-slug\s*=\s*["'][^"']*["'][^>]*>/gi) || [];
   const filme = [];
 
   for (const tag of tags) {
@@ -106,7 +122,15 @@ function seitenAnzahl(html) {
  */
 function abgleich(gefunden, bestand, heute, grenze = 0.5) {
   const aktuell = (gefunden || []).filter((f) => f && f.letterboxd_uri);
-  const alt = (bestand || []).filter((b) => b && b.letterboxd_uri);
+
+  // Entdoppeln, bevor gezaehlt wird. Am 22.09.2026 lieferte der Bestands-Node
+  // jede Zeile zweimal, weil er pro eingehendem Item einmal lief (zwei
+  // Folgeseiten = zwei Durchlaeufe). Das verdoppelt nicht nur die Zahlen,
+  // sondern auch die Loeschliste — und eine Loeschliste darf von einer
+  // Einstellung im Workflow nicht abhaengen.
+  const alt = [...new Map(
+    (bestand || []).filter((b) => b && b.letterboxd_uri).map((b) => [b.letterboxd_uri, b])
+  ).values()];
 
   // Sicherung 1: keine Filme gelesen heisst Parser kaputt, nicht Liste leer.
   if (!aktuell.length) {
@@ -149,9 +173,10 @@ function abgleich(gefunden, bestand, heute, grenze = 0.5) {
 
 // --- n8n-Glue ----------------------------------------------------------
 if (typeof $input !== 'undefined') {
-  // Seite 1 kommt aus dem ersten HTTP-Node, die Folgeseiten aus dem zweiten.
+  // Beide Seitenquellen ueber ihren Node-Namen holen, nicht ueber $input:
+  // Der Eingang dieses Nodes ist der Bestand aus Supabase, nicht das HTML.
   const seite1 = $('Watchlist Seite 1').first().json.data;
-  const weitere = $input.all()
+  const weitere = $('Weitere Seiten').all()
     .map((i) => i.json && i.json.data)
     .filter((d) => typeof d === 'string' && d !== seite1);
 
@@ -170,10 +195,24 @@ if (typeof $input !== 'undefined') {
   const heute = DateTime.now().setZone('Europe/Berlin').toISODate();
 
   const plan = abgleich(gefunden, bestand, heute);
-  console.log(`Watchlist: ${gefunden.length} Filme auf ${alleSeiten.length} Seiten · ` +
-              `${plan.filter((p) => p.aktion === 'neu').length} neu · ` +
-              `${plan.filter((p) => p.aktion === 'entfernt').length} entfernt`);
-  return plan.map((json) => ({ json }));
+
+  // Erste Zeile ist immer ein Bericht, auch wenn nichts zu tun ist. Ein Node
+  // ohne Ausgabe sieht aus wie ein Node, der nicht funktioniert hat — und ein
+  // Lauf, bei dem sich nichts geaendert hat, ist hier der Normalfall.
+  // Der Switch kennt nur 'neu' und 'entfernt'; 'bericht' faellt dort heraus.
+  const bericht = {
+    aktion: 'bericht',
+    gelesen: gefunden.length,
+    seiten: alleSeiten.length,
+    im_bestand: bestand.length,
+    neu: plan.filter((p) => p.aktion === 'neu').length,
+    entfernt: plan.filter((p) => p.aktion === 'entfernt').length
+  };
+  bericht.text = `${bericht.gelesen} Filme auf ${bericht.seiten} Seiten · ` +
+                 `${bericht.im_bestand} im Bestand · ${bericht.neu} neu · ` +
+                 `${bericht.entfernt} entfernt`;
+
+  return [{ json: bericht }, ...plan.map((json) => ({ json }))];
 }
 
 if (typeof module !== 'undefined') {
