@@ -22,9 +22,34 @@ const REGION          = 'Region Stuttgart';
 const ORT_REIHENFOLGE = ['Stuttgart', 'Ludwigsburg', 'Esslingen', 'Leonberg'];
 const ZONE            = 'Europe/Berlin';
 
+/**
+ * Reihenfolge der Kinogruppen. Gilt fuer die Filterleiste UND fuer die
+ * Vorstellungsliste darunter — beide lesen dieselbe Sortierung, damit sie
+ * nicht auseinanderlaufen koennen. Wer die Reihenfolge aendern will, aendert
+ * genau diese Liste.
+ *
+ * Was hier nicht steht, wandert ans Ende und wird im Protokoll gemeldet —
+ * eine unbekannte Gruppe ist entweder neu oder hier falsch geschrieben.
+ */
+const GRUPPEN_REIHENFOLGE = [
+  'arthaus',      // Arthaus Filmtheater
+  'innenstadt',   // Innenstadtkinos
+  'corso',        // Corso
+  'metropol',     // Das Metropol
+  'cinemaxx',     // CinemaxX
+  'ludwigsburg',  // Ludwigsburg
+  'esslingen',    // Esslingen
+  'leonberg'      // Leonberg · IMAX
+];
+
 const ortRang = (ort) => {
   const i = ORT_REIHENFOLGE.indexOf(ort);
   return i === -1 ? ORT_REIHENFOLGE.length : i;
+};
+
+const gruppeRang = (gid) => {
+  const i = GRUPPEN_REIHENFOLGE.indexOf(String(gid));
+  return i === -1 ? GRUPPEN_REIHENFOLGE.length : i;
 };
 
 /** Optionaler Node: fehlt er, laeuft der Rest trotzdem. */
@@ -44,8 +69,8 @@ const mubiZeile = hole('MUBI holen').find((r) => r && r.raw_title) || null;
 // fuer jeden Film aus. Deshalb zusaetzlich der Titelvergleich, so wie es die
 // lokale Fassung in build-today.js gemacht hat.
 const flach = (x) => String(x || '').toLowerCase()
-  .replace(/\u00e4/g, 'ae').replace(/\u00f6/g, 'oe').replace(/\u00fc/g, 'ue').replace(/\u00df/g, 'ss')
-  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+  .normalize('NFD').replace(/[̀-ͯ]/g, '')
   .replace(/[^a-z0-9]+/g, '');
 const mubiTitel = mubiZeile ? flach(mubiZeile.raw_title) : null;
 const istMubi = (r) => !!r.mubi_go || (!!mubiTitel && flach(r.raw_title) === mubiTitel);
@@ -137,6 +162,28 @@ for (const r of programm) {
   });
 }
 
+// --- Kinos und Gruppen aus den Stammdaten -----------------------------
+// Bewusst aus `cinema` und nicht aus dem Programm: sonst verschwindet genau
+// das Haus aus dem Dashboard, dessen Programm gerade fehlt — und ein
+// stillschweigend fehlendes Kino ist schlimmer als ein leeres.
+const cinemas = kinos.map((k) => ({
+  id: k.id, name: k.name, ort: k.ort, district: k.district,
+  mubi_partner: k.mubi_partner, group: k.group_id, group_name: k.group_name,
+  kinozeit_node: k.kinozeit_node,
+  source_url: k.source_url || ('https://www.kino-zeit.de/kinoprogramm/ort/' + k.ort),
+  status: kinosMitProgramm.has(k.id) ? 'live' : 'abruf_offen'
+})).sort((a, b) =>
+  (gruppeRang(a.group) - gruppeRang(b.group)) ||
+  (ortRang(a.ort) - ortRang(b.ort)) ||
+  (Number(b.mubi_partner) - Number(a.mubi_partner)) ||
+  a.name.localeCompare(b.name, 'de'));
+
+// Rang jedes Kinos in der obigen Reihenfolge — danach werden die
+// Vorstellungen eines Films sortiert, damit die Liste unten dieselbe
+// Ordnung hat wie die Filterleiste oben.
+const kinoRang = new Map(cinemas.map((c, i) => [c.id, i]));
+const rangVon = (id) => (kinoRang.has(id) ? kinoRang.get(id) : cinemas.length);
+
 for (const f of filme.values()) {
   // Melden zwei Quellen dieselbe Vorstellung, steht sie sonst doppelt im
   // Tagesplan — gleiche Uhrzeit, gleiches Kino, einmal je Quelle.
@@ -147,7 +194,13 @@ for (const f of filme.values()) {
     gesehen.add(k);
     return true;
   });
-  f.showings.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+  // Erst der Tag, dann die Kinoreihenfolge, dann die Uhrzeit. Ein Tag bleibt
+  // ein Tag; innerhalb des Tages stehen die Haeuser in der Reihenfolge der
+  // Filterleiste.
+  f.showings.sort((a, b) =>
+    a.date.localeCompare(b.date) ||
+    (rangVon(a.cinema_id) - rangVon(b.cinema_id)) ||
+    a.time.localeCompare(b.time));
 }
 
 const daten = [...alleDaten].sort();
@@ -162,21 +215,6 @@ const liste = [...filme.values()].sort((a, b) => {
   return rang(a) - rang(b) || a.title.localeCompare(b.title, 'de');
 });
 
-// --- Kinos und Gruppen aus den Stammdaten -----------------------------
-// Bewusst aus `cinema` und nicht aus dem Programm: sonst verschwindet genau
-// das Haus aus dem Dashboard, dessen Programm gerade fehlt — und ein
-// stillschweigend fehlendes Kino ist schlimmer als ein leeres.
-const cinemas = kinos.map((k) => ({
-  id: k.id, name: k.name, ort: k.ort, district: k.district,
-  mubi_partner: k.mubi_partner, group: k.group_id, group_name: k.group_name,
-  kinozeit_node: k.kinozeit_node,
-  source_url: k.source_url || ('https://www.kino-zeit.de/kinoprogramm/ort/' + k.ort),
-  status: kinosMitProgramm.has(k.id) ? 'live' : 'abruf_offen'
-})).sort((a, b) =>
-  (ortRang(a.ort) - ortRang(b.ort)) ||
-  (Number(b.mubi_partner) - Number(a.mubi_partner)) ||
-  a.name.localeCompare(b.name, 'de'));
-
 const gruppenIds = [...new Set(kinos.map((k) => k.group_id))];
 const groups = gruppenIds.map((gid) => {
   const mitglieder = kinos.filter((k) => k.group_id === gid);
@@ -187,7 +225,9 @@ const groups = gruppenIds.map((gid) => {
     cinemas: mitglieder.map((k) => k.id),
     mubi_partner: mitglieder.some((k) => k.mubi_partner)
   };
-}).sort((a, b) => ortRang(a.ort) - ortRang(b.ort));
+}).sort((a, b) =>
+  (gruppeRang(a.id) - gruppeRang(b.id)) ||
+  (ortRang(a.ort) - ortRang(b.ort)));
 
 // --- Zusammenbau ------------------------------------------------------
 const heutige = liste.flatMap((f) => f.showings.filter((s) => s.date === heute));
@@ -216,6 +256,11 @@ const out = {
     // Schnittstelle, der Suchtitel"). Was bleibt, ist die Quellenlage.
     grenze: 'Offen bleiben nur Aushangtitel, die keinen Film bezeichnen (Sneak, Sondervorstellung) oder bei denen die Quelle Reihenname und Filmtitel ohne Trennzeichen in ein Feld schreibt.'
   },
+  // Die Reihenfolge, in der Filterleiste und Vorstellungsliste die Haeuser
+  // zeigen sollen. `groups` und `cinemas` sind bereits so sortiert; diese
+  // Liste steht dabei, damit das Dashboard nicht raten muss.
+  group_order: GRUPPEN_REIHENFOLGE,
+  cinema_order: cinemas.map((c) => c.id),
   groups,
   cinemas,
   films: liste,
@@ -243,5 +288,14 @@ const out = {
 console.log(`today.json: ${out.stats.filme} Filme, ${out.stats.vorstellungen} Vorstellungen, ${daten.length} Tage`);
 console.log(`Treffer: ${out.stats.treffer} · unscharf: ${out.stats.unscharf} · MUBI GO: ${out.stats.mubi_go}`);
 console.log(`Kinos live: ${out.stats.kinos_live} von ${out.stats.kinos_gesamt}`);
+console.log('Gruppenreihenfolge: ' + groups.map((g) => g.id).join(' > '));
+
+// Eine Gruppe, die nicht in GRUPPEN_REIHENFOLGE steht, landet stumm am Ende.
+// Das ist entweder ein neues Haus oder ein Tippfehler in der Liste — beides
+// will man sehen, nicht raten.
+const unbekannteGruppen = gruppenIds.filter((g) => gruppeRang(g) === GRUPPEN_REIHENFOLGE.length);
+if (unbekannteGruppen.length) {
+  console.log('Gruppen ohne feste Position (ans Ende sortiert): ' + unbekannteGruppen.join(', '));
+}
 
 return [{ json: out }];

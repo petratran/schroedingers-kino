@@ -34,9 +34,9 @@ const RAUSCHEN = ['extended','extended cut','directors cut','director s cut','fi
 function decode(s) {
   return s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
           .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&nbsp;/g, ' ')
-          .replace(/&auml;/g, '\u00e4').replace(/&ouml;/g, '\u00f6').replace(/&uuml;/g, '\u00fc')
-          .replace(/&Auml;/g, '\u00c4').replace(/&Ouml;/g, '\u00d6').replace(/&Uuml;/g, '\u00dc')
-          .replace(/&szlig;/g, '\u00df').trim();
+          .replace(/&auml;/g, 'ä').replace(/&ouml;/g, 'ö').replace(/&uuml;/g, 'ü')
+          .replace(/&Auml;/g, 'Ä').replace(/&Ouml;/g, 'Ö').replace(/&Uuml;/g, 'Ü')
+          .replace(/&szlig;/g, 'ß').trim();
 }
 
 /**
@@ -181,9 +181,16 @@ function parseKinozeit(html, ctx = {}) {
 // Put Output in Field = html).
 // Ausgang: eine Zeile je Vorstellung, fertig fuer die Tabelle `showing`.
 
+// Bewusst nicht erfasst — inhaltliche Entscheidungen, keine Luecken. Diese
+// Knoten werden stumm uebersprungen und NICHT als "unbekannt" gemeldet:
+// die Unbekannt-Liste ist eine Aufgabenliste, und was hier steht, ist erledigt.
+const NICHT_ERFASSEN = {
+  '3321': 'Traumpalast Leonberg (ohne IMAX) — fuer Leonberg zaehlt nur der IMAX-Saal 53864',
+  '2741': 'Traumpalast Esslingen — zu weit weg, wird nicht besucht',
+};
+
 // kino-zeit-Knoten -> cinema.id. Erzeugt aus data/kinos.json.
-// Knoten 3321 (Traumpalast Leonberg ohne IMAX) fehlt bewusst — fuer Leonberg
-// zaehlt allein der IMAX-Saal (53864). Alles, was hier nicht steht, faellt raus.
+// Alles, was weder hier noch in NICHT_ERFASSEN steht, wird gemeldet.
 const KINO_NACH_NODE = {
   '2354': 'delphi',
   '2357': 'atelier',
@@ -195,7 +202,6 @@ const KINO_NACH_NODE = {
   '2667': 'cinemaxx-liederhalle',
   '2448': 'cinemaxx-si',
   '2194': 'komm-es',
-  '2741': 'traumpalast-es',
   '2246': 'caligari',
   '2248': 'central-lb',
   '2598': 'luna',
@@ -203,10 +209,11 @@ const KINO_NACH_NODE = {
   '53864': 'traumpalast-imax',
 };
 
-const plan     = $('Abrufplan').all();   // gleiche Reihenfolge wie der Loop
-const probleme = [];
+const plan      = $('Abrufplan').all();   // gleiche Reihenfolge wie der Loop
+const probleme  = [];
 const unbekannt = new Set();
-const zeilen   = [];
+const ausgelassen = new Set();
+const zeilen    = [];
 
 $input.all().forEach((item, i) => {
   const ctx = plan[i]?.json ?? {};
@@ -220,8 +227,10 @@ $input.all().forEach((item, i) => {
     return;
   }
   for (const s of res.showings) {
-    const cinema_id = KINO_NACH_NODE[String(s.cinema_id)];
-    if (!cinema_id) { unbekannt.add(`${s.cinema_id} ${s.cinema_name}`); continue; }
+    const node = String(s.cinema_id);
+    if (NICHT_ERFASSEN[node]) { ausgelassen.add(NICHT_ERFASSEN[node]); continue; }
+    const cinema_id = KINO_NACH_NODE[node];
+    if (!cinema_id) { unbekannt.add(`${node} ${s.cinema_name}`); continue; }
     zeilen.push({
       cinema_id,
       source:      'kino-zeit',
@@ -252,6 +261,7 @@ const eindeutig = zeilen.filter((z) => {
 
 console.log(`Seiten: ${$input.all().length}, davon ohne Ergebnis: ${probleme.length}`);
 console.log(`Vorstellungen: ${eindeutig.length} (Rohzeilen ${zeilen.length})`);
+if (ausgelassen.size) console.log('Bewusst ausgelassen: ' + [...ausgelassen].join(' | '));
 if (unbekannt.size) console.log('Nicht zugeordnete Kinos: ' + [...unbekannt].join(', '));
 if (probleme.length) console.log('Seiten ohne Ergebnis:\n' + probleme.join('\n'));
 
