@@ -35,11 +35,79 @@ const KINO_MUSTER = [
   { re: /\bem\b/i,  id: 'em' }
 ];
 
+/**
+ * Fassungskuerzel, wie sie in den Etiketten der Vorstellungen stehen
+ * ("EM 12D·OV Weird Wednesday"). Absichtlich OHNE /i:
+ * Diese Kuerzel sind immer grossgeschrieben, und "of" in einem Titel wie
+ * "KitKatClub: Kinks of Berlin" darf nicht als Originalfassung durchgehen.
+ * Reihenfolge = Vorrang: das Spezifischere zuerst.
+ */
+const FASSUNG_MUSTER = [
+  [/\bOmeU\b/, 'OmeU'],
+  [/\bOmU\b/,  'OmU'],
+  [/\bOV\b/,   'OV'],
+  [/\bDF\b/,   'DF']
+];
+
+/**
+ * Ausgeschriebene Fassungsangaben aus dem Beschreibungstext. Die Reihen der
+ * Innenstadtkinos sagen es dort im Fliesstext statt im Kuerzel:
+ *
+ *   "Weird Wednesday - Jeden 3. Mittwoch im Monat zeigen wir ausgesuchte
+ *    Kultklassiker ... und in der Originalversion."
+ *
+ * Das Spezifischere zuerst: Wer Untertitel nennt, meint OmU, auch wenn im
+ * selben Satz "Originalfassung" steht.
+ */
+const WORTFASSUNG = [
+  [/\bmit\s+(?:deutschen\s+|dt\.?\s+|engl(?:ischen)?\.?\s+)?Untertiteln\b/i, 'OmU'],
+  [/\bOriginalversion\b/i,   'OV'],
+  [/\bOriginalfassung\b/i,   'OV'],
+  [/\bim\s+Original\b/i,     'OV'],
+  [/\bdeutsche[nr]?\s+Fassung\b/i, 'DF'],
+  [/\bsynchronisiert\b/i,    'DF']
+];
+
 /** "PT1H37M" -> 97 */
 function dauerInMinuten(iso) {
   const m = String(iso || '').match(/^PT(?:(\d+)H)?(?:(\d+)M)?/);
   if (!m || (!m[1] && !m[2])) return null;
   return (Number(m[1] || 0) * 60) + Number(m[2] || 0);
+}
+
+/**
+ * Fassung EINER Vorstellung. Drei Quellen, in dieser Reihenfolge:
+ *   1. ein Kuerzel im Namen oder in der Beschreibung ("... ·OV ...")
+ *   2. das Feld `inLanguage` des Events
+ *   3. eine ausgeschriebene Angabe im Beschreibungstext
+ * Findet sich nichts, bleibt die Spalte LEER.
+ *
+ * Die dritte Stufe steht bewusst NACH `inLanguage`: Sie greift nur dort, wo
+ * die Quelle sonst schweigt. Ein Fliesstext ist die schwaechste der drei
+ * Angaben — er beschreibt oft die Reihe, nicht die einzelne Vorstellung —,
+ * und soll deshalb eine ausdrueckliche Sprachangabe nie ueberstimmen.
+ *
+ * Das ist der Punkt dieser Funktion. Die erste Fassung schrieb
+ * `String(e.inLanguage || 'de')` und machte damit aus einer fehlenden Angabe
+ * ein "DF". Am 23.09.2026 aufgefallen an "Weird Wednesday: TAXI DRIVER" und
+ * "DRIVE": Beide laufen laut Kinoseite im Original, beide standen in der
+ * Datenbank als deutsche Fassung. Die Quelle hatte nie etwas anderes
+ * behauptet — sie hatte gar nichts behauptet.
+ *
+ * Zum Vergleich: Der kino-zeit-Zweig laesst 702 von 869 Zeilen leer. Diese
+ * Leerstellen sind eine ehrliche Angabe. Ein Standardwert ist es nicht.
+ */
+function fassung(event) {
+  const etikett = [event && event.name, event && event.description]
+    .filter(Boolean).join(' ');
+  for (const [re, wert] of FASSUNG_MUSTER) if (re.test(etikett)) return wert;
+
+  const lang = event && event.inLanguage ? String(event.inLanguage).toLowerCase() : null;
+  if (lang) return lang.startsWith('de') ? 'DF' : 'OV';
+
+  for (const [re, wert] of WORTFASSUNG) if (re.test(etikett)) return wert;
+
+  return null;                         // keine Angabe ist keine deutsche Fassung
 }
 
 /** TMDb-Kennung aus den sameAs-Verweisen des Films. */
@@ -53,7 +121,7 @@ function tmdbAusSameAs(sameAs) {
 
 /** "Weird Wednesday DRIVE (2011) - " -> "Weird Wednesday DRIVE (2011)" */
 function titelSauber(s) {
-  return String(s || '').replace(/\s+/g, ' ').replace(/[\s\u2013\u2014-]+$/, '').trim();
+  return String(s || '').replace(/\s+/g, ' ').replace(/[\s–—-]+$/, '').trim();
 }
 
 function kinoAusOffer(url) {
@@ -107,7 +175,7 @@ if (typeof $input !== 'undefined') {
   const aliasse  = new Map();   // source_key -> Zeile
   const filme    = new Map();   // tmdb_id   -> Zeile
   const hinweise = [];
-  let ohneTmdb = 0, ohneKino = 0;
+  let ohneTmdb = 0, ohneKino = 0, ohneFassung = 0;
 
   $input.all().forEach((item, i) => {
     const url = plan[i]?.json?.url || '';
@@ -146,15 +214,17 @@ if (typeof $input !== 'undefined') {
       const cinema_id = kinoAusOffer(e.offers && e.offers.url);
       if (!cinema_id) { ohneKino++; continue; }
 
-      const sprache = String(e.inLanguage || 'de').toLowerCase();
-      const format  = String(e.videoFormat || '').toUpperCase();
+      const version = fassung(e);
+      if (!version) ohneFassung++;
+
+      const format = String(e.videoFormat || '').toUpperCase();
 
       showings.push({
         cinema_id,
         source:      'innenstadtkinos',
         source_key,
         raw_title:   titel,
-        version:     sprache.startsWith('de') ? 'DF' : 'OV',
+        version,
         format:      format && format !== '2D' ? format : null,
         genre,
         runtime_min: laenge,
@@ -206,6 +276,11 @@ if (typeof $input !== 'undefined') {
 
   console.log(`Innenstadtkinos: ${eindeutig.length} Vorstellungen aus ${$input.all().length} Filmseiten`);
   console.log(`Filme mit TMDb-Kennung aus der Quelle: ${filme.size}, ohne: ${ohneTmdb}`);
+  // Leere Fassungsangaben sind kein Fehler, sondern eine Messung: Sie sagen,
+  // wie oft die Quelle nichts sagt. Steigt die Zahl auf fast alle Zeilen,
+  // steht das Kuerzel nicht mehr im JSON-LD und muss aus dem HTML gelesen
+  // werden.
+  console.log(`Vorstellungen ohne Fassungsangabe: ${ohneFassung} von ${eindeutig.length}`);
   if (ohneKino) console.log(`Vorstellungen ohne erkennbaren Saal: ${ohneKino}`);
   if (hinweise.length) console.log('Hinweise:\n' + [...new Set(hinweise)].join('\n'));
 
@@ -222,5 +297,5 @@ if (typeof $input !== 'undefined') {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { parseSeite, ldKnoten, dauerInMinuten, tmdbAusSameAs, kinoAusOffer };
+  module.exports = { parseSeite, ldKnoten, dauerInMinuten, tmdbAusSameAs, kinoAusOffer, fassung };
 }
