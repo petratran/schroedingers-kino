@@ -3,7 +3,7 @@
 Zeigt, welche Filme von einer Letterboxd-Watchlist gerade in Stuttgarter Kinos
 laufen, und markiert, welche davon über MUBI GO einlösbar sind.
 
-Abschlussprojekt der KI-Manager-Weiterbildung · Petra Tran · Stand 18.09.2026
+Abschlussprojekt · Petra Tran · Stand 18.09.2026
 
 ---
 
